@@ -1,5 +1,20 @@
-from tkinter import *
-import time
+'''
+The module that handles the front-end representations of the backend
+'''
+
+from creature import *
+
+class World:
+    occupants = []
+
+    def add_dot(self, dot):
+        self.occupants.append(dot)
+
+    def add(self, x, y, radius):
+        self.occupants.append(Dot(x, y, radius))
+
+class Dot_List:
+    __list = []
 
 
 class Dot:
