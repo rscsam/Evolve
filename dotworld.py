@@ -59,6 +59,11 @@ class Dot:
     def get_occupant(self):
         return self.__occupant
 
+    def get_center(self):
+        x = (self.__x + self.__x2) / 2
+        y = (self.__y + self.__y2) / 2
+        return (x, y)
+
     def set_reference(self, reference):
         self.__reference = reference
         self.__x2 = self.__x + (2 * self.__radius)

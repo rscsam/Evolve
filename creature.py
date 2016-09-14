@@ -60,5 +60,5 @@ class Occupant:
         self.sety(self.gety() + self.__y_velocity)
 
         #makes the creature change direction occasionally
-        if random.random() < .05:
+        if random.random() < .03:
             self.set_starting_velocity()
