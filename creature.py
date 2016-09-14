@@ -1,6 +1,7 @@
 """The module that contains all of the backend creature data"""
 
 import random
+import math
 
 
 class Occupant:
@@ -43,7 +44,7 @@ class Occupant:
         if random.random() > .5:
             self.__x_velocity *= -1
 
-        self.__y_velocity = self.__speed - abs(self.__x_velocity)
+        self.__y_velocity = math.sqrt(math.pow(self.__speed, 2) - math.pow(self.__x_velocity, 2))
         if random.random() > .5:
             self.__y_velocity *= -1
 
