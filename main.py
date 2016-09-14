@@ -22,20 +22,35 @@ Canvas.create_circle = _create_circle
 
 
 world = World()
-world.add(100, 120, 5, 1)
-world.add(100, 150, 8, 1)
-world.add(100, 180, 10, 1)
-world.add(100, 210, 3, 1)
-
 dots = []
-for c in world.occupants:
-    dots.append(canvas.create_circle(c.getx(), c.gety(), c.getradius(), fill="blue", width=0))
 
-while True:
+
+def init_dots():
+    world.add(100, 120, 5, 1)
+    world.add(100, 150, 8, 1)
+    world.add(100, 180, 10, 1)
+    world.add(100, 210, 3, 1)
+
+
+def draw_dots():
     for c in world.occupants:
-        c.move()
-    for circle in dots:
-        canvas.move(circle, 5, 0)
-        canvas.update()
-    time.sleep(0.1)
+        dots.append(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
+
+
+def draw_dot(c):
+    dots.append(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
+
+
+def remove_dot(dot):
+    dots.remove(dot)
+
+
+def update():
+    for c in world.occupants:
+        c.update()
+        canvas.coords(c, c.getx(), c.gety())
+
+init_dots()
+draw_dots()
+
 root.mainloop()

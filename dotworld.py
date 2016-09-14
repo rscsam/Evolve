@@ -15,10 +15,6 @@ class World:
         self.occupants.append(Dot(Occupant(x, y, size, speed)))
 
 
-class DotList:
-    __list = []
-
-
 class Dot:
     __occupant = 0
     __x = 0
@@ -57,4 +53,5 @@ class Dot:
         self.__x = self.__occupant.getx()
         self.__y = self.__occupant.gety()
 
-
+    def update(self):
+        self.move()
