@@ -80,4 +80,8 @@ class App:
         self.root.mainloop()
 
 
-App()
+class App2(App):
+    def draw_dot(self, c):
+        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="red", width=0))
+
+App2()
