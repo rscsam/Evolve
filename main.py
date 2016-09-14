@@ -1,6 +1,4 @@
-'''
-The program that will actually be run
-'''
+"""The program that will actually be run"""
 
 from tkinter import *
 from dotworld import World
@@ -12,8 +10,8 @@ canvas = Canvas(root, width=1000, height=600, borderwidth=0, highlightthickness=
 canvas.grid()
 
 
-#Define a shortcut for creating circles
 def _create_circle(self, x, y, r, **kwargs):
+    """Define a shortcut for creating circles"""
     return self.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
 Canvas.create_circle = _create_circle
@@ -59,11 +57,13 @@ def detect_collision(dot):
     return False
 
 
+
 def remove_dot(dot):
     world.occupants.remove(dot)
 
 
 def update():
+    count = 0
     for c in world.occupants:
         c.update()
         canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())

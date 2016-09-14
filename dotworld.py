@@ -1,6 +1,4 @@
-'''
-The module that handles the front-end representations of the backend
-'''
+"""The module that handles the front-end representations of the backend"""
 
 from creature import *
 

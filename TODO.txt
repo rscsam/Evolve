@@ -1,0 +1,14 @@
+TODO dotworld
+    Create additional utility methods to simplify code in main
+TODO main
+    Fix collision logic***
+TODO creature
+    Create subclasses of Occupant to test the handling of various movement patterns
+
+TODO general
+    Abstract dot/occupant color properties
+
+
+
+*** - Sam working on
+^^^ - Ryan working on

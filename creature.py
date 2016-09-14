@@ -1,6 +1,5 @@
-'''
-The module that contains all of the backend creature data
-'''
+"""The module that contains all of the backend creature data"""
+
 import random
 
 
@@ -38,8 +37,8 @@ class Occupant:
     def get_size(self):
         return self.__size
 
-    #sets the starting velocity of the creature
     def set_starting_velocity(self):
+        """sets the starting velocity of the creature"""
         self.__x_velocity = random.random() * self.__speed
         if random.random() > .5:
             self.__x_velocity *= -1
@@ -49,16 +48,16 @@ class Occupant:
             self.__y_velocity *= -1
 
     def move(self):
-        #reverses direction if hits a wall
+        """reverses direction if hits a wall"""
         if self.__x > 1000 or self.__x < 0:
             self.__x_velocity *= -1
         if self.__y > 600 or self.__y < 0:
             self.__y_velocity *= -1
 
-        #changes the position of the occupant
+        """changes the position of the occupant"""
         self.setx(self.getx() + self.__x_velocity)
         self.sety(self.gety() + self.__y_velocity)
 
-        #makes the creature change direction occasionally
+        """makes the creature change direction occasionally"""
         if random.random() < .03:
             self.set_starting_velocity()
