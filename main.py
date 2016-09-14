@@ -34,11 +34,11 @@ def init_dots():
 
 def draw_dots():
     for c in world.occupants:
-        dots.append(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
+        c.set_reference(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
 
 
 def draw_dot(c):
-    dots.append(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
+    c.set_reference(canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
 
 
 def remove_dot(dot):
@@ -48,9 +48,13 @@ def remove_dot(dot):
 def update():
     for c in world.occupants:
         c.update()
-        canvas.coords(c, c.getx(), c.gety())
+        canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
+        canvas.update()
 
 init_dots()
 draw_dots()
+while True:
+    update()
+    time.sleep(0.01)
 
 root.mainloop()
