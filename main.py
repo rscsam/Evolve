@@ -3,9 +3,7 @@ The program that will actually be run
 '''
 
 from tkinter import *
-import time
 from dotworld import World
-from dotworld import Dot
 
 root = Tk()
 root.title = "Evolvarium"
@@ -49,12 +47,12 @@ def update():
     for c in world.occupants:
         c.update()
         canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
-        canvas.update()
+    canvas.update()
+    root.after(10, update)
 
 init_dots()
 draw_dots()
-while True:
-    update()
-    time.sleep(0.01)
+running = True
+root.after(10, update)
 
 root.mainloop()

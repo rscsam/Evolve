@@ -62,8 +62,3 @@ class Occupant:
         #makes the creature change direction occasionally
         if random.random() < .05:
             self.set_starting_velocity()
-
-
-
-
-

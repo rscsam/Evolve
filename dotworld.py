@@ -74,4 +74,3 @@ class Dot:
 
     def update(self):
         self.move()
-
