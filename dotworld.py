@@ -1,6 +1,4 @@
-'''
-The module that handles the front-end representations of the backend
-'''
+"""The module that handles the front-end representations of the backend"""
 
 from creature import *
 
@@ -58,6 +56,11 @@ class Dot:
 
     def get_occupant(self):
         return self.__occupant
+
+    def get_center(self):
+        x = (self.__x + self.__x2) / 2
+        y = (self.__y + self.__y2) / 2
+        return (x, y)
 
     def set_reference(self, reference):
         self.__reference = reference
