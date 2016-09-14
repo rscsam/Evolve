@@ -10,7 +10,9 @@ class World:
         self.occupants.append(Dot(occupant))
 
     def add(self, x, y, size, speed):
-        self.occupants.append(Dot(Occupant(x, y, size, speed)))
+        c = Dot(Occupant(x, y, size, speed))
+        self.occupants.append(c)
+        return c
 
 
 class Dot:
@@ -24,8 +26,8 @@ class Dot:
 
     def __init__(self, occupant):
         self.__occupant = occupant
-        self.__x = occupant.getx()
-        self.__y = occupant.gety()
+        self.setx(occupant.getx())
+        self.sety(occupant.gety())
         self.__radius = occupant.get_size()
 
     def setx(self, x):
@@ -61,6 +63,12 @@ class Dot:
         x = (self.__x + self.__x2) / 2
         y = (self.__y + self.__y2) / 2
         return (x, y)
+
+    def get_centerx(self):
+        return self.get_center()[0]
+
+    def get_centery(self):
+        return self.get_center()[1]
 
     def set_reference(self, reference):
         self.__reference = reference

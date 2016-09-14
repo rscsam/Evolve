@@ -1,13 +1,14 @@
 TODO dotworld
-    Create additional utility methods to simplify code in main
+    Create additional utility methods to simplify code in main***
 TODO main
-    Fix collision logic***
+    Implement a collision logic handled by the app/world as opposed to creatures
 TODO creature
     Create subclasses of Occupant to test the handling of various movement patterns
 
 TODO general
     Abstract dot/occupant color properties
-
+    Standardize a script format and build a compiler/interpreter
+    Refurbish the main application look***
 
 
 *** - Sam working on
