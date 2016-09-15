@@ -26,10 +26,10 @@ class App:
         self.world.add(100, 150, 8, 1)
         self.world.add(100, 180, 10, 1)
         self.world.add(100, 210, 3, 1)
-        self.world.add(200, 120, 5, 1)
-        self.world.add(200, 150, 8, 1)
-        self.world.add(200, 180, 10, 1)
-        self.world.add(200, 210, 3, 1)
+        self.world.add_squawker(200, 120, 5, 1)
+        self.world.add_squawker(200, 150, 8, 1)
+        self.world.add_squawker(200, 180, 10, 1)
+        self.world.add_squawker(200, 210, 3, 1)
         self.world.add(300, 120, 5, 1)
         self.world.add(300, 150, 8, 1)
         self.world.add(300, 180, 10, 1)
@@ -46,7 +46,6 @@ class App:
     def draw_dot(self, c):
         c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
 
-    #Does not yet work
     def detect_collision(self, dot):
         for c in self.world.occupants:
             if (c != dot):
@@ -55,7 +54,6 @@ class App:
                     return True
         return False
 
-    #does not work as intended
     def remove_dot(self, dot):
         self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
@@ -63,7 +61,7 @@ class App:
     def canvas_on_click(self, event):
         self.canvas.focus_set()
         #self.running = not self.running
-        self.draw_dot(self.world.add(event.x, event.y, 3, 2))
+        self.draw_dot(self.world.add(event.x, event.y, 3, 4))
         print("Click:",event.x,",",event.y)
 
     def update(self):
@@ -95,4 +93,4 @@ class App2(App):
     def draw_dot(self, c):
         c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="red", width=0))
 
-App2(5)
+App2(3)

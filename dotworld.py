@@ -14,6 +14,11 @@ class World:
         self.occupants.append(c)
         return c
 
+    def add_squawker(self, x, y, size, speed):
+        c = Dot(Squawker(x, y, size, speed))
+        self.occupants.append(c)
+        return c
+
 
 class Dot:
     __occupant = 0
