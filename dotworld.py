@@ -19,6 +19,11 @@ class World:
         self.occupants.append(c)
         return c
 
+    def add_dunkboy(self, x, y, size, speed):
+        c = Dot(Dunkboy(x, y, size, speed))
+        self.occupants.append(c)
+        return c
+
 
 class Dot:
     __occupant = 0
@@ -66,8 +71,8 @@ class Dot:
         return self.__occupant
 
     def get_center(self):
-        x = (self.__x + self.__x2) / 2
-        y = (self.__y + self.__y2) / 2
+        x = self.__x + self.__radius
+        y = self.__y + self.__radius
         return (x, y)
 
     def get_centerx(self):

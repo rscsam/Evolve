@@ -20,7 +20,6 @@ class App:
 
     Canvas.create_circle = _create_circle
 
-
     def init_dots(self):
         self.world.add(100, 120, 5, 1)
         self.world.add(100, 150, 8, 1)
@@ -34,10 +33,26 @@ class App:
         self.world.add(300, 150, 8, 1)
         self.world.add(300, 180, 10, 1)
         self.world.add(300, 210, 3, 1)
-        self.world.add(400, 120, 5, 1)
-        self.world.add(400, 150, 8, 1)
-        self.world.add(400, 180, 10, 1)
-        self.world.add(400, 210, 3, 1)
+        self.world.add_dunkboy(400, 120, 5, 1)
+        self.world.add_dunkboy(400, 150, 8, 1)
+        self.world.add_dunkboy(400, 180, 10, 1)
+        self.world.add_dunkboy(400, 210, 3, 1)
+        self.world.add(100, 320, 5, 1)
+        self.world.add(100, 350, 8, 1)
+        self.world.add(100, 380, 10, 1)
+        self.world.add(100, 410, 3, 1)
+        self.world.add_squawker(200, 320, 5, 1)
+        self.world.add_squawker(200, 350, 8, 1)
+        self.world.add_squawker(200, 380, 10, 1)
+        self.world.add_squawker(200, 410, 3, 1)
+        self.world.add(300, 320, 5, 1)
+        self.world.add(300, 350, 8, 1)
+        self.world.add(300, 380, 10, 1)
+        self.world.add(300, 410, 3, 1)
+        self.world.add_dunkboy(400, 320, 5, 1)
+        self.world.add_dunkboy(400, 350, 8, 1)
+        self.world.add_dunkboy(400, 380, 10, 1)
+        self.world.add_dunkboy(400, 410, 3, 1)
 
     def draw_dots(self):
         for c in self.world.occupants:
@@ -48,8 +63,8 @@ class App:
 
     def detect_collision(self, dot):
         for c in self.world.occupants:
-            if (c != dot):
-                distance = ((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5
+            if c != dot:
+                distance = int(((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5)+1
                 if distance <= (dot.get_radius() + c.get_radius()):
                     return True
         return False
@@ -60,8 +75,8 @@ class App:
 
     def canvas_on_click(self, event):
         self.canvas.focus_set()
-        #self.running = not self.running
-        self.draw_dot(self.world.add(event.x, event.y, 3, 4))
+        # self.running = not self.running
+        self.draw_dot(self.world.add(event.x, event.y, 8, 4))
         print("Click:",event.x,",",event.y)
 
     def update(self):

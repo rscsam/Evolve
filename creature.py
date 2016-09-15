@@ -103,3 +103,29 @@ class Squawker(Occupant):
         """makes the creature change direction occasionally"""
         if random.random() < .03:
             self.set_starting_velocity()
+
+class Dunkboy(Occupant):
+    def set_starting_velocity(self):
+        """sets the starting velocity of the creature"""
+        self.set_x_velocity(random.random() * self.get_speed())
+        if random.random() > .5:
+            self.set_x_velocity(self.get_x_velocity() * -1)
+
+        self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
+        if random.random() > .5:
+            self.set_y_velocity(self.get_y_velocity() * -1)
+
+    def move(self):
+        """reverses direction if hits a wall"""
+        if self.getx() > 1000 or self.getx() < 0:
+            self.set_x_velocity(self.get_x_velocity() * -1)
+        if self.gety() > 600 or self.gety() < 0:
+            self.set_y_velocity(self.get_y_velocity() * -1)
+
+        """changes the position of the occupant"""
+        self.setx(self.getx() + self.get_x_velocity())
+        self.sety(self.gety() + self.get_y_velocity())
+
+        """makes the creature change direction occasionally"""
+        if random.random() < .23:
+            self.set_starting_velocity()
