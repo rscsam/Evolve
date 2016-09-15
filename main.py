@@ -5,6 +5,7 @@ from dotworld import World
 
 class App:
     running = True
+    speed = 10
     world = World()
 
     root = Tk()
@@ -78,14 +79,15 @@ class App:
                     if c.triggered():
                         self.remove_dot(c)
             self.canvas.update()
-        self.root.after(10, self.update)
+        self.root.after(self.speed, self.update)
 
-    def __init__(self):
+    def __init__(self, speed):
         self.init_dots()
         self.draw_dots()
         self.canvas.bind("<Button-1>", self.canvas_on_click)
         self.canvas.pack()
-        self.root.after(10, self.update)
+        self.speed = speed
+        self.root.after(speed, self.update)
         self.root.mainloop()
 
 
@@ -93,4 +95,4 @@ class App2(App):
     def draw_dot(self, c):
         c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="red", width=0))
 
-App2()
+App2(5)
