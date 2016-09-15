@@ -7,6 +7,8 @@ import math
 class Occupant:
     __x = 0
     __y = 0
+    __x2 = 0
+    __y2 = 0
     __size = 0
     __visible = False
     __speed = 0
@@ -15,22 +17,32 @@ class Occupant:
 
     def __init__(self, x, y, size, speed):
         self.__x = x
+        self.__x2 = x + (2 * self.__size)
         self.__y = y
+        self.__y2 = y + (2 * self.__size)
         self.__size = size
         self.__speed = speed
         self.set_starting_velocity()
 
     def setx(self, x):
         self.__x = x
+        self.__x2 = x + (2 * self.__size)
 
     def getx(self):
         return self.__x
 
+    def getx2(self):
+        return self.__x2
+
     def sety(self, y):
         self.__y = y
+        self.__y2 = y + (2 * self.__size)
 
     def gety(self):
         return self.__y
+
+    def gety2(self):
+        return self.__y2
 
     def set_x_velocity(self, x):
         self.__x_velocity = x
@@ -68,9 +80,9 @@ class Occupant:
 
     def move(self):
         """reverses direction if hits a wall"""
-        if self.__x > 1000 or self.__x < 0:
+        if self.__x2 > 1000 or self.__x < 0:
             self.__x_velocity *= -1
-        if self.__y > 600 or self.__y < 0:
+        if self.__y2 > 600 or self.__y < 0:
             self.__y_velocity *= -1
 
         """changes the position of the occupant"""
@@ -91,9 +103,9 @@ class Squawker(Occupant):
 
     def move(self):
         """reverses direction if hits a wall"""
-        if self.getx() > 1000 or self.getx() < 0:
+        if self.getx2() > 1000 or self.getx() < 0:
             self.set_x_velocity(self.get_x_velocity() * -1)
-        if self.gety() > 600 or self.gety() < 0:
+        if self.gety2() > 600 or self.gety() < 0:
             self.set_y_velocity(self.get_y_velocity() * -1)
 
         """changes the position of the occupant"""
@@ -117,9 +129,9 @@ class Dunkboy(Occupant):
 
     def move(self):
         """reverses direction if hits a wall"""
-        if self.getx() > 1000 or self.getx() < 0:
+        if self.getx2() > 1000 or self.getx() < 0:
             self.set_x_velocity(self.get_x_velocity() * -1)
-        if self.gety() > 600 or self.gety() < 0:
+        if self.gety2() > 600 or self.gety() < 0:
             self.set_y_velocity(self.get_y_velocity() * -1)
 
         """changes the position of the occupant"""
