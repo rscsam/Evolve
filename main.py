@@ -48,13 +48,15 @@ class App:
     #Does not yet work
     def detect_collision(self, dot):
         for c in self.world.occupants:
-            distance = ((dot.get_center()[0] - c.get_center()[0])**2) + ((dot.get_center()[1] - c.get_center()[1])**2)**0.5
-            if distance <= (dot.get_radius() + c.get_radius()):
-                return True
+            if (c != dot):
+                distance = ((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5
+                if distance <= (dot.get_radius() + c.get_radius()):
+                    return True
         return False
 
     #does not work as intended
     def remove_dot(self, dot):
+        self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
 
     def canvas_on_click(self, event):
@@ -67,7 +69,14 @@ class App:
         if self.running:
             for c in self.world.occupants:
                 c.update()
-                self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
+            for c in self.world.occupants:
+                if self.detect_collision(c):
+                    c.trigger()
+                else:
+                    self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
+            for c in self.world.occupants:
+                    if c.triggered():
+                        self.remove_dot(c)
             self.canvas.update()
         self.root.after(10, self.update)
 

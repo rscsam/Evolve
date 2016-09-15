@@ -23,6 +23,7 @@ class Dot:
     __y2 = 0
     __radius = 0
     __reference = None
+    __trigger = False
 
     def __init__(self, occupant):
         self.__occupant = occupant
@@ -85,3 +86,9 @@ class Dot:
 
     def update(self):
         self.move()
+
+    def trigger(self):
+        self.__trigger = True
+
+    def triggered(self):
+        return self.__trigger
