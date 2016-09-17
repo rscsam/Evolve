@@ -7,8 +7,6 @@ import math
 class Occupant:
     __x = 0
     __y = 0
-    __x2 = 0
-    __y2 = 0
     __size = 0
     __visible = False
     __speed = 0
@@ -17,32 +15,22 @@ class Occupant:
 
     def __init__(self, x, y, size, speed):
         self.__x = x
-        self.__x2 = x + (2 * self.__size)
         self.__y = y
-        self.__y2 = y + (2 * self.__size)
         self.__size = size
         self.__speed = speed
         self.set_starting_velocity()
 
     def setx(self, x):
         self.__x = x
-        self.__x2 = x + (2 * self.__size)
 
     def getx(self):
         return self.__x
 
-    def getx2(self):
-        return self.__x2
-
     def sety(self, y):
         self.__y = y
-        self.__y2 = y + (2 * self.__size)
 
     def gety(self):
         return self.__y
-
-    def gety2(self):
-        return self.__y2
 
     def set_x_velocity(self, x):
         self.__x_velocity = x
@@ -52,6 +40,12 @@ class Occupant:
 
     def set_y_velocity(self, y):
         self.__y_velocity = y
+
+    def hit_side(self):
+        self.set_x_velocity(self.get_x_velocity() * -1)
+
+    def hit_lid(self):
+        self.set_y_velocity(self.get_y_velocity() * -1)
 
     def get_y_velocity(self):
         return self.__y_velocity
@@ -79,12 +73,6 @@ class Occupant:
             self.__y_velocity *= -1
 
     def move(self):
-        """reverses direction if hits a wall"""
-        if self.__x2 > 1000 or self.__x < 0:
-            self.__x_velocity *= -1
-        if self.__y2 > 600 or self.__y < 0:
-            self.__y_velocity *= -1
-
         """changes the position of the occupant"""
         self.setx(self.getx() + self.__x_velocity)
         self.sety(self.gety() + self.__y_velocity)
@@ -102,17 +90,11 @@ class Squawker(Occupant):
             self.set_y_velocity(self.get_y_velocity() * -1)
 
     def move(self):
-        """reverses direction if hits a wall"""
-        if self.getx2() > 1000 or self.getx() < 0:
-            self.set_x_velocity(self.get_x_velocity() * -1)
-        if self.gety2() > 600 or self.gety() < 0:
-            self.set_y_velocity(self.get_y_velocity() * -1)
-
         """changes the position of the occupant"""
         self.setx(self.getx() + self.get_x_velocity())
         self.sety(self.gety() + self.get_y_velocity())
 
-        """makes the creature change direction occasionally"""
+        #makes the creature change direction occasionally
         if random.random() < .03:
             self.set_starting_velocity()
 
@@ -123,21 +105,16 @@ class Dunkboy(Occupant):
         if random.random() > .5:
             self.set_x_velocity(self.get_x_velocity() * -1)
 
+        #Pythagorean Theorum
         self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
         if random.random() > .5:
             self.set_y_velocity(self.get_y_velocity() * -1)
 
     def move(self):
-        """reverses direction if hits a wall"""
-        if self.getx2() > 1000 or self.getx() < 0:
-            self.set_x_velocity(self.get_x_velocity() * -1)
-        if self.gety2() > 600 or self.gety() < 0:
-            self.set_y_velocity(self.get_y_velocity() * -1)
-
         """changes the position of the occupant"""
         self.setx(self.getx() + self.get_x_velocity())
         self.sety(self.gety() + self.get_y_velocity())
 
-        """makes the creature change direction occasionally"""
+        #makes the creature change direction occasionally
         if random.random() < .23:
             self.set_starting_velocity()

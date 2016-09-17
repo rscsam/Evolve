@@ -8,11 +8,10 @@ class App:
     speed = 10
     world = World()
 
-    root = Tk()
-    root.title = "Evolvarium"
-
-    canvas = Canvas(root, width=1000, height=600, borderwidth=0, highlightthickness=0, bg="black")
-    canvas.grid()
+    root = None
+    canvas = None
+    xEntry = None
+    yEntry = None
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -61,14 +60,6 @@ class App:
     def draw_dot(self, c):
         c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
 
-    def detect_collision(self, dot):
-        for c in self.world.occupants:
-            if c != dot:
-                distance = int(((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5)+1
-                if distance <= (dot.get_radius() + c.get_radius()):
-                    return True
-        return False
-
     def remove_dot(self, dot):
         self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
@@ -76,15 +67,16 @@ class App:
     def canvas_on_click(self, event):
         self.canvas.focus_set()
         # self.running = not self.running
-        self.draw_dot(self.world.add(event.x, event.y, 8, 4))
+        self.draw_dot(self.world.add_squawker(event.x, event.y, 3, 4))
         print("Click:",event.x,",",event.y)
 
     def update(self):
         if self.running:
             for c in self.world.occupants:
                 c.update()
+            self.world.handle_wall_collision()
             for c in self.world.occupants:
-                if self.detect_collision(c):
+                if self.world.detect_collision(c):
                     c.trigger()
                 else:
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
@@ -94,7 +86,26 @@ class App:
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
+    def add_callback(self):
+        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), 3, 4))
+
     def __init__(self, speed):
+        self.root = Tk()
+        self.root.title = "Evolvarium"
+        self.root.resizable(False, False)
+
+        self.canvas = Canvas(self.root, width=1000, height=600, borderwidth=0, highlightthickness=0, bg="black")
+        self.canvas.pack()
+
+        action_bar = Frame(self.root, width=1000, height=58, borderwidth=0)
+        Button(action_bar, text="Add an occupant", command=self.add_callback).pack(fill=NONE, side=LEFT)
+        Label(action_bar, text="X").pack(side=LEFT)
+        self.xEntry = Entry(action_bar, width=5)
+        self.xEntry.pack(side=LEFT)
+        Label(action_bar, text="Y").pack(side=LEFT)
+        self.yEntry = Entry(action_bar, width=5)
+        self.yEntry.pack(side=LEFT)
+        action_bar.pack(side=LEFT)
         self.init_dots()
         self.draw_dots()
         self.canvas.bind("<Button-1>", self.canvas_on_click)

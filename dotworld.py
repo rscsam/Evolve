@@ -24,6 +24,21 @@ class World:
         self.occupants.append(c)
         return c
 
+    def handle_wall_collision(self):
+        for dot in self.occupants:
+            if (dot.getx() + (2 * dot.get_radius())) > 1000 or dot.getx() < 0:
+                dot.get_occupant().hit_side()
+            if (dot.gety() + (2 * dot.get_radius())) > 600 or dot.gety() < 0:
+                dot.get_occupant().hit_lid()
+
+    def detect_collision(self, dot):
+        for c in self.occupants:
+            if c != dot:
+                distance = int(((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5)+1
+                if distance <= (dot.get_radius() + c.get_radius()):
+                    return True
+        return False
+
 
 class Dot:
     __occupant = 0
