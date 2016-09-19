@@ -74,12 +74,10 @@ class App:
         if self.running:
             for c in self.world.occupants:
                 c.update()
-            self.world.handle_wall_collision()
-            for c in self.world.occupants:
-                if self.world.detect_collision(c):
-                    c.trigger()
-                else:
+                self.world.detect_collision(c)
+                if not c.triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
+            self.world.handle_wall_collision()
             for c in self.world.occupants:
                     if c.triggered():
                         self.remove_dot(c)
