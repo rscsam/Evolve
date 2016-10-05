@@ -53,7 +53,7 @@ class Dot:
     __kill_trigger = False
     __highlight_trigger = False
     __color = "#FFFFFF"
-    HIGHLIGHT_OFFSET = "#0000AA"
+    HIGHLIGHT_OFFSET = "#FFFFFF"
 
     def __init__(self, occupant, x, y):
         self.__occupant = occupant

@@ -79,7 +79,7 @@ class App:
     def canvas_on_click(self, event):
         """adds a new dot at the specified location"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, "blue", 3, 4))
+        self.draw_dot(self.world.add_squawker(event.x, event.y, "#999999", 3, 4))
 
     def highlight_dot(self, event, ref):
         if not self.dot_parrallels[ref].highlight_triggered():
@@ -112,7 +112,7 @@ class App:
         self.root.after(self.speed, self.update)
 
     def add_callback(self):
-        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), "red", 3, 4))
+        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), "#545454", 3, 4))
 
     def pause_callback(self):
         """pauses the simulation"""
