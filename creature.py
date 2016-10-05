@@ -11,7 +11,8 @@ class Occupant:
     __x_velocity = 0
     __color = "#FFFFFF"
 
-    def __init__(self, size, speed):
+    def __init__(self, color, size, speed):
+        self.__color = color
         self.__size = size
         self.__speed = speed
         self.set_starting_velocity()
@@ -102,14 +103,15 @@ class Dunkboy(Occupant):
 
 
 class ReproducingOccupant(Occupant):
-    __genecode = "O52"
+    __genecode = "O5200FF00"
     __mutationfactor = 10  # 0 for no mutation, 1000 for complete randomisation
     __species = "O"
 
     def __init__(self, genecode):
         self.__genecode = genecode
         self.set_starting_velocity()
-        super(ReproducingOccupant, self).__init__(genecode[1], genecode[2])
+        color = "#" + genecode[3] + genecode[4] + genecode[5] + genecode[6] + genecode[7] + genecode[8]
+        super(ReproducingOccupant, self).__init__(color, genecode[1], genecode[2])
 
     def mutate(self):
         species = self.__genecode[0]

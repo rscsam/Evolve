@@ -19,47 +19,47 @@ class App:
         return self.canvas.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
     def init_dots(self):
-        self.world.add(100, 120, 5, 1)
-        self.world.add(100, 150, 8, 1)
-        self.world.add(100, 180, 10, 1)
-        self.world.add(100, 210, 3, 1)
-        self.world.add_squawker(200, 120, 5, 1)
-        self.world.add_squawker(200, 150, 8, 1)
-        self.world.add_squawker(200, 180, 10, 1)
-        self.world.add_squawker(200, 210, 3, 1)
-        self.world.add(300, 120, 5, 1)
-        self.world.add(300, 150, 8, 1)
-        self.world.add(300, 180, 10, 1)
-        self.world.add(300, 210, 3, 1)
-        self.world.add_dunkboy(400, 120, 5, 1)
-        self.world.add_dunkboy(400, 150, 8, 1)
-        self.world.add_dunkboy(400, 180, 10, 1)
-        self.world.add_dunkboy(400, 210, 3, 1)
-        self.world.add(100, 320, 5, 1)
-        self.world.add(100, 350, 8, 1)
-        self.world.add(100, 380, 10, 1)
-        self.world.add(100, 410, 3, 1)
-        self.world.add_squawker(200, 320, 5, 1)
-        self.world.add_squawker(200, 350, 8, 1)
-        self.world.add_squawker(200, 380, 10, 1)
-        self.world.add_squawker(200, 410, 3, 1)
-        self.world.add(300, 320, 5, 1)
-        self.world.add(300, 350, 8, 1)
-        self.world.add(300, 380, 10, 1)
-        self.world.add(300, 410, 3, 1)
-        self.world.add_dunkboy(400, 320, 5, 1)
-        self.world.add_dunkboy(400, 350, 8, 1)
-        self.world.add_dunkboy(400, 380, 10, 1)
-        self.world.add_dunkboy(400, 410, 3, 1)
+        self.world.add(100, 120, "#424242", 5, 1)
+        self.world.add(100, 150, "#424242", 8, 1)
+        self.world.add(100, 180, "#424242", 10, 1)
+        self.world.add(100, 210, "#424242", 3, 1)
+        self.world.add_squawker(200, 120, "#424242", 5, 1)
+        self.world.add_squawker(200, 150, "#424242", 8, 1)
+        self.world.add_squawker(200, 180, "#424242", 10, 1)
+        self.world.add_squawker(200, 210, "#424242", 3, 1)
+        self.world.add(300, 120, "#424242", 5, 1)
+        self.world.add(300, 150, "#424242", 8, 1)
+        self.world.add(300, 180, "#424242", 10, 1)
+        self.world.add(300, 210, "#424242", 3, 1)
+        self.world.add_dunkboy(400, 120, "#424242", 5, 1)
+        self.world.add_dunkboy(400, 150, "#424242", 8, 1)
+        self.world.add_dunkboy(400, 180, "#424242", 10, 1)
+        self.world.add_dunkboy(400, 210, "#424242", 3, 1)
+        self.world.add(100, 320, "#424242", 5, 1)
+        self.world.add(100, 350, "#424242", 8, 1)
+        self.world.add(100, 380, "#424242", 10, 1)
+        self.world.add(100, 410, "#424242", 3, 1)
+        self.world.add_squawker(200, 320, "#424242", 5, 1)
+        self.world.add_squawker(200, 350, "#424242", 8, 1)
+        self.world.add_squawker(200, 380, "#424242", 10, 1)
+        self.world.add_squawker(200, 410, "#424242", 3, 1)
+        self.world.add(300, 320, "#424242", 5, 1)
+        self.world.add(300, 350, "#424242", 8, 1)
+        self.world.add(300, 380, "#424242", 10, 1)
+        self.world.add(300, 410, "#424242", 3, 1)
+        self.world.add_dunkboy(400, 320, "#424242", 5, 1)
+        self.world.add_dunkboy(400, 350, "#424242", 8, 1)
+        self.world.add_dunkboy(400, 380, "#424242", 10, 1)
+        self.world.add_dunkboy(400, 410, "#424242", 3, 1)
 
     def draw_dots(self):
         """"draw dots initialized previously"""
         for c in self.world.occupants:
             c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0))
 
-    def draw_dot(self, c, fillcolor):
+    def draw_dot(self, c):
         """"draw dot, which had not been initialized"""
-        c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=fillcolor, width=0))
+        c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=c.get_color(), width=0))
 
     def remove_dot(self, dot):
         """""destroys dot at every layer of abstraction"""
@@ -69,26 +69,27 @@ class App:
     def canvas_on_click(self, event):
         """adds a new dot at the specified location"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, 3, 4), "blue")
+        self.draw_dot(self.world.add_squawker(event.x, event.y, "blue", 3, 4))
 
     def update(self):
         if self.running:
             for c in self.world.occupants:
                 c.update()
                 self.world.detect_collision(c)
-                if not c.triggered():
+                if not c.kill_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
             self.world.handle_wall_collision()
             for c in self.world.occupants:
-                    if c.triggered():
+                    if c.kill_triggered():
                         self.remove_dot(c)
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
     def add_callback(self):
-        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), 3, 4), "red")
+        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), "red", 3, 4))
 
     def pause_callback(self):
+        """pauses the simulation"""
         self.running = not self.running
 
     def __init__(self, speed):
@@ -117,9 +118,5 @@ class App:
         self.root.after(speed, self.update)
         self.root.mainloop()
 
-
-class App2(App):
-    def draw_dot(self, c, color):
-        c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=color, width=0))
 
 App(25)

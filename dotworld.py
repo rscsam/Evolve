@@ -9,18 +9,18 @@ class World:
     def add_occupant(self, occupant, x, y):
         self.occupants.append(Dot(occupant, x, y))
 
-    def add(self, x, y, size, speed):
-        c = Dot(Occupant(size, speed), x, y)
+    def add(self, x, y, color, size, speed):
+        c = Dot(Occupant(color, size, speed), x, y)
         self.occupants.append(c)
         return c
 
-    def add_squawker(self, x, y, size, speed):
-        c = Dot(Squawker(size, speed), x, y)
+    def add_squawker(self, x, y, color, size, speed):
+        c = Dot(Squawker(color, size, speed), x, y)
         self.occupants.append(c)
         return c
 
-    def add_dunkboy(self, x, y, size, speed):
-        c = Dot(Dunkboy(size, speed), x, y)
+    def add_dunkboy(self, x, y, color, size, speed):
+        c = Dot(Dunkboy(color, size, speed), x, y)
         self.occupants.append(c)
         return c
 
@@ -38,8 +38,8 @@ class World:
                 distance = int((((dot.get_centerx() - c.get_centerx())**2)
                                 + ((dot.get_centery() - c.get_centery())**2)**0.5))-2
                 if distance <= (dot.get_radius() + c.get_radius()):
-                    c.trigger()
-                    dot.trigger()
+                    c.kill_trigger()
+                    dot.kill_trigger()
 
 
 class Dot:
@@ -50,7 +50,8 @@ class Dot:
     __y2 = 0
     __radius = 0
     __reference = None
-    __trigger = False
+    __kill_trigger = False
+    __color_trigger = False
     __color = "#FFFFFF"
 
     def __init__(self, occupant, x, y):
@@ -89,6 +90,13 @@ class Dot:
     def get_occupant(self):
         return self.__occupant
 
+    def set_color(self, color):
+        self.__occupant.set_color(color)
+        self.color_trigger()
+
+    def get_color(self):
+        return self.__color
+
     def get_center(self):
         x = self.__x + self.__radius
         y = self.__y + self.__radius
@@ -116,8 +124,14 @@ class Dot:
     def update(self):
         self.move()
 
-    def trigger(self):
-        self.__trigger = True
+    def kill_trigger(self):
+        self.__kill_trigger = True
 
-    def triggered(self):
-        return self.__trigger
+    def kill_triggered(self):
+        return self.__kill_trigger
+
+    def color_trigger(self):
+        self.__color_trigger = not self.__color_trigger
+
+    def color_triggered(self):
+        return self.__color_trigger
