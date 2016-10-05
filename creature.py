@@ -5,32 +5,24 @@ import math
 
 
 class Occupant:
-    __x = 0
-    __y = 0
+    __x_offset = 0
+    __y_offset = 0
     __size = 0
     __visible = False
     __speed = 0
     __y_velocity = 0
     __x_velocity = 0
 
-    def __init__(self, x, y, size, speed):
-        self.__x = x
-        self.__y = y
+    def __init__(self, size, speed):
         self.__size = size
         self.__speed = speed
         self.set_starting_velocity()
 
-    def setx(self, x):
-        self.__x = x
+    def set_x_offset(self, x):
+        self.__x_offset = x
 
-    def getx(self):
-        return self.__x
-
-    def sety(self, y):
-        self.__y = y
-
-    def gety(self):
-        return self.__y
+    def set_y_offset(self, y):
+        self.__y_offset = y
 
     def set_x_velocity(self, x):
         self.__x_velocity = x
@@ -40,6 +32,12 @@ class Occupant:
 
     def set_y_velocity(self, y):
         self.__y_velocity = y
+
+    def get_x_offset(self):
+        return self.__x_offset
+
+    def get_y_offset(self):
+        return self.__y_offset
 
     def hit_side(self):
         self.set_x_velocity(self.get_x_velocity() * -1)
@@ -74,8 +72,8 @@ class Occupant:
 
     def move(self):
         """changes the position of the occupant"""
-        self.setx(self.getx() + self.__x_velocity)
-        self.sety(self.gety() + self.__y_velocity)
+        self.set_x_offset(self.__x_velocity)
+        self.set_y_offset(self.__y_velocity)
 
 
 class Squawker(Occupant):
@@ -91,8 +89,8 @@ class Squawker(Occupant):
 
     def move(self):
         """changes the position of the occupant"""
-        self.setx(self.getx() + self.get_x_velocity())
-        self.sety(self.gety() + self.get_y_velocity())
+        self.set_x_offset(self.get_x_velocity())
+        self.set_y_offset(self.get_y_velocity())
 
         #makes the creature change direction occasionally
         if random.random() < .03:
@@ -112,9 +110,31 @@ class Dunkboy(Occupant):
 
     def move(self):
         """changes the position of the occupant"""
-        self.setx(self.getx() + self.get_x_velocity())
-        self.sety(self.gety() + self.get_y_velocity())
+        self.set_x_offset(self.get_x_velocity())
+        self.set_y_offset(self.get_y_velocity())
 
         #makes the creature change direction occasionally
         if random.random() < .23:
             self.set_starting_velocity()
+
+class ReproducingOccupant(Occupant):
+    __genecode = "O52"
+    __mutationfactor = 10 # 0 for no mutation, 1000 for complete randomisation
+    __species = "O"
+
+    def __init__(self, x, y, genecode):
+        super(x, y, int(genecode[1]), int(genecode[2]))
+        self.__genecode = genecode
+        self.set_starting_velocity()
+
+    def mutate(self):
+        species = self.__genecode[0]
+        size = self.__genecode[1]
+        speed = self.__genecode[2]
+        if random.randint(0, 1000) < self.__mutationfactor:
+            species -= 1
+        if random.randint(0, 1000) < self.__mutationfactor:
+            size += 1
+        if random.randint(0, 1000) < self.__mutationfactor:
+            speed += 1
+        return "" + species + size + speed

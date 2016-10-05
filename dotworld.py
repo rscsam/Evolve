@@ -6,21 +6,21 @@ from creature import *
 class World:
     occupants = []
 
-    def add_occupant(self, occupant):
-        self.occupants.append(Dot(occupant))
+    def add_occupant(self, occupant, x, y):
+        self.occupants.append(Dot(occupant, x, y))
 
     def add(self, x, y, size, speed):
-        c = Dot(Occupant(x, y, size, speed))
+        c = Dot(Occupant(size, speed), x, y)
         self.occupants.append(c)
         return c
 
     def add_squawker(self, x, y, size, speed):
-        c = Dot(Squawker(x, y, size, speed))
+        c = Dot(Squawker(size, speed), x, y)
         self.occupants.append(c)
         return c
 
     def add_dunkboy(self, x, y, size, speed):
-        c = Dot(Dunkboy(x, y, size, speed))
+        c = Dot(Dunkboy(size, speed), x, y)
         self.occupants.append(c)
         return c
 
@@ -33,7 +33,8 @@ class World:
 
     def detect_collision(self, dot):
         for c in self.occupants:
-            if c != dot:
+            if c != dot and c.__class__ != ReproducingOccupant.__class__ or \
+                            (c.__class__ == ReproducingOccupant.__class__) and c.species != dot.species:
                 distance = int((((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5))+1
                 if distance <= (dot.get_radius() + c.get_radius()):
                     c.trigger()
@@ -51,10 +52,10 @@ class Dot:
     __reference = None
     __trigger = False
 
-    def __init__(self, occupant):
+    def __init__(self, occupant, x, y):
         self.__occupant = occupant
-        self.setx(occupant.getx())
-        self.sety(occupant.gety())
+        self.setx(x)
+        self.sety(y)
         self.__radius = occupant.get_size()
 
     def setx(self, x):
@@ -107,8 +108,8 @@ class Dot:
 
     def move(self):
         self.__occupant.move()
-        self.setx(self.__occupant.getx())
-        self.sety(self.__occupant.gety())
+        self.setx(self.__x + self.__occupant.get_x_offset())
+        self.sety(self.__y + self.__occupant.get_y_offset())
 
     def update(self):
         self.move()

@@ -55,10 +55,11 @@ class App:
 
     def draw_dots(self):
         for c in self.world.occupants:
-            c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="yellow", width=0))
+            c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0))
 
-    def draw_dot(self, c):
-        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="blue", width=0))
+    def draw_dot(self, c, str):
+        fillcolor = str
+        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill=fillcolor, width=0))
 
     def remove_dot(self, dot):
         self.canvas.delete(dot.get_reference())
@@ -66,9 +67,7 @@ class App:
 
     def canvas_on_click(self, event):
         self.canvas.focus_set()
-        # self.running = not self.running
-        self.draw_dot(self.world.add_squawker(event.x, event.y, 3, 4))
-        print("Click:",event.x,",",event.y)
+        self.draw_dot(self.world.add_squawker(event.x, event.y, 3, 4), "blue")
 
     def update(self):
         if self.running:
@@ -85,7 +84,10 @@ class App:
         self.root.after(self.speed, self.update)
 
     def add_callback(self):
-        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), 3, 4))
+        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), 3, 4), "red")
+
+    def pause_callback(self):
+        self.running = not self.running
 
     def __init__(self, speed):
         self.root = Tk()
@@ -103,6 +105,7 @@ class App:
         Label(action_bar, text="Y").pack(side=LEFT)
         self.yEntry = Entry(action_bar, width=5)
         self.yEntry.pack(side=LEFT)
+        Button(action_bar, text="Pause", command=self.pause_callback).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
         self.init_dots()
         self.draw_dots()
@@ -114,7 +117,7 @@ class App:
 
 
 class App2(App):
-    def draw_dot(self, c):
-        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="red", width=0))
+    def draw_dot(self, c, color):
+        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill=color, width=0))
 
-App2(3)
+App(3)
