@@ -3,6 +3,7 @@
 from tkinter import *
 from dotworld import World
 
+
 class App:
     running = True
     speed = 10
@@ -15,9 +16,7 @@ class App:
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
-        return self.create_oval(x-r, y-r, x+r, y+r, **kwargs)
-
-    Canvas.create_circle = _create_circle
+        return self.canvas.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
     def init_dots(self):
         self.world.add(100, 120, 5, 1)
@@ -54,18 +53,21 @@ class App:
         self.world.add_dunkboy(400, 410, 3, 1)
 
     def draw_dots(self):
+        """"draw dots initialized previously"""
         for c in self.world.occupants:
-            c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0))
+            c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0))
 
-    def draw_dot(self, c, str):
-        fillcolor = str
-        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill=fillcolor, width=0))
+    def draw_dot(self, c, fillcolor):
+        """"draw dot, which had not been initialized"""
+        c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=fillcolor, width=0))
 
     def remove_dot(self, dot):
+        """""destroys dot at every layer of abstraction"""
         self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
 
     def canvas_on_click(self, event):
+        """adds a new dot at the specified location"""
         self.canvas.focus_set()
         self.draw_dot(self.world.add_squawker(event.x, event.y, 3, 4), "blue")
 
@@ -118,6 +120,6 @@ class App:
 
 class App2(App):
     def draw_dot(self, c, color):
-        c.set_reference(self.canvas.create_circle(c.getx(), c.gety(), c.get_radius(), fill=color, width=0))
+        c.set_reference(self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=color, width=0))
 
-App(3)
+App(25)

@@ -35,11 +35,11 @@ class World:
         for c in self.occupants:
             if c != dot and c.__class__ != ReproducingOccupant.__class__ or \
                             (c.__class__ == ReproducingOccupant.__class__) and c.species != dot.species:
-                distance = int((((dot.get_centerx() - c.get_centerx())**2) + ((dot.get_centery() - c.get_centery())**2)**0.5))+1
+                distance = int((((dot.get_centerx() - c.get_centerx())**2)
+                                + ((dot.get_centery() - c.get_centery())**2)**0.5))-2
                 if distance <= (dot.get_radius() + c.get_radius()):
                     c.trigger()
                     dot.trigger()
-
 
 
 class Dot:
@@ -51,11 +51,13 @@ class Dot:
     __radius = 0
     __reference = None
     __trigger = False
+    __color = "#FFFFFF"
 
     def __init__(self, occupant, x, y):
         self.__occupant = occupant
         self.setx(x)
         self.sety(y)
+        self.__color = occupant.get_color()
         self.__radius = occupant.get_size()
 
     def setx(self, x):
@@ -90,7 +92,7 @@ class Dot:
     def get_center(self):
         x = self.__x + self.__radius
         y = self.__y + self.__radius
-        return (x, y)
+        return x, y
 
     def get_centerx(self):
         return self.get_center()[0]
@@ -107,9 +109,9 @@ class Dot:
         return self.__reference
 
     def move(self):
-        self.__occupant.move()
-        self.setx(self.__x + self.__occupant.get_x_offset())
-        self.sety(self.__y + self.__occupant.get_y_offset())
+        self.__occupant.update()
+        self.setx(self.__x + self.__occupant.get_x_velocity())
+        self.sety(self.__y + self.__occupant.get_y_velocity())
 
     def update(self):
         self.move()
