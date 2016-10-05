@@ -51,8 +51,9 @@ class Dot:
     __radius = 0
     __reference = None
     __kill_trigger = False
-    __color_trigger = False
+    __highlight_trigger = False
     __color = "#FFFFFF"
+    HIGHLIGHT_OFFSET = "#0000AA"
 
     def __init__(self, occupant, x, y):
         self.__occupant = occupant
@@ -92,7 +93,6 @@ class Dot:
 
     def set_color(self, color):
         self.__occupant.set_color(color)
-        self.color_trigger()
 
     def get_color(self):
         return self.__color
@@ -130,8 +130,8 @@ class Dot:
     def kill_triggered(self):
         return self.__kill_trigger
 
-    def color_trigger(self):
-        self.__color_trigger = not self.__color_trigger
+    def highlight_trigger(self):
+        self.__highlight_trigger = not self.__highlight_trigger
 
-    def color_triggered(self):
-        return self.__color_trigger
+    def highlight_triggered(self):
+        return self.__highlight_trigger
