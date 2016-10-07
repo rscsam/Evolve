@@ -78,8 +78,9 @@ class App:
 
     def canvas_on_click(self, event):
         """adds a new dot at the specified location"""
-        self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, "#999999", 3, 4))
+        if self.running:
+            self.canvas.focus_set()
+            self.draw_dot(self.world.add_squawker(event.x, event.y, "#999999", 3, 4))
 
     def highlight_dot(self, event, ref):
         if not self.dot_parrallels[ref].highlight_triggered():
