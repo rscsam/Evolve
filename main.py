@@ -119,6 +119,13 @@ class App:
         """pauses the simulation"""
         self.running = not self.running
 
+    def speedup_callback(self):
+        if self.speed >= 1:
+            self.speed -= 1
+
+    def slowdown_callback(self):
+        self.speed += 1
+
     def __init__(self, speed):
         self.root = Tk()
         self.root.title = "Evolvarium"
@@ -136,6 +143,8 @@ class App:
         self.yEntry = Entry(action_bar, width=5)
         self.yEntry.pack(side=LEFT)
         Button(action_bar, text="Pause", command=self.pause_callback).pack(fill=NONE, side=LEFT)
+        Button(action_bar, text="Speed Up", command=self.speedup_callback).pack(fill=NONE, side=LEFT)
+        Button(action_bar, text="Slow Down", command=self.slowdown_callback).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
         self.dot_parrallels.clear()
         self.init_dots()
@@ -147,4 +156,4 @@ class App:
         self.root.mainloop()
 
 
-App(25)
+App(2)

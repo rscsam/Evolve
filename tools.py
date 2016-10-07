@@ -25,5 +25,3 @@ def add_colors(a, offset):
     nr = min(argb[1:3], 255)
     ng = min(argb[3:5], 255)
     nb = min(argb[5:], 255)
-
-print(mix_colors("#000000", "#111111"))

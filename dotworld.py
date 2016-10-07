@@ -26,9 +26,9 @@ class World:
 
     def handle_wall_collision(self):
         for dot in self.occupants:
-            if (dot.getx() + (2 * dot.get_radius())) > 1000 or dot.getx() < 0:
+            if (dot.getx2()) >= 1000 or dot.getx() <= 0:
                 dot.get_occupant().hit_side()
-            if (dot.gety() + (2 * dot.get_radius())) > 600 or dot.gety() < 0:
+            if (dot.gety2()) >= 600 or dot.gety() <= 0:
                 dot.get_occupant().hit_lid()
 
     def detect_collision(self, dot):
