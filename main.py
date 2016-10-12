@@ -61,14 +61,14 @@ class App:
             ref = self._create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0)
             c.set_reference(ref)
             self.dot_parrallels[ref] = c
-            self.canvas.tag_bind(ref, "<ButtonPress-1>", lambda event, arg=ref: self.highlight_dot(event, arg))
+            self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.highlight_dot(event, arg))
 
     def draw_dot(self, c):
         """"draw dot, which had not been initialized"""
         ref = self._create_circle(c.getx(), c.gety(), c.get_radius(), fill="#424242", width=0)
         c.set_reference(ref)
         self.dot_parrallels[ref] = c
-        self.canvas.tag_bind(ref, "<ButtonPress-1>", lambda event, arg=ref: self.highlight_dot(event, arg))
+        self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.highlight_dot(event, arg))
 
     def remove_dot(self, dot):
         """""destroys dot at every layer of abstraction"""
@@ -78,9 +78,8 @@ class App:
 
     def canvas_on_click(self, event):
         """adds a new dot at the specified location"""
-        if self.running:
-            self.canvas.focus_set()
-            self.draw_dot(self.world.add_squawker(event.x, event.y, "#999999", 3, 4))
+        self.canvas.focus_set()
+        self.draw_dot(self.world.add_squawker(event.x, event.y, "#999999", 3, 4))
 
     def highlight_dot(self, event, ref):
         if not self.dot_parrallels[ref].highlight_triggered():
