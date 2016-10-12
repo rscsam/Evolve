@@ -7,7 +7,9 @@ class World:
     occupants = []
 
     def add_occupant(self, occupant, x, y):
-        self.occupants.append(Dot(occupant, x, y))
+        c = Dot(occupant, x, y)
+        self.occupants.append(c)
+        return c
 
     def add(self, x, y, color, size, speed):
         c = Dot(Occupant(color, size, speed), x, y)
@@ -24,6 +26,11 @@ class World:
         self.occupants.append(c)
         return c
 
+    def add_reproducing(self, x, y, color, size, speed):
+        c = Dot(ReproducingOccupant(color, size, speed), x, y)
+        self.occupants.append(c)
+        return c
+
     def handle_wall_collision(self):
         for dot in self.occupants:
             if (dot.getx2()) >= 1000 or dot.getx() <= 0:
@@ -33,13 +40,12 @@ class World:
 
     def detect_collision(self, dot):
         for c in self.occupants:
-            if c != dot and c.__class__ != ReproducingOccupant.__class__ or \
-                            (c.__class__ == ReproducingOccupant.__class__) and c.species != dot.species:
+            if c != dot and not isinstance(c.get_occupant(), ReproducingOccupant):
                 distance = int((((dot.get_centerx() - c.get_centerx())**2)
                                 + ((dot.get_centery() - c.get_centery())**2)**0.5))-2
                 if distance <= (dot.get_radius() + c.get_radius()):
-                    c.kill_trigger()
-                    dot.kill_trigger()
+                    c.collide_trigger()
+                    dot.collide_trigger()
 
 
 class Dot:
@@ -50,9 +56,10 @@ class Dot:
     __y2 = 0
     __radius = 0
     __reference = None
-    __kill_trigger = False
+    __collide_trigger = False
     __highlight_trigger = False
     __color_trigger = False
+    __reproducing_trigger = False
     HIGHLIGHT_OFFSET = "#22AAFF"
 
     def __init__(self, occupant, x, y):
@@ -111,16 +118,22 @@ class Dot:
         return self.get_center()[1]
 
     def set_x_velocity(self, v):
-        return self.__occupant.set_x_velocity(v)
+        self.__occupant.set_x_velocity(v)
 
     def get_x_velocity(self):
         return self.__occupant.get_x_velocity()
 
     def set_y_velocity(self, v):
-        return self.__occupant.set_y_velocity(v)
+        self.__occupant.set_y_velocity(v)
 
     def get_y_velocity(self):
         return self.__occupant.get_y_velocity()
+
+    def set_speed(self, v):
+        self.__occupant.set_speed(v)
+
+    def get_speed(self):
+        return self.__occupant.get_speed()
 
     def set_reference(self, reference):
         self.__reference = reference
@@ -131,18 +144,26 @@ class Dot:
         return self.__reference
 
     def move(self):
-        self.__occupant.update()
         self.setx(self.__x + self.__occupant.get_x_velocity())
         self.sety(self.__y + self.__occupant.get_y_velocity())
 
+    def reproduce(self):
+        if isinstance(self.__occupant, ReproducingOccupant):
+            self.__reproducing_trigger = False
+            return self.__occupant.reproduce()
+
     def update(self):
+        self.__occupant.update()
         self.move()
+        if isinstance(self.__occupant, ReproducingOccupant):
+            if self.__occupant.reproducing():
+                self.reproducing_trigger()
 
-    def kill_trigger(self):
-        self.__kill_trigger = True
+    def collide_trigger(self):
+        self.__collide_trigger = True
 
-    def kill_triggered(self):
-        return self.__kill_trigger
+    def collide_triggered(self):
+        return self.__collide_trigger
 
     def highlight_trigger(self):
         self.__highlight_trigger = not self.__highlight_trigger
@@ -160,3 +181,9 @@ class Dot:
         tf = self.__color_trigger
         self.__color_trigger = False
         return tf
+
+    def reproducing_trigger(self):
+        self.__reproducing_trigger = not self.__reproducing_trigger
+
+    def reproducing_triggered(self):
+        return self.__reproducing_trigger

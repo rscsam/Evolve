@@ -1,7 +1,7 @@
 """The module that contains all of the backend creature data"""
 
-import random
 import math
+import random
 
 
 class Occupant:
@@ -103,24 +103,18 @@ class Dunkboy(Occupant):
 
 
 class ReproducingOccupant(Occupant):
-    __genecode = "O5200FF00"
-    __mutationfactor = 10  # 0 for no mutation, 1000 for complete randomisation
-    __species = "O"
+    __reproducing = False
 
-    def __init__(self, genecode):
-        self.__genecode = genecode
-        self.set_starting_velocity()
-        color = "#" + genecode[3] + genecode[4] + genecode[5] + genecode[6] + genecode[7] + genecode[8]
-        super(ReproducingOccupant, self).__init__(color, genecode[1], genecode[2])
+    def reproduce(self):
+        self.__reproducing = False
+        return ReproducingOccupant(self.get_color(), self.get_size() + 1, self.get_speed())
 
-    def mutate(self):
-        species = self.__genecode[0]
-        size = self.__genecode[1]
-        speed = self.__genecode[2]
-        if random.randint(0, 1000) < self.__mutationfactor:
-            species -= 1
-        if random.randint(0, 1000) < self.__mutationfactor:
-            size += 1
-        if random.randint(0, 1000) < self.__mutationfactor:
-            speed += 1
-        return "" + species + size + speed
+    def reproducing(self):
+        return self.__reproducing
+
+    def update(self):
+        """makes the creature change direction occasionally"""
+        if random.random() < .03:
+            self.set_starting_velocity()
+        if random.random() < .0001:
+            self.__reproducing = True

@@ -18,10 +18,3 @@ def mix_colors(a, b):
     ngx = format(ng, '02x')
     nbx = format(nb, '02x')
     return "#" + str(nrx) + str(ngx) + str(nbx)
-
-def add_colors(a, offset):
-    argb = int('0x' + a[1:], 16)
-    orgb = int('0x' + offset[1:], 16)
-    nr = min(argb[1:3], 255)
-    ng = min(argb[3:5], 255)
-    nb = min(argb[5:], 255)
