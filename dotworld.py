@@ -53,7 +53,6 @@ class Dot:
     __kill_trigger = False
     __highlight_trigger = False
     __color_trigger = False
-    __color = "#FFFFFF"
     HIGHLIGHT_OFFSET = "#22AAFF"
 
     def __init__(self, occupant, x, y):
@@ -95,11 +94,10 @@ class Dot:
 
     def set_color(self, color):
         self.__occupant.set_color(color)
-        self.__color = color
         self.color_trigger()
 
     def get_color(self):
-        return self.__color
+        return self.__occupant.get_color()
 
     def get_center(self):
         x = self.__x + self.__radius
