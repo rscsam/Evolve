@@ -52,6 +52,7 @@ class Dot:
     __reference = None
     __kill_trigger = False
     __highlight_trigger = False
+    __color_trigger = False
     __color = "#FFFFFF"
     HIGHLIGHT_OFFSET = "#22AAFF"
 
@@ -84,6 +85,7 @@ class Dot:
 
     def set_radius(self, radius):
         self.__radius = radius
+        self.__occupant.set_size(radius)
 
     def get_radius(self):
         return self.__radius
@@ -93,6 +95,8 @@ class Dot:
 
     def set_color(self, color):
         self.__occupant.set_color(color)
+        self.__color = color
+        self.color_trigger()
 
     def get_color(self):
         return self.__color
@@ -107,6 +111,18 @@ class Dot:
 
     def get_centery(self):
         return self.get_center()[1]
+
+    def set_x_velocity(self, v):
+        return self.__occupant.set_x_velocity(v)
+
+    def get_x_velocity(self):
+        return self.__occupant.get_x_velocity()
+
+    def set_y_velocity(self, v):
+        return self.__occupant.set_y_velocity(v)
+
+    def get_y_velocity(self):
+        return self.__occupant.get_y_velocity()
 
     def set_reference(self, reference):
         self.__reference = reference
@@ -135,3 +151,14 @@ class Dot:
 
     def highlight_triggered(self):
         return self.__highlight_trigger
+
+    def color_trigger(self):
+        self.__color_trigger = not self.__highlight_trigger
+
+    def color_triggered(self):
+        return self.__color_trigger
+
+    def ucolor_triggered(self):
+        tf = self.__color_trigger
+        self.__color_trigger = False
+        return tf
