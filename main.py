@@ -90,7 +90,8 @@ class App:
 
     def _init_dots(self):
         self.world.add_reproducing(100, 350, "#FF0000", 1, 1)
-        self.world.add_reproducing(500, 350, "#00FF00", 1, 1)
+        self.world.add_reproducing(500, 350, "#00FF00", 1, 2)
+        self.world.add_reproducing(300, 350, "#0000FF", 1, 3)
 
     def _pause_callback(self):
         """pauses the simulation"""
