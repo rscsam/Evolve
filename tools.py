@@ -1,3 +1,5 @@
+import random
+
 def mix_colors(a, b):
     arstr = a[1:3]
     agstr = a[3:5]
@@ -14,6 +16,15 @@ def mix_colors(a, b):
     nr = int((ar + br) / 2)
     ng = int((ag + bg) / 2)
     nb = int((ab + bb) / 2)
+    nrx = format(nr, '02x')
+    ngx = format(ng, '02x')
+    nbx = format(nb, '02x')
+    return "#" + str(nrx) + str(ngx) + str(nbx)
+
+def random_color():
+    nr = int(random.random()*16)
+    ng = int(random.random()*16)
+    nb = int(random.random()*16)
     nrx = format(nr, '02x')
     ngx = format(ng, '02x')
     nbx = format(nb, '02x')

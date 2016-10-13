@@ -3,6 +3,8 @@
 import math
 import random
 
+import tools
+
 
 class Occupant:
     __size = 0
@@ -107,6 +109,8 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
+        if random.random() < 0.01:
+            return ReproducingOccupant(tools.random_color(), self.get_size() + 1, self.get_speed())
         return ReproducingOccupant(self.get_color(), self.get_size() + 1, self.get_speed())
 
     def reproducing(self):
