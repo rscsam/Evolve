@@ -9,6 +9,9 @@ from dotworld import World
 class App:
     running = True
     speed = 10
+
+    CANVAS_HEIGHT = 600
+    CANVAS_WIDTH = 1200
     world = World()
 
     dot_parrallels = {None: None}
@@ -22,14 +25,27 @@ class App:
     current_selection = None
 
     def __init__(self, speed):
+        self.__init_gui()
+        self.set_current_selection(None)
+        self.dot_parrallels.clear()
+        self._init_dots()
+        self._draw_dots()
+        self.canvas.bind("<Button-1>", self._canvas_on_click)
+        self.canvas.pack()
+        self.speed = speed
+        self.root.after(speed, self.update)
+        self.root.mainloop()
+
+    def __init_gui(self):
         self.root = Tk()
         self.root.title = "Evolvarium"
         self.root.resizable(False, False)
 
-        self.canvas = Canvas(self.root, width=1000, height=600, borderwidth=0, highlightthickness=0, bg="black")
+        self.canvas = Canvas(self.root, width=self.CANVAS_WIDTH,
+                             height=self.CANVAS_HEIGHT, borderwidth=0, highlightthickness=0, bg="black")
         self.canvas.pack()
 
-        action_bar = Frame(self.root, width=1000, height=58, borderwidth=0)
+        action_bar = Frame(self.root, width=self.CANVAS_WIDTH, height=58, borderwidth=0)
         Button(action_bar, text="Add occupant", command=self._add_callback).pack(fill=NONE, side=LEFT)
         Label(action_bar, text="X").pack(side=LEFT)
         self.xEntry = Entry(action_bar, width=5)
@@ -50,17 +66,7 @@ class App:
         self.csColorEntry = Entry(action_bar, width=7)
         self.csColorEntry.pack(side=LEFT)
         Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
-
         action_bar.pack(side=LEFT)
-        self.set_current_selection(None)
-        self.dot_parrallels.clear()
-        self._init_dots()
-        self._draw_dots()
-        self.canvas.bind("<Button-1>", self._canvas_on_click)
-        self.canvas.pack()
-        self.speed = speed
-        self.root.after(speed, self.update)
-        self.root.mainloop()
 
     def _add_callback(self):
         self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), "#545454", 3, 4))
@@ -89,13 +95,7 @@ class App:
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        #self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
-        self.world.add_convenient(100, 350, '#FF0000', 20, 1)
-        self.world.add_convenient(500, 350, '#00FF00', 20, 1)
-        #dot = self.world.add(100, 350, '#FFFF00', 20, 1)
-        #print(dot.getx(), ",", dot.getx2())
-        #print(dot.gety(), ",", dot.gety2())
-        #print(dot.get_centerx(), ",", dot.get_centery())
+        self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
 
     def _pause_callback(self):
         """pauses the simulation"""
@@ -124,8 +124,6 @@ class App:
         self.world.occupants.remove(dot)
 
     def select_dot(self, event, ref):
-        print(self.dot_parrallels[ref].get_centerx())
-        print(self.dot_parrallels[ref].get_centery())
         if not self.dot_parrallels[ref].highlight_triggered():
             dot = self.dot_parrallels[ref]
             if self.current_selection is not None:
@@ -159,21 +157,24 @@ class App:
         if self.running:
             for c in self.world.occupants:
                 c.update()
-                if c.ucolor_triggered():
-                    self.update_color(c)
-                if c.reproducing_triggered():
-                    self.draw_dot(self.world.add_occupant(c.reproduce(), c.getx(), c.gety()))
-                self.world.detect_collision(c)
+                self.handle_triggers(c)
+                self.world.detect_collisions(c)
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
             self.world.handle_wall_collision()
             for c in self.world.occupants:
-                    if c.collide_triggered():
-                        self.remove_dot(c)
+                if c.collide_triggered():
+                    self.remove_dot(c)
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
     def update_color(self, dot):
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
+
+    def handle_triggers(self, c):
+        if c.ucolor_triggered():
+            self.update_color(c)
+        if c.reproducing_triggered():
+            self.draw_dot(self.world.add_occupant(c.reproduce(), c.getx(), c.gety()))
 
 App(5)

@@ -2,10 +2,10 @@
 
 from creature import *
 
-
 class World:
     occupants = []
-
+    wheight = 600
+    wwidth = 1200
     def add_occupant(self, occupant, x, y):
         c = Dot(occupant, x, y)
         self.occupants.append(c)
@@ -41,32 +41,35 @@ class World:
             if dot.getx() < 0:
                 dot.setx(0)
                 dot.get_occupant().hit_side()
-            elif dot.getx2() > 1000:
-                dot.setx2(1000)
+            elif dot.getx2() > self.wwidth:
+                dot.setx2(self.wwidth)
                 dot.get_occupant().hit_side()
             if dot.gety() < 0:
                 dot.sety(0)
                 dot.get_occupant().hit_lid()
-            elif dot.gety2() > 600:
-                dot.sety2(600)
+            elif dot.gety2() > self.wheight:
+                dot.sety2(self.wheight)
                 dot.get_occupant().hit_lid()
 
-    def detect_collision(self, dot):
+    def detect_collisions(self, dot):
         for c in self.occupants:
             if c != dot:
-                distance = int(((((dot.get_centerx() - c.get_centerx())**2)
-                                + ((dot.get_centery() - c.get_centery())**2))**0.5))-1
-                if distance <= (dot.get_radius() + c.get_radius()):
-                    if not isinstance(c.get_occupant(), ReproducingOccupant):
-                        c.collide_trigger()
-                        dot.collide_trigger()
-                    elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
-                            and isinstance(dot.get_occupant(), ReproducingOccupant)\
-                            and c.get_occupant() != dot.get_occupant().get_parent() \
-                            and dot.get_occupant() != c.get_occupant().get_parent() \
-                            and c.get_color() != dot.get_color():
-                        c.collide_trigger()
-                        dot.collide_trigger()
+                self.handle_collisions(dot, c)
+
+    def handle_collisions(self, dot, c):
+        distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
+                         + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
+        if distance <= (dot.get_radius() + c.get_radius()):
+            if not isinstance(c.get_occupant(), ReproducingOccupant):
+                c.collide_trigger()
+                dot.collide_trigger()
+            elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
+                    and isinstance(dot.get_occupant(), ReproducingOccupant) \
+                    and c.get_occupant() != dot.get_occupant().get_parent() \
+                    and dot.get_occupant() != c.get_occupant().get_parent() \
+                    and c.get_color() != dot.get_color():
+                c.collide_trigger()
+                dot.collide_trigger()
 
 
 class Dot:

@@ -135,7 +135,7 @@ class ReproducingOccupant(Occupant):
         """makes the creature change direction occasionally"""
         if random.random() < .03:
             self.set_starting_velocity()
-        if random.random() < .0008:
+        if random.random() < .001:
             self.__reproducing = True
         if self.__energy < 0:
             self.__reproducing = False
