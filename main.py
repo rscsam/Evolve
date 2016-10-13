@@ -89,9 +89,11 @@ class App:
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_reproducing(100, 350, "#FF0000", 1, 1)
-        self.world.add_reproducing(500, 350, "#00FF00", 1, 2)
-        self.world.add_reproducing(300, 350, "#0000FF", 1, 3)
+        self.world.add_reproducing(100, 350, "#FF0000", 5, 1)
+        self.world.add_reproducing(500, 350, "#00FF00", 5, 2)
+        self.world.add_reproducing(300, 350, "#0000FF", 5, 3)
+        self.world.add_reproducing(300, 350, "#CFB53B", 5, 3)
+        self.world.add_reproducing(300, 350, "#EEB211", 5, 3)
 
     def _pause_callback(self):
         """pauses the simulation"""
@@ -101,7 +103,7 @@ class App:
         self.speed += 1
 
     def _speedup_callback(self):
-        if self.speed >= 1:
+        if self.speed > 1:
             self.speed -= 1
 
     def draw_dot(self, c):
@@ -170,4 +172,4 @@ class App:
     def update_color(self, dot):
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
-App(5)
+App(1)
