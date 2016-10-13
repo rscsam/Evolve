@@ -69,6 +69,12 @@ class Occupant:
         """changes the position of the occupant"""
 
 
+class ConvenientOccupant(Occupant):
+    def set_starting_velocity(self):
+        self.set_x_velocity(self.get_speed())
+        self.set_y_velocity(0)
+
+
 class Squawker(Occupant):
     def set_starting_velocity(self):
         """sets the starting velocity of the creature"""
@@ -118,9 +124,9 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .42:
-            return ReproducingOccupant(tools.random_color(), self.get_size() + 1, self.get_speed(), self)
-        return ReproducingOccupant(self.get_color(), self.get_size() + 1, self.get_speed(), self)
+        if random.random() < .35:
+            return ReproducingOccupant(tools.random_color(), self.get_size(), self.get_speed(), self)
+        return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
     def reproducing(self):
         return self.__reproducing

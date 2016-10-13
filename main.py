@@ -89,7 +89,13 @@ class App:
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
+        #self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
+        self.world.add_convenient(100, 350, '#FF0000', 20, 1)
+        self.world.add_convenient(500, 350, '#00FF00', 20, 1)
+        #dot = self.world.add(100, 350, '#FFFF00', 20, 1)
+        #print(dot.getx(), ",", dot.getx2())
+        #print(dot.gety(), ",", dot.gety2())
+        #print(dot.get_centerx(), ",", dot.get_centery())
 
     def _pause_callback(self):
         """pauses the simulation"""
@@ -118,6 +124,8 @@ class App:
         self.world.occupants.remove(dot)
 
     def select_dot(self, event, ref):
+        print(self.dot_parrallels[ref].get_centerx())
+        print(self.dot_parrallels[ref].get_centery())
         if not self.dot_parrallels[ref].highlight_triggered():
             dot = self.dot_parrallels[ref]
             if self.current_selection is not None:
@@ -168,4 +176,4 @@ class App:
     def update_color(self, dot):
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
-App(1)
+App(5)
