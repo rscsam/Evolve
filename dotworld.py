@@ -26,8 +26,8 @@ class World:
         self.occupants.append(c)
         return c
 
-    def add_reproducing(self, x, y, color, size, speed):
-        c = Dot(ReproducingOccupant(color, size, speed), x, y)
+    def add_reproducing(self, x, y, color, size, speed, parent):
+        c = Dot(ReproducingOccupant(color, size, speed, parent), x, y)
         self.occupants.append(c)
         return c
 
@@ -48,15 +48,20 @@ class World:
 
     def detect_collision(self, dot):
         for c in self.occupants:
-            if c != dot and not isinstance(c.get_occupant(), ReproducingOccupant):
+            if c != dot:
                 distance = int((((dot.get_centerx() - c.get_centerx())**2)
                                 + ((dot.get_centery() - c.get_centery())**2)**0.5))-1
-                if distance <= (dot.get_radius() + c.get_radius()):
-                    c.collide_trigger()
-                    dot.collide_trigger()
-            elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
-                    and isinstance(dot.get_occupant(), ReproducingOccupant):
-                return
+                if distance <= 2*(dot.get_radius() + c.get_radius()):
+                    if not isinstance(c.get_occupant(), ReproducingOccupant):
+                        c.collide_trigger()
+                        dot.collide_trigger()
+                    elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
+                            and isinstance(dot.get_occupant(), ReproducingOccupant)\
+                            and c.get_occupant() != dot.get_occupant().get_parent() \
+                            and dot.get_occupant() != c.get_occupant().get_parent() \
+                            and c.get_color() != dot.get_color():
+                        c.collide_trigger()
+                        dot.collide_trigger()
 
 
 class Dot:
