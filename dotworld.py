@@ -58,8 +58,6 @@ class World:
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
                 if not isinstance(c.get_occupant(), ReproducingOccupant):
-                    print(c.getx())
-                    print(dot.getx())
                     c.collide_trigger()
                     dot.collide_trigger()
                 elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
