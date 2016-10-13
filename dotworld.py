@@ -4,37 +4,38 @@ from creature import *
 
 class World:
     occupants = []
+    staticoccupants = []
     wheight = 600
     wwidth = 1200
-    def add_occupant(self, occupant, x, y):
+    __largest_radius = 0
+
+    def add(self, occupant, x, y):
         c = Dot(occupant, x, y)
+        self.test_largest_radius(c.get_radius())
         self.occupants.append(c)
         return c
 
-    def add(self, x, y, color, size, speed):
-        c = Dot(Occupant(color, size, speed), x, y)
-        self.occupants.append(c)
-        return c
+    def add_occupant(self, x, y, color, size, speed):
+        return self.add(Occupant(color, size, speed), x, y)
 
     def add_convenient(self, x, y, color, size, speed):
-        c = Dot(ConvenientOccupant(color, size, speed), x, y)
-        self.occupants.append(c)
-        return c
+        return self.add(ConvenientOccupant(color, size, speed), x, y)
 
     def add_squawker(self, x, y, color, size, speed):
-        c = Dot(Squawker(color, size, speed), x, y)
-        self.occupants.append(c)
-        return c
+        return self.add(Squawker(color, size, speed), x, y)
 
     def add_dunkboy(self, x, y, color, size, speed):
-        c = Dot(Dunkboy(color, size, speed), x, y)
-        self.occupants.append(c)
-        return c
+        return self.add(Dunkboy(color, size, speed), x, y)
 
     def add_reproducing(self, x, y, color, size, speed, parent):
-        c = Dot(ReproducingOccupant(color, size, speed, parent), x, y)
-        self.occupants.append(c)
-        return c
+        return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
+
+    def test_largest_radius(self, r):
+        if r > self.__largest_radius:
+            self.set_largest_radius(r)
+
+    def set_largest_radius(self, r):
+        self.__largest_radius = r
 
     def handle_wall_collision(self):
         for dot in self.occupants:
@@ -51,25 +52,23 @@ class World:
                 dot.sety2(self.wheight)
                 dot.get_occupant().hit_lid()
 
-    def detect_collisions(self, dot):
-        for c in self.occupants:
-            if c != dot:
-                self.handle_collisions(dot, c)
-
-    def handle_collisions(self, dot, c):
-        distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
-                         + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
-        if distance <= (dot.get_radius() + c.get_radius()):
-            if not isinstance(c.get_occupant(), ReproducingOccupant):
-                c.collide_trigger()
-                dot.collide_trigger()
-            elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
-                    and isinstance(dot.get_occupant(), ReproducingOccupant) \
-                    and c.get_occupant() != dot.get_occupant().get_parent() \
-                    and dot.get_occupant() != c.get_occupant().get_parent() \
-                    and c.get_color() != dot.get_color():
-                c.collide_trigger()
-                dot.collide_trigger()
+    def handle_collisions(self, dot, dots):
+        for c in dots:
+            distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
+                             + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
+            if distance <= (dot.get_radius() + c.get_radius()):
+                if not isinstance(c.get_occupant(), ReproducingOccupant):
+                    print(c.getx())
+                    print(dot.getx())
+                    c.collide_trigger()
+                    dot.collide_trigger()
+                elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
+                        and isinstance(dot.get_occupant(), ReproducingOccupant) \
+                        and c.get_occupant() != dot.get_occupant().get_parent() \
+                        and dot.get_occupant() != c.get_occupant().get_parent() \
+                        and c.get_color() != dot.get_color():
+                    c.collide_trigger()
+                    dot.collide_trigger()
 
 
 class Dot:

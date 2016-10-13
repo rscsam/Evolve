@@ -69,11 +69,12 @@ class App:
         action_bar.pack(side=LEFT)
 
     def _add_callback(self):
-        self.draw_dot(self.world.add(int(self.xEntry.get()), int(self.yEntry.get()), "#545454", 3, 4))
+        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#545454", 3, 4))
 
     def _apply_cs_changes(self):
         self.current_selection.set_speed(int(self.csSpeedEntry.get()))
         self.current_selection.set_radius(int(self.csSizeEntry.get()))
+        self.world.test_largest_radius(int(self.csSizeEntry.get()))
         self.current_selection.set_color(self.csColorEntry.get())
         self.canvas.update()
 
@@ -96,6 +97,7 @@ class App:
 
     def _init_dots(self):
         self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
+        self.world.add_reproducing(1100, 350, '#FFFF00', 5, 1, None)
 
     def _pause_callback(self):
         """pauses the simulation"""
@@ -158,7 +160,7 @@ class App:
             for c in self.world.occupants:
                 c.update()
                 self.handle_triggers(c)
-                self.world.detect_collisions(c)
+                self.update_collisions(c)
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
             self.world.handle_wall_collision()
@@ -175,6 +177,14 @@ class App:
         if c.ucolor_triggered():
             self.update_color(c)
         if c.reproducing_triggered():
-            self.draw_dot(self.world.add_occupant(c.reproduce(), c.getx(), c.gety()))
+            self.draw_dot(self.world.add(c.reproduce(), c.getx(), c.gety()))
 
-App(5)
+    def update_collisions(self, c):
+        overlaps = self.canvas.find_overlapping(c.getx(), c.gety(), c.getx2(), c.gety2())
+        doverlaps = []
+        for o in overlaps:
+            if o != c.get_reference():
+                doverlaps.append(self.dot_parrallels[o])
+        self.world.handle_collisions(c, doverlaps)
+
+App(1)
