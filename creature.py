@@ -109,7 +109,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < 0.01:
+        if random.random() < .05:
             return ReproducingOccupant(tools.random_color(), self.get_size() + 1, self.get_speed())
         return ReproducingOccupant(self.get_color(), self.get_size() + 1, self.get_speed())
 
@@ -120,5 +120,5 @@ class ReproducingOccupant(Occupant):
         """makes the creature change direction occasionally"""
         if random.random() < .03:
             self.set_starting_velocity()
-        if random.random() < .0003:
+        if random.random() < .003:
             self.__reproducing = True

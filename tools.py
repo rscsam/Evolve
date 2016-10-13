@@ -21,10 +21,11 @@ def mix_colors(a, b):
     nbx = format(nb, '02x')
     return "#" + str(nrx) + str(ngx) + str(nbx)
 
+
 def random_color():
-    nr = int(random.random()*16)
-    ng = int(random.random()*16)
-    nb = int(random.random()*16)
+    nr = int(random.random()*256)
+    ng = int(random.random()*256)
+    nb = int(random.random()*256)
     nrx = format(nr, '02x')
     ngx = format(ng, '02x')
     nbx = format(nb, '02x')
