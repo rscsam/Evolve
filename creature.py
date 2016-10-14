@@ -113,7 +113,7 @@ class Dunkboy(Occupant):
 class ReproducingOccupant(Occupant):
     __reproducing = False
     __parent = None
-    __energy = 500
+    __energy = 300
 
     def __init__(self, color, size, speed, parent):
         Occupant.__init__(self, color, size, speed)
@@ -124,7 +124,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .35:
+        if random.random() < .335:
             return ReproducingOccupant(tools.random_color(), self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
@@ -133,9 +133,9 @@ class ReproducingOccupant(Occupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if random.random() < .03:
+        if random.random() < .23:
             self.set_starting_velocity()
-        if random.random() < .003:
+        if random.random() < .002:
             self.__reproducing = True
         if self.__energy < 0:
             self.__reproducing = False
