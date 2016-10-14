@@ -188,6 +188,7 @@ class Dot:
 
     def update(self):
         self.__occupant.update()
+        self.set_radius(self.__occupant.get_size())
         self.move()
         if isinstance(self.__occupant, ReproducingOccupant):
             if self.__occupant.reproducing():

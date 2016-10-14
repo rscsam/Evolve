@@ -99,8 +99,9 @@ class App:
             self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
-        self.world.add_reproducing(1100, 350, '#FFFF00', 5, 1, None)
+        #self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
+        #self.world.add_reproducing(1100, 350, '#FFFF00', 5, 1, None)
+        self.world.add_plant(500,500)
 
     def _pause_callback(self):
         """pauses the simulation"""
