@@ -1,6 +1,8 @@
 """The module that handles the front-end representations of the backend"""
 
 from creature import *
+from spawner import *
+
 
 class World:
     occupants = []
@@ -32,7 +34,12 @@ class World:
         return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
 
     def add_plant(self, x, y):
-        return self.add(Plant(), x, y)
+        return self.add(Plant(x, y), x, y)
+
+    def add_spawner(self):
+        s = Spawner(5000, 600, 1200, 0, 0)
+        self.spawners.append(s)
+        return s
 
     def test_largest_radius(self, r):
         if r > self.__largest_radius:
@@ -230,3 +237,4 @@ class Dot:
 
     def reproducing_triggered(self):
         return self.__reproducing_trigger
+

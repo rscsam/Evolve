@@ -163,18 +163,27 @@ class ReproducingOccupant(Occupant):
             self.subtract_energy(1)
 
 class Plant(Occupant):
+    __x = 0
+    __y = 0
     __growth_rate = random.normalvariate(2000,100)
     if __growth_rate < 0:
         __growth_rate = 100
     __counter = __growth_rate
 
-    def __init__(self):
+    def __init__(self, x, y):
         Occupant.__init__(self, "#228B22", 10, 0)
+        self.__x = x
+        self.__y = y
 
     def update(self):
         if self.__counter < 1 and self.get_size() < 100:
             self.set_size(self.get_size() + 1)
             self.__counter = self.__growth_rate
             self.__energy = self.get_size()
-            print("doot")
         self.__counter -= 1
+
+    def __get_x(self):
+        return self.__x
+
+    def __get_y(self):
+        return self.__y
