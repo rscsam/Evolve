@@ -12,6 +12,8 @@ class Occupant:
     __y_velocity = 0
     __x_velocity = 0
     __color = "#FFFFFF"
+    __alive = True
+    __energy = 500
 
     def __init__(self, color, size, speed):
         self.__color = color
@@ -54,6 +56,24 @@ class Occupant:
 
     def get_speed(self):
         return self.__speed
+
+    def get_energy(self):
+        return self.__energy
+
+    def set_energy(self, e):
+        self.__energy = e
+
+    def add_energy(self, e):
+        self.__energy += e
+
+    def subtract_energy(self, e):
+        self.__energy -= e
+
+    def die(self):
+        self.__alive = False
+
+    def alive(self):
+        return self.__alive
 
     def set_starting_velocity(self):
         """sets the starting velocity of the creature"""
@@ -113,7 +133,6 @@ class Dunkboy(Occupant):
 class ReproducingOccupant(Occupant):
     __reproducing = False
     __parent = None
-    __energy = 300
 
     def __init__(self, color, size, speed, parent):
         Occupant.__init__(self, color, size, speed)
@@ -124,7 +143,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .335:
+        if random.random() < .4:
             return ReproducingOccupant(tools.random_color(), self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
@@ -133,10 +152,11 @@ class ReproducingOccupant(Occupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if random.random() < .23:
+        if random.random() < .13:
             self.set_starting_velocity()
-        if random.random() < .002:
+        if random.random() < .008:
             self.__reproducing = True
-        if self.__energy < 0:
-            self.__reproducing = False
-            self.__energy -= 1
+        if self.get_energy() < 0:
+            self.die()
+        else:
+            self.subtract_energy(1)

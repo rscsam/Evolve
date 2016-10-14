@@ -78,6 +78,7 @@ class Dot:
     __radius = 0
     __reference = None
     __collide_trigger = False
+    __kill_trigger = False
     __highlight_trigger = False
     __color_trigger = False
     __reproducing_trigger = False
@@ -187,12 +188,20 @@ class Dot:
         if isinstance(self.__occupant, ReproducingOccupant):
             if self.__occupant.reproducing():
                 self.reproducing_trigger()
+        if not self.__occupant.alive():
+            self.kill_trigger()
 
     def collide_trigger(self):
         self.__collide_trigger = True
 
     def collide_triggered(self):
         return self.__collide_trigger
+
+    def kill_trigger(self):
+        self.__kill_trigger = True
+
+    def kill_triggered(self):
+        return self.__kill_trigger
 
     def highlight_trigger(self):
         self.__highlight_trigger = not self.__highlight_trigger

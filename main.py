@@ -65,6 +65,8 @@ class App:
         Label(action_bar, text="Color: ").pack(side=LEFT)
         self.csColorEntry = Entry(action_bar, width=7)
         self.csColorEntry.pack(side=LEFT)
+        Button(action_bar, text="Kill", command=self._kill_callback).pack(fill=NONE, side=LEFT)
+        action_bar.pack(side=LEFT)
         Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
 
@@ -94,6 +96,7 @@ class App:
             c.set_reference(ref)
             self.dot_parrallels[ref] = c
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
+            self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
         self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
@@ -102,6 +105,10 @@ class App:
     def _pause_callback(self):
         """pauses the simulation"""
         self.running = not self.running
+
+    def _kill_callback(self):
+        """pauses the simulation"""
+        self.current_selection.kill_trigger()
 
     def _slowdown_callback(self):
         self.speed += 1
@@ -116,6 +123,7 @@ class App:
         c.set_reference(ref)
         self.dot_parrallels[ref] = c
         self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
+        self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def remove_dot(self, dot):
         """""destroys dot at every layer of abstraction"""
@@ -159,14 +167,11 @@ class App:
         if self.running:
             for c in self.world.occupants:
                 c.update()
-                self.handle_triggers(c)
                 self.update_collisions(c)
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
+                self.handle_triggers(c)
             self.world.handle_wall_collision()
-            for c in self.world.occupants:
-                if c.collide_triggered():
-                    self.remove_dot(c)
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
@@ -174,10 +179,14 @@ class App:
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
     def handle_triggers(self, c):
+        if c.collide_triggered():
+            c.kill_trigger()
         if c.ucolor_triggered():
             self.update_color(c)
         if c.reproducing_triggered():
             self.draw_dot(self.world.add(c.reproduce(), c.getx(), c.gety()))
+        if c.kill_triggered():
+            self.remove_dot(c)
 
     def update_collisions(self, c):
         overlaps = self.canvas.find_overlapping(c.getx(), c.gety(), c.getx2(), c.gety2())
@@ -187,4 +196,4 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
 
-App(1)
+App(10)
