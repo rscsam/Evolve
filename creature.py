@@ -144,7 +144,8 @@ class ReproducingOccupant(Occupant):
     def reproduce(self):
         self.__reproducing = False
         if random.random() < .4:
-            return ReproducingOccupant(tools.random_color(), self.get_size(), self.get_speed(), self)
+            color = tools.mix_colors(self.get_color(), tools.random_color())
+            return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
     def reproducing(self):
@@ -160,3 +161,20 @@ class ReproducingOccupant(Occupant):
             self.die()
         else:
             self.subtract_energy(1)
+
+class Plant(Occupant):
+    __growth_rate = random.normalvariate(2000,100)
+    if __growth_rate < 0:
+        __growth_rate = 100
+    __counter = __growth_rate
+
+    def __init__(self):
+        Occupant.__init__(self, "#228B22", 10, 0)
+
+    def update(self):
+        if self.__counter < 1 and self.get_size() < 100:
+            self.set_size(self.get_size() + 1)
+            self.__counter = self.__growth_rate
+            self.__energy = self.get_size()
+            print("doot")
+        self.__counter -= 1

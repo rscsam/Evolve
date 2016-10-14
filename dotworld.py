@@ -5,6 +5,7 @@ from creature import *
 class World:
     occupants = []
     staticoccupants = []
+    spawners = []
     wheight = 600
     wwidth = 1200
     __largest_radius = 0
@@ -29,6 +30,9 @@ class World:
 
     def add_reproducing(self, x, y, color, size, speed, parent):
         return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
+
+    def add_plant(self, x, y):
+        return self.add(Plant(), x, y)
 
     def test_largest_radius(self, r):
         if r > self.__largest_radius:
