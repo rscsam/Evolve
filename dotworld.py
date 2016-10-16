@@ -111,7 +111,7 @@ class Dot:
 
     def __init__(self, occupant, x, y):
         self.__occupant = occupant
-        self.__radius = occupant.get_size()
+        self.set_radius(occupant.get_size())
         self.setx(x-self.__radius)
         self.sety(y-self.__radius)
         self.__color = occupant.get_color()

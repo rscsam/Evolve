@@ -190,6 +190,7 @@ class App:
                     self.update_visions(c)
                 c.update()
                 self.update_collisions(c)
+                self.world.handle_wall_collision()
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
                 self.handle_triggers(c)
@@ -199,7 +200,6 @@ class App:
                     d = self.world.add(s.spawn(), s.get_spawn_x(), s.get_spawn_y())
                     d.special = s.get_special_id()
                     self.draw_dot(d)
-            self.world.handle_wall_collision()
             self.canvas.update()
         self.root.after(self.speed, self.update)
 

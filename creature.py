@@ -1,7 +1,5 @@
 """The module that contains all of the backend creature data"""
 
-import math
-
 import tools
 from scripts import *
 
@@ -26,7 +24,6 @@ class Occupant:
         self.__size = size
         self.__speed = speed
         self.scripts.clear()
-        self.set_starting_velocity()
 
     def set_x_velocity(self, x):
         self.__x_velocity = x
@@ -60,6 +57,7 @@ class Occupant:
 
     def set_speed(self, speed):
         self.__speed = speed
+        self.__current_script.set_max_speed(speed)
 
     def get_speed(self):
         return self.__speed
@@ -98,21 +96,13 @@ class Occupant:
         self.__current_script = s
 
     def adjust_velocity(self):
-        self.set_x_velocity(self.get_current_script().get_adjustmentx())
-        self.set_y_velocity(self.get_current_script().get_adjustmenty())
-
-    def set_starting_velocity(self):
-        """sets the starting velocity of the creature"""
-        self.__x_velocity = random.random() * self.__speed
-        if random.random() > .5:
-            self.__x_velocity *= -1
-
-        self.__y_velocity = math.sqrt(math.pow(self.__speed, 2) - math.pow(self.__x_velocity, 2))
-        if random.random() > .5:
-            self.__y_velocity *= -1
+        self.set_x_velocity(self.get_current_script().get_x_velocity())
+        self.set_y_velocity(self.get_current_script().get_y_velocity())
 
     def update(self):
         """changes the position of the occupant"""
+        self.__current_script.update()
+        self.adjust_velocity()
 
 
 class ConvenientOccupant(Occupant):
@@ -120,13 +110,9 @@ class ConvenientOccupant(Occupant):
     def __init__(self, color, size, speed):
         Occupant.__init__(self, color, size, speed)
         self.scripts.clear()
-        self.scripts["Main"] = MoveStraightDown()
+        self.scripts["Main"] = MoveInCircle()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
-        self.adjust_velocity()
-
-    def update(self):
-        """changes the position of the occupant"""
         self.adjust_velocity()
 
 
@@ -139,40 +125,6 @@ class Squawker(Occupant):
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
         self.adjust_velocity()
-    #
-    # def set_starting_velocity(self):
-    #     """sets the starting velocity of the creature"""
-    #     self.set_x_velocity(random.random() * self.get_speed())
-    #     if random.random() > .5:
-    #         self.set_x_velocity(self.get_x_velocity() * -1)
-    #
-    #     self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
-    #     if random.random() > .5:
-    #         self.set_y_velocity(self.get_y_velocity() * -1)
-
-    def update(self):
-        """makes the creature change direction occasionally"""
-        self.get_current_script().update()
-        self.adjust_velocity()
-
-
-class Dunkboy(Occupant):
-    """A variation on the Squawker"""
-    def set_starting_velocity(self):
-        """sets the starting velocity of the creature"""
-        self.set_x_velocity(random.random() * self.get_speed())
-        if random.random() > .5:
-            self.set_x_velocity(self.get_x_velocity() * -1)
-
-        # Pythagorean Theorum
-        self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
-        if random.random() > .5:
-            self.set_y_velocity(self.get_y_velocity() * -1)
-
-    def update(self):
-        """"makes the creature change direction occasionally"""
-        if random.random() < .23:
-            self.set_starting_velocity()
 
 
 class ReproducingOccupant(Occupant):
@@ -183,6 +135,12 @@ class ReproducingOccupant(Occupant):
     def __init__(self, color, size, speed, parent):
         Occupant.__init__(self, color, size, speed)
         self.__parent = parent
+        self.scripts.clear()
+        self.scripts["Main"] = MoveLikeSquawker()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.get_current_script().set_random_seed(0.13)
+        self.adjust_velocity()
 
     def get_parent(self):
         return self.__parent
@@ -199,14 +157,13 @@ class ReproducingOccupant(Occupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if random.random() < .13:
-            self.set_starting_velocity()
         if random.random() < .008:
             self.__reproducing = True
         if self.get_energy() < 0:
             self.die()
         else:
             self.subtract_energy(1)
+        Occupant.update(self)
 
 
 class Plant(Occupant):

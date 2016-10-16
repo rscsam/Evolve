@@ -1,32 +1,44 @@
+import math
 import random
+
 
 class Script:
     '''reference = (0, 0)'''
-    __x_offset = 0
-    __y_offset = 0
+    x_offset = 0
+    y_offset = 0
     __nearby = []
     __max_speed = 0
-    __adjustmentx = 0
-    __adjustmenty = 0
+    __x_velocity = 0
+    __y_velocity = 0
     __occupant = None
+    __random_seed = 1
 
-    def get_adjustmentx(self):
-        return self.__adjustmentx
+    def get_x_velocity(self):
+        return self.__x_velocity
 
-    def set_adjustmentx(self, x):
-        self.__adjustmentx = x
+    def set_x_velocity(self, x):
+        self.__x_velocity = x
 
-    def get_adjustmenty(self):
-        return self.__adjustmenty
+    def get_y_velocity(self):
+        return self.__y_velocity
 
-    def set_adjustmenty(self, y):
-        self.__adjustmenty = y
+    def set_y_velocity(self, y):
+        self.__y_velocity = y
 
     def get_max_speed(self):
         return self.__max_speed
 
+    def set_max_speed(self, s):
+        self.__max_speed = s
+
     def get_nearby(self):
         return self.__nearby
+
+    def get_random_seed(self):
+        return self.__random_seed
+
+    def set_random_seed(self, r):
+        self.__random_seed = r
 
     def _get_x_offset(self):
         return self.__x_offset
@@ -50,47 +62,76 @@ class Script:
 class StayStill(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_adjustmentx(0)
-        self.set_adjustmenty(0)
+        self.set_x_velocity(0)
+        self.set_y_velocity(0)
 
 
 class MoveStraightRight(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_adjustmentx(self.get_max_speed())
-        self.set_adjustmenty(0)
+        self.set_x_velocity(self.get_max_speed())
+        self.set_y_velocity(0)
 
 
 class MoveStraightLeft(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_adjustmentx(self.get_max_speed() * -1)
-        self.set_adjustmenty(0)
+        self.set_x_velocity(self.get_max_speed() * -1)
+        self.set_y_velocity(0)
 
 
 class MoveStraightUp(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_adjustmentx(0)
-        self.set_adjustmenty(self.get_max_speed() * -1)
+        self.set_x_velocity(0)
+        self.set_y_velocity(self.get_max_speed() * -1)
 
 
 class MoveStraightDown(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_adjustmentx(0)
-        self.set_adjustmenty(self.get_max_speed())
+        self.set_x_velocity(0)
+        self.set_y_velocity(self.get_max_speed())
 
 
 class MoveLikeSquawker(Script):
+    def load(self, occupant):
+        Script.load(self, occupant)
+        self.set_random_seed(.03)
+        self._calculate()
+
     def update(self):
-        if random.random() < .03:
-            ms = self.get_max_speed()
-            ax = random.random() * ms
-            if random.random() > .5:
-                ax *= -1
-            ay = ((ms**2) - (ax**2)) ** 0.5
-            if random.random() > .5:
-                ay *= -1
-            self.set_adjustmentx(ax)
-            self.set_adjustmenty(ay)
+        if random.random() < self.get_random_seed():
+            self._calculate()
+
+    def _calculate(self):
+        ms = self.get_max_speed()
+        ax = random.random() * ms
+        if random.random() > .5:
+            ax *= -1
+        ay = ((ms ** 2) - (ax ** 2)) ** 0.5
+        if random.random() > .5:
+            ay *= -1
+        self.set_x_velocity(ax)
+        self.set_y_velocity(ay)
+
+
+class MoveInCircle(Script):
+    __radius = 10
+    __tick = 0
+
+    def update(self):
+        r = self.__radius
+        ms = self.get_max_speed()
+        ax = math.cos(self.__tick)
+        ay = math.sin(self.__tick)
+        m = (ax**2 + ay**2) ** 0.5
+        ax /= m
+        ay /= m
+        ax *= ms
+        ay *= ms
+        self.x_offset += ax
+        self.y_offset += ay
+        self.set_x_velocity(ax)
+        self.set_y_velocity(ay)
+        self.__tick += (ms / (2*math.pi*r))
