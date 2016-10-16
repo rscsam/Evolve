@@ -99,8 +99,7 @@ class App:
             self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_reproducing(100, 350, "#FF0000", 5, 1, None)
-        self.world.add_reproducing(1100, 350, '#FFFF00', 5, 1, None)
+        self.world.add_plant_spawner()
 
     def _pause_callback(self):
         """pauses the simulation"""
@@ -173,8 +172,8 @@ class App:
                 self.handle_triggers(c)
             for s in self.world.spawners:
                 s.update()
-                if s.__spawning:
-                    self.draw_dot(self.world.add(s.spawn(), s.__get_spawn_x(), s.__get_spawn_y()))
+                if s.spawning:
+                    self.draw_dot(self.world.add(s.spawn(), s.get_spawn_x(), s.get_spawn_y()))
             self.world.handle_wall_collision()
             self.canvas.update()
         self.root.after(self.speed, self.update)
@@ -200,4 +199,4 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
 
-App(10)
+App(1)

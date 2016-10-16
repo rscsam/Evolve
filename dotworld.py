@@ -1,6 +1,5 @@
 """The module that handles the front-end representations of the backend"""
 
-from creature import *
 from spawner import *
 
 
@@ -36,10 +35,12 @@ class World:
     def add_plant(self, x, y):
         return self.add(Plant(x, y), x, y)
 
-    def add_spawner(self):
-        s = Spawner(5000, 600, 1200, 0, 0)
-        self.spawners.append(s)
-        return s
+    def add_spawner(self, spawner):
+        self.spawners.append(spawner)
+        return spawner
+
+    def add_plant_spawner(self):
+        return self.add_spawner(PlantSpawner(50, 600, 1200, 0, 0))
 
     def test_largest_radius(self, r):
         if r > self.__largest_radius:

@@ -143,7 +143,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .4:
+        if random.random() < .29:
             color = tools.mix_colors(self.get_color(), tools.random_color())
             return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
@@ -161,6 +161,7 @@ class ReproducingOccupant(Occupant):
             self.die()
         else:
             self.subtract_energy(1)
+
 
 class Plant(Occupant):
     __x = 0
