@@ -94,6 +94,7 @@ class Dot:
     __highlight_trigger = False
     __color_trigger = False
     __reproducing_trigger = False
+    special = -1
     HIGHLIGHT_OFFSET = "#22AAFF"
 
     def __init__(self, occupant, x, y):
@@ -242,4 +243,3 @@ class Dot:
 
     def reproducing_triggered(self):
         return self.__reproducing_trigger
-

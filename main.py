@@ -16,6 +16,7 @@ class App:
     world = World()
 
     dot_parrallels = {None: None}
+    spawn_map = {None: None}
     root = None
     canvas = None
     xEntry = None
@@ -30,6 +31,8 @@ class App:
         self.__init_gui()
         self.set_current_selection(None)
         self.dot_parrallels.clear()
+        self.spawn_map.clear()
+        self._init_spawners()
         self._init_dots()
         self._draw_dots()
         self.canvas.bind("<Button-1>", self._canvas_on_click)
@@ -105,7 +108,13 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+
+
+    def _init_spawners(self):
+        """Initializes spawners that will be present at the time the program begins"""
+        ps1 = self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        self.spawn_map[ps1.get_special_id()] = ps1
+
 
     def _pause_callback(self):
         """The method called when 'PAUSE' is clicked -- pauses the program"""
@@ -139,6 +148,8 @@ class App:
         del self.dot_parrallels[dot.get_reference()]
         self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
+        if dot.special != -1:
+            self.spawn_map[dot.special].remove(dot.get_occupant())
 
     def select_dot(self, event, ref):
         """Highlights a dot and makes it the Current Selection (or deselects)"""
@@ -184,7 +195,9 @@ class App:
             for s in self.world.spawners:
                 s.update()
                 if s.spawning:
-                    self.draw_dot(self.world.add(s.spawn(), s.get_spawn_x(), s.get_spawn_y()))
+                    d = self.world.add(s.spawn(), s.get_spawn_x(), s.get_spawn_y())
+                    d.special = s.get_special_id()
+                    self.draw_dot(d)
             self.world.handle_wall_collision()
             self.canvas.update()
         self.root.after(self.speed, self.update)
@@ -212,5 +225,6 @@ class App:
             if o != c.get_reference():
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
+
 
 App(1)

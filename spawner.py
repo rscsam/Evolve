@@ -14,14 +14,20 @@ class Spawner:
     spawning = False
     __spawn_x = 0
     __spawn_y = 0
+    __special_id = 0
+    __occupants = []
 
     def __init__(self, timer, height, width, x, y):
+        self.__init_special_id()
         self.__timer = timer
         self.__current_time = timer
         self.__height = height
         self.__width = width
         self.__x = x
         self.__y = y
+
+    def __init_special_id(self):
+        self.__special_id = random.random() * 9999999999
 
     def update(self):
         self.__current_time -= 1
@@ -56,6 +62,16 @@ class Spawner:
     def get_width(self):
         return self.__width
 
+    def add(self, o):
+        self.__occupants.append(o)
+
+    def remove(self, occupant):
+        if len(self.__occupants) > 0:
+            self.__occupants.remove(occupant)
+
+    def occupants(self):
+        return self.__occupants
+
     def set_spawnx(self, x):
         self.__spawn_x = x
 
@@ -72,8 +88,8 @@ class Spawner:
         self.spawning = tf
 
     def spawn(self):
-        self.__spawn_x = (random.random() * (self.__width)) + self.__x
-        self.__spawn_y = (random.random() * (self.__height)) + self.__y
+        self.__spawn_x = random.random() * self.__width + self.__x
+        self.__spawn_y = random.random() * self.__height + self.__y
         self.spawning = True
         return Occupant('#696969', 5, 1)
 
@@ -83,14 +99,15 @@ class Spawner:
     def get_spawn_y(self):
         return self.__spawn_y
 
+    def get_special_id(self):
+        return self.__special_id
+
 
 class PlantSpawner(Spawner):
-    __plants = []
-
     def spawn(self):
         self.set_spawning(False)
         p = Plant(self.get_spawn_x(), self.get_spawn_y())
-        self.__plants.append(p)
+        self.add(p)
         return p
 
     def update(self):
@@ -107,7 +124,7 @@ class PlantSpawner(Spawner):
 
     def _calculate_shade(self, x, y):
         shade = 0
-        for plant in self.__plants:
+        for plant in self.occupants():
             size = 2 * plant.get_size()
             distance = int(((((x-plant.getx())**2)+((y-plant.gety())**2))**0.5))
             if distance != 0:
