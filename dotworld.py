@@ -132,6 +132,13 @@ class Dot:
         return self.__y2
 
     def set_radius(self, radius):
+        if self.__radius - radius == 0:
+            return
+        m = 1
+        if self.__radius - radius < 0:
+            m = -1
+        self.__x += 1 * radius * m
+        self.__y += 1 * radius * m
         self.__radius = radius
         self.__occupant.set_size(radius)
 
