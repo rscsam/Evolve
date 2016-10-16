@@ -99,7 +99,8 @@ class App:
             self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_plant_spawner(1000, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        #self.world.add_plant_spawner(1000, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        self.world.add_plant(10, 100)
 
     def _pause_callback(self):
         """pauses the simulation"""

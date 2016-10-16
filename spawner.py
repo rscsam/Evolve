@@ -1,6 +1,3 @@
-import math
-import random
-
 from creature import *
 
 
@@ -79,7 +76,6 @@ class Spawner:
         self.__spawn_y = (random.random() * (self.__height)) + self.__y
         self.spawning = True
         return Occupant('#696969', 5, 1)
-
 
     def get_spawn_x(self):
         return self.__spawn_x
