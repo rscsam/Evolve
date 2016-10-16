@@ -12,6 +12,7 @@ class Script:
     __y_velocity = 0
     __occupant = None
     __random_seed = 1
+    subscript = None
 
     def get_x_velocity(self):
         return self.__x_velocity
@@ -41,22 +42,39 @@ class Script:
         self.__random_seed = r
 
     def _get_x_offset(self):
-        return self.__x_offset
+        return self.x_offset
 
     def _get_y_offset(self):
-        return self.__y_offset
+        return self.y_offset
 
     def update(self):
         """Change the adjustments"""
+
+    def update_subscript(self):
+        self.set_x_velocity(self.subscript.get_x_velocity())
+        self.set_y_velocity(self.subscript.get_y_velocity())
 
     def load(self, occupant):
         self.__occupant = occupant
         self.__max_speed = occupant.get_speed()
 
+    def load_subscript(self, s):
+        if self.subscript is not None:
+            self.subscript.stop()
+        self.subscript = s
+        s.load(self.__occupant)
+        self.update_subscript()
+
     def stop(self):
-        self.__occupant = None
-        self.__max_speed = 0
+        self.x_offset = 0
+        self.y_offset = 0
         self.__nearby = []
+        self.__max_speed = 0
+        self.__x_velocity = 0
+        self.__y_velocity = 0
+        self.__occupant = None
+        self.__random_seed = 1
+        self.subscript = None
 
 
 class StayStill(Script):
@@ -141,21 +159,21 @@ class MoveInSquare(Script):
     __length = 100
     __tick = 0
     __state = 0
+    __states = [MoveStraightRight(), MoveStraightDown(), MoveStraightLeft(), MoveStraightUp()]
+
+    def __init__(self, length):
+        Script.__init__(self)
+        self.__length = length
+
+    def load(self, occupant):
+        Script.load(self, occupant)
+        self.load_subscript(self.__states[self.__state])
 
     def update(self):
-        if self.__state == 0:
-            self.set_x_velocity(self.get_max_speed())
-            self.set_y_velocity(0)
-        elif self.__state == 1:
-            self.set_x_velocity(0)
-            self.set_y_velocity(self.get_max_speed())
-        elif self.__state == 2:
-            self.set_x_velocity(self.get_max_speed()*-1)
-            self.set_y_velocity(0)
-        elif self.__state == 3:
-            self.set_x_velocity(0)
-            self.set_y_velocity(self.get_max_speed()*-1)
-        self.__tick += 1
-        if self.__tick >= self.__length:
+        if self.__tick > self.__length:
             self.__state = (self.__state + 1) % 4
+            self.load_subscript(self.__states[self.__state])
+            Script.update_subscript(self)
             self.__tick = 0
+        else:
+            self.__tick += 1

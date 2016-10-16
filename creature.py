@@ -110,7 +110,7 @@ class ConvenientOccupant(Occupant):
     def __init__(self, color, size, speed):
         Occupant.__init__(self, color, size, speed)
         self.scripts.clear()
-        self.scripts["Main"] = MoveInCircle()
+        self.scripts["Main"] = MoveInSquare(500)
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
         self.adjust_velocity()

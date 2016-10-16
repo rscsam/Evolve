@@ -108,7 +108,8 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        self.world.add_convenient(100, 100, '#DAB420', 5, 1)
+        #self.world.add_convenient(500, 30, '#DAB420', 5, 1)
+        self.world.add_reproducing(500, 300, '#DAB420', 5, 1, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
