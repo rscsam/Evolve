@@ -39,7 +39,7 @@ class Spawner:
         return self.get_current_time()
 
     def set_current_time(self, o):
-        self.__current_time = self.__current_time
+        self.__current_time = o
 
     def countdown(self):
         self.__current_time -= 1
@@ -88,21 +88,34 @@ class PlantSpawner(Spawner):
     __plants = []
 
     def spawn(self):
-        self.set_spawnx((random.random() * (self.get_width())) + self.getx())
-        self.set_spawny((random.random() * (self.get_height())) + self.gety())
-        shade = self._calculate_shade(self.get_spawn_x(), self.get_spawn_y())
         self.set_spawning(False)
-        if random.random() > shade:
-            return Plant(self.get_spawn_x(), self.get_spawn_y())
-        else:
-            print("Hi")
+        p = Plant(self.get_spawn_x(), self.get_spawn_y())
+        self.__plants.append(p)
+        return p
+
+    def update(self):
+        self.countdown()
+        if self.get_current_time() <= 0:
+            spawnx = ((random.random() * (self.get_width())) + self.getx())
+            spawny = ((random.random() * (self.get_height())) + self.gety())
+            shade = self._calculate_shade(spawnx, spawny)
+            if random.random() > shade:
+                self.set_spawnx(spawnx)
+                self.set_spawny(spawny)
+                self.set_spawning(True)
+            else:
+                print(shade)
+            self.set_current_time(self.timer())
 
     def _calculate_shade(self, x, y):
         shade = 0
         for plant in self.__plants:
             size = 2 * plant.get_size()
-            distance = math.sqrt(math.pow((x - plant.__get_x()), 2) - math.pow((y - plant.__get_y()), 2))
-            shade += (size/distance)
+            distance = int(((((x-plant.getx())**2)+((y-plant.gety())**2))**0.5))
+            if distance != 0:
+                shade += (size/distance)
+            else:
+                shade = 2
         return shade
 
 

@@ -183,8 +183,8 @@ class Plant(Occupant):
             self.__energy = self.get_size()
         self.__counter -= 1
 
-    def __get_x(self):
+    def getx(self):
         return self.__x
 
-    def __get_y(self):
+    def gety(self):
         return self.__y
