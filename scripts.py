@@ -117,7 +117,7 @@ class MoveLikeSquawker(Script):
 
 
 class MoveInCircle(Script):
-    __radius = 10
+    __radius = 50
     __tick = 0
 
     def update(self):
@@ -135,3 +135,27 @@ class MoveInCircle(Script):
         self.set_x_velocity(ax)
         self.set_y_velocity(ay)
         self.__tick += (ms / (2*math.pi*r))
+
+
+class MoveInSquare(Script):
+    __length = 100
+    __tick = 0
+    __state = 0
+
+    def update(self):
+        if self.__state == 0:
+            self.set_x_velocity(self.get_max_speed())
+            self.set_y_velocity(0)
+        elif self.__state == 1:
+            self.set_x_velocity(0)
+            self.set_y_velocity(self.get_max_speed())
+        elif self.__state == 2:
+            self.set_x_velocity(self.get_max_speed()*-1)
+            self.set_y_velocity(0)
+        elif self.__state == 3:
+            self.set_x_velocity(0)
+            self.set_y_velocity(self.get_max_speed()*-1)
+        self.__tick += 1
+        if self.__tick >= self.__length:
+            self.__state = (self.__state + 1) % 4
+            self.__tick = 0
