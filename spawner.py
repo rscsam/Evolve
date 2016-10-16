@@ -1,7 +1,7 @@
+"""This module defines a series of spawners capable of spawning occupants into their world"""
+
 from creature import *
-
-
-#import tools
+# import tools
 
 
 class Spawner:
@@ -103,8 +103,6 @@ class PlantSpawner(Spawner):
                 self.set_spawnx(spawnx)
                 self.set_spawny(spawny)
                 self.set_spawning(True)
-            else:
-                print(shade)
             self.set_current_time(self.timer())
 
     def _calculate_shade(self, x, y):

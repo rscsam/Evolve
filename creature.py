@@ -7,6 +7,7 @@ import tools
 
 
 class Occupant:
+    """Defines a parallel to tangible, visible, interacting occupants inside the world"""
     __size = 0
     __speed = 0
     __y_velocity = 0
@@ -90,12 +91,14 @@ class Occupant:
 
 
 class ConvenientOccupant(Occupant):
+    """An occupant designed to do whatever helps with debugging"""
     def set_starting_velocity(self):
         self.set_x_velocity(self.get_speed())
         self.set_y_velocity(0)
 
 
 class Squawker(Occupant):
+    """An occupant that moves according to the famous S Q U A W K B O Y S movement algorithm"""
     def set_starting_velocity(self):
         """sets the starting velocity of the creature"""
         self.set_x_velocity(random.random() * self.get_speed())
@@ -113,6 +116,7 @@ class Squawker(Occupant):
 
 
 class Dunkboy(Occupant):
+    """A variation on the Squawker"""
     def set_starting_velocity(self):
         """sets the starting velocity of the creature"""
         self.set_x_velocity(random.random() * self.get_speed())
@@ -131,6 +135,7 @@ class Dunkboy(Occupant):
 
 
 class ReproducingOccupant(Occupant):
+    """An occupant capable of reproducing"""
     __reproducing = False
     __parent = None
 
@@ -164,6 +169,7 @@ class ReproducingOccupant(Occupant):
 
 
 class Plant(Occupant):
+    """An occupant that does not move, but grows in place"""
     __x = 0
     __y = 0
     __growth_rate = random.normalvariate(2000,100)

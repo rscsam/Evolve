@@ -7,6 +7,7 @@ from dotworld import World
 
 
 class App:
+    """The primary program that will be run"""
     running = True
     speed = 10
 
@@ -25,6 +26,7 @@ class App:
     current_selection = None
 
     def __init__(self, speed):
+        """initialization logic"""
         self.__init_gui()
         self.set_current_selection(None)
         self.dot_parrallels.clear()
@@ -37,6 +39,7 @@ class App:
         self.root.mainloop()
 
     def __init_gui(self):
+        """initializes gui specific logic"""
         self.root = Tk()
         self.root.title = "Evolvarium"
         self.root.resizable(False, False)
@@ -71,9 +74,11 @@ class App:
         action_bar.pack(side=LEFT)
 
     def _add_callback(self):
-        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#545454", 3, 4))
+        """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
+        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#424242", 3, 4))
 
     def _apply_cs_changes(self):
+        """Applies to the current selection the attributes typed into the text boxes"""
         self.current_selection.set_speed(int(self.csSpeedEntry.get()))
         self.current_selection.set_radius(int(self.csSizeEntry.get()))
         self.world.test_largest_radius(int(self.csSizeEntry.get()))
@@ -81,9 +86,9 @@ class App:
         self.canvas.update()
 
     def _canvas_on_click(self, event):
-        """adds a new dot at the specified location"""
+        """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, "#424242", 3, 4))
+        self.draw_dot(self.world.add_squawker(event.x, event.y, '#696969', 3, 4))
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -99,10 +104,11 @@ class App:
             self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def _init_dots(self):
-        self.world.add_plant_spawner(100, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        """Initializes dots that will be present at the time the program begins"""
+        self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
 
     def _pause_callback(self):
-        """pauses the simulation"""
+        """The method called when 'PAUSE' is clicked -- pauses the program"""
         self.running = not self.running
 
     def _kill_callback(self):
@@ -110,14 +116,16 @@ class App:
         self.current_selection.kill_trigger()
 
     def _slowdown_callback(self):
+        """The method called when 'SLOW DOWN' is clicked -- Slows down the main loop"""
         self.speed += 1
 
     def _speedup_callback(self):
+        """The method called when 'ADD' is clicked -- Speeds up the main loop"""
         if self.speed > 1:
             self.speed -= 1
 
     def draw_dot(self, c):
-        """"draw dot, which had not been initialized"""
+        """"Draw dot, which had not been initialized"""
         ref = self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=c.get_color(), width=0)
         c.set_reference(ref)
         self.dot_parrallels[ref] = c
@@ -125,7 +133,7 @@ class App:
         self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
     def remove_dot(self, dot):
-        """""destroys dot at every layer of abstraction"""
+        """""Destroys dot at every layer of abstraction"""
         if dot is self.current_selection:
             self.set_current_selection(None)
         del self.dot_parrallels[dot.get_reference()]
@@ -133,6 +141,7 @@ class App:
         self.world.occupants.remove(dot)
 
     def select_dot(self, event, ref):
+        """Highlights a dot and makes it the Current Selection (or deselects)"""
         if not self.dot_parrallels[ref].highlight_triggered():
             dot = self.dot_parrallels[ref]
             if self.current_selection is not None:
@@ -149,6 +158,7 @@ class App:
             self.canvas.itemconfigure(ref, fill=color)
 
     def set_current_selection(self, dot):
+        """Sets the current selection to @param dot and updates the text boxes"""
         self.current_selection = dot
         self.csSpeedEntry.delete(0, END)
         self.csSizeEntry.delete(0, END)
@@ -163,6 +173,7 @@ class App:
             self.csColorEntry.insert(0, dot.get_color())
 
     def update(self):
+        """The main logic loop of the program"""
         if self.running:
             for c in self.world.occupants:
                 c.update()
@@ -179,9 +190,11 @@ class App:
         self.root.after(self.speed, self.update)
 
     def update_color(self, dot):
+        """Changes the visible color of the dot to its actual color"""
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
     def handle_triggers(self, c):
+        """Handle the various Dot triggers"""
         if c.collide_triggered():
             c.kill_trigger()
         if c.ucolor_triggered():
@@ -192,6 +205,7 @@ class App:
             self.remove_dot(c)
 
     def update_collisions(self, c):
+        """Handles collision between dots"""
         overlaps = self.canvas.find_overlapping(c.getx(), c.gety(), c.getx2(), c.gety2())
         doverlaps = []
         for o in overlaps:
