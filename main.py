@@ -108,13 +108,12 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-
+        self.world.add_convenient(100, 100, '#DAB420', 5, 1)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
-        self.spawn_map[ps1.get_special_id()] = ps1
-
+        # ps1 = self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, 0, 0)
+        # self.spawn_map[ps1.get_special_id()] = ps1
 
     def _pause_callback(self):
         """The method called when 'PAUSE' is clicked -- pauses the program"""
@@ -187,6 +186,8 @@ class App:
         """The main logic loop of the program"""
         if self.running:
             for c in self.world.occupants:
+                if c.needs_vision():
+                    self.update_visions(c)
                 c.update()
                 self.update_collisions(c)
                 if not c.collide_triggered():
@@ -226,5 +227,16 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
 
+    def update_visions(self, c):
+        """Updates each dots vision of nearby dots"""
+        cx = c.get_centerx()
+        cy = c.get_centery()
+        vr = c.get_vision_radius()
+        overlaps = self.canvas.find_overlapping(cx-vr, cy+vr, cx+vr, cy-vr)
+        doverlaps = []
+        for o in overlaps:
+            if o != c.get_reference():
+                doverlaps.append(self.dot_parrallels[o])
+        self.world.update_visions(c, doverlaps)
 
 App(1)

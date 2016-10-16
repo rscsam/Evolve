@@ -51,6 +51,7 @@ class World:
 
     def handle_wall_collision(self):
         for dot in self.occupants:
+            r = dot.get_radius()
             if dot.getx() < 0:
                 dot.setx(0)
                 dot.get_occupant().hit_side()
@@ -64,7 +65,8 @@ class World:
                 dot.sety2(self.wheight)
                 dot.get_occupant().hit_lid()
 
-    def handle_collisions(self, dot, dots):
+    @staticmethod
+    def handle_collisions(dot, dots):
         for c in dots:
             distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
@@ -79,6 +81,16 @@ class World:
                         and c.get_color() != dot.get_color():
                     c.collide_trigger()
                     dot.collide_trigger()
+
+    @staticmethod
+    def update_visions(dot, dots):
+        nearby = []
+        for c in dots:
+            distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
+                             + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
+            if distance <= (dot.get_vision_radius() + c.get_vision_radius()):
+                nearby.append(c)
+        dot.get_occupant().set_nearby(nearby)
 
 
 class Dot:
@@ -143,6 +155,9 @@ class Dot:
     def get_radius(self):
         return self.__radius
 
+    def get_vision_radius(self):
+        return self.__radius + self.__occupant.get_vision()
+
     def get_occupant(self):
         return self.__occupant
 
@@ -198,6 +213,9 @@ class Dot:
         if isinstance(self.__occupant, ReproducingOccupant):
             self.__reproducing_trigger = False
             return self.__occupant.reproduce()
+
+    def needs_vision(self):
+        return self.get_occupant().needs_vision
 
     def update(self):
         self.__occupant.update()

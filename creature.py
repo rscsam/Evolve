@@ -1,9 +1,9 @@
 """The module that contains all of the backend creature data"""
 
 import math
-import random
 
 import tools
+from scripts import *
 
 
 class Occupant:
@@ -15,11 +15,17 @@ class Occupant:
     __color = "#FFFFFF"
     __alive = True
     __energy = 500
+    __vision = -1
+    needs_vision = False
+    __nearby = []
+    scripts = {"": None}
+    __current_script = None
 
     def __init__(self, color, size, speed):
         self.__color = color
         self.__size = size
         self.__speed = speed
+        self.scripts.clear()
         self.set_starting_velocity()
 
     def set_x_velocity(self, x):
@@ -70,11 +76,30 @@ class Occupant:
     def subtract_energy(self, e):
         self.__energy -= e
 
+    def get_vision(self):
+        return self.__vision
+
+    def set_vision(self, v):
+        self.__vision = v
+
+    def set_nearby(self, n):
+        self.__nearby = n
+
     def die(self):
         self.__alive = False
 
     def alive(self):
         return self.__alive
+
+    def get_current_script(self):
+        return self.__current_script
+
+    def set_current_script(self, s):
+        self.__current_script = s
+
+    def adjust_velocity(self):
+        self.set_x_velocity(self.get_current_script().get_adjustmentx())
+        self.set_y_velocity(self.get_current_script().get_adjustmenty())
 
     def set_starting_velocity(self):
         """sets the starting velocity of the creature"""
@@ -92,27 +117,43 @@ class Occupant:
 
 class ConvenientOccupant(Occupant):
     """An occupant designed to do whatever helps with debugging"""
-    def set_starting_velocity(self):
-        self.set_x_velocity(self.get_speed())
-        self.set_y_velocity(0)
+    def __init__(self, color, size, speed):
+        Occupant.__init__(self, color, size, speed)
+        self.scripts.clear()
+        self.scripts["Main"] = MoveStraightDown()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.adjust_velocity()
+
+    def update(self):
+        """changes the position of the occupant"""
+        self.adjust_velocity()
 
 
 class Squawker(Occupant):
     """An occupant that moves according to the famous S Q U A W K B O Y S movement algorithm"""
-    def set_starting_velocity(self):
-        """sets the starting velocity of the creature"""
-        self.set_x_velocity(random.random() * self.get_speed())
-        if random.random() > .5:
-            self.set_x_velocity(self.get_x_velocity() * -1)
-
-        self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
-        if random.random() > .5:
-            self.set_y_velocity(self.get_y_velocity() * -1)
+    def __init__(self, color, size, speed):
+        Occupant.__init__(self, color, size, speed)
+        self.scripts.clear()
+        self.scripts["Main"] = MoveLikeSquawker()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.adjust_velocity()
+    #
+    # def set_starting_velocity(self):
+    #     """sets the starting velocity of the creature"""
+    #     self.set_x_velocity(random.random() * self.get_speed())
+    #     if random.random() > .5:
+    #         self.set_x_velocity(self.get_x_velocity() * -1)
+    #
+    #     self.set_y_velocity(math.sqrt(math.pow(self.get_speed(), 2) - math.pow(self.get_x_velocity(), 2)))
+    #     if random.random() > .5:
+    #         self.set_y_velocity(self.get_y_velocity() * -1)
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if random.random() < .03:
-            self.set_starting_velocity()
+        self.get_current_script().update()
+        self.adjust_velocity()
 
 
 class Dunkboy(Occupant):

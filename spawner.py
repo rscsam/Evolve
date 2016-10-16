@@ -27,7 +27,7 @@ class Spawner:
         self.__y = y
 
     def __init_special_id(self):
-        self.__special_id = random.random() * 9999999999
+        self.__special_id = random.random() * 999999999999
 
     def update(self):
         self.__current_time -= 1
