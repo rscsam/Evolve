@@ -191,10 +191,10 @@ class App:
                     self.update_visions(c)
                 c.update()
                 self.update_collisions(c)
-                self.world.handle_wall_collision()
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
                 self.handle_triggers(c)
+            self.world.handle_wall_collision()
             for s in self.world.spawners:
                 s.update()
                 if s.spawning:
