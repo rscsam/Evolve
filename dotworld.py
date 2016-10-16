@@ -26,9 +26,6 @@ class World:
     def add_squawker(self, x, y, color, size, speed):
         return self.add(Squawker(color, size, speed), x, y)
 
-    def add_dunkboy(self, x, y, color, size, speed):
-        return self.add(Dunkboy(color, size, speed), x, y)
-
     def add_reproducing(self, x, y, color, size, speed, parent):
         return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
 

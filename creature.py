@@ -12,7 +12,7 @@ class Occupant:
     __x_velocity = 0
     __color = "#FFFFFF"
     __alive = True
-    __energy = 500
+    __energy = 400
     __vision = -1
     needs_vision = False
     __nearby = []
@@ -139,7 +139,7 @@ class ReproducingOccupant(Occupant):
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
-        self.get_current_script().set_random_seed(0.13)
+        self.get_current_script().set_random_seed(0.07)
         self.adjust_velocity()
 
     def get_parent(self):
@@ -148,7 +148,7 @@ class ReproducingOccupant(Occupant):
     def reproduce(self):
         self.__reproducing = False
         if random.random() < .29:
-            color = tools.mix_colors(self.get_color(), tools.random_color())
+            color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
             return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
