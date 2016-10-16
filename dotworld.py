@@ -39,8 +39,8 @@ class World:
         self.spawners.append(spawner)
         return spawner
 
-    def add_plant_spawner(self):
-        return self.add_spawner(PlantSpawner(50, 600, 1200, 0, 0))
+    def add_plant_spawner(self, timer, height, width, x, y):
+        return self.add_spawner(PlantSpawner(timer, height, width, x, y))
 
     def test_largest_radius(self, r):
         if r > self.__largest_radius:
