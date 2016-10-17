@@ -109,7 +109,8 @@ class App:
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         #self.world.add_convenient(500, 30, '#DAB420', 5, 1)
-        self.world.add_reproducing(500, 300, '#DAB420', 5, 1, None)
+        self.world.add_reproducing(200, 300, '#DAB420', 5, 1, None)
+        self.world.add_reproducing(1000, 300, '#420DAB', 5, 1, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
@@ -191,10 +192,11 @@ class App:
                     self.update_visions(c)
                 c.update()
                 self.update_collisions(c)
+            self.world.handle_wall_collision()
+            for c in self.world.occupants:
                 if not c.collide_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
                 self.handle_triggers(c)
-            self.world.handle_wall_collision()
             for s in self.world.spawners:
                 s.update()
                 if s.spawning:

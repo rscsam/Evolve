@@ -147,7 +147,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .29:
+        if random.random() < .32:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
             return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
