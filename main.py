@@ -2,9 +2,9 @@
 
 from tkinter import *
 
+import creature
 import tools as tools
 from dotworld import World
-
 
 class App:
     """The primary program that will be run"""
@@ -108,14 +108,13 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        #self.world.add_convenient(500, 30, '#DAB420', 5, 1)
-        self.world.add_reproducing(200, 300, '#DAB420', 5, 1, None)
-        self.world.add_reproducing(1000, 300, '#420DAB', 5, 1, None)
+        self.world.add_convenient(100, 30, '#DAB420', 5, 1)
+        self.world.add_convenient(1100, 500, '#DAB420', 5, 1)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        # ps1 = self.world.add_plant_spawner(500, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, 0, 0)
-        # self.spawn_map[ps1.get_special_id()] = ps1
+        ps1 = self.world.add_plant_spawner(50, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        self.spawn_map[ps1.get_special_id()] = ps1
 
     def _pause_callback(self):
         """The method called when 'PAUSE' is clicked -- pauses the program"""
@@ -194,7 +193,7 @@ class App:
                 self.update_collisions(c)
             self.world.handle_wall_collision()
             for c in self.world.occupants:
-                if not c.collide_triggered():
+                if not c.kill_triggered():
                     self.canvas.coords(c.get_reference(), c.getx(), c.gety(), c.getx2(), c.gety2())
                 self.handle_triggers(c)
             for s in self.world.spawners:
@@ -213,7 +212,8 @@ class App:
     def handle_triggers(self, c):
         """Handle the various Dot triggers"""
         if c.collide_triggered():
-            c.kill_trigger()
+            if isinstance(c.get_occupant(), creature.Plant):
+                c.kill_trigger()
         if c.ucolor_triggered():
             self.update_color(c)
         if c.reproducing_triggered():
@@ -234,8 +234,9 @@ class App:
         """Updates each dots vision of nearby dots"""
         cx = c.get_centerx()
         cy = c.get_centery()
+        r = c.get_radius()
         vr = c.get_vision_radius()
-        overlaps = self.canvas.find_overlapping(cx-vr, cy+vr, cx+vr, cy-vr)
+        overlaps = self.canvas.find_overlapping(cx-(vr+r), cy+(vr+r), cx+(vr+r), cy-(vr+r))
         doverlaps = []
         for o in overlaps:
             if o != c.get_reference():

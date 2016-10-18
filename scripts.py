@@ -6,7 +6,7 @@ class Script:
     '''reference = (0, 0)'''
     x_offset = 0
     y_offset = 0
-    __nearby = []
+    nearby = []
     __max_speed = 0
     __x_velocity = 0
     __y_velocity = 0
@@ -31,6 +31,8 @@ class Script:
 
     def set_max_speed(self, s):
         self.__max_speed = s
+        if self.subscript is not None:
+            self.subscript.set_max_speed(s)
 
     def get_nearby(self):
         return self.__nearby
@@ -47,10 +49,14 @@ class Script:
     def _get_y_offset(self):
         return self.y_offset
 
+    def get_occupant(self):
+        return self.__occupant
+
     def update(self):
         """Change the adjustments"""
 
     def update_subscript(self):
+        self.subscript.update()
         self.set_x_velocity(self.subscript.get_x_velocity())
         self.set_y_velocity(self.subscript.get_y_velocity())
 
@@ -177,3 +183,33 @@ class MoveInSquare(Script):
             self.__tick = 0
         else:
             self.__tick += 1
+
+
+class MoveTowardPlants(Script):
+
+    def load(self, occupant):
+        Script.load(self, occupant)
+        self.load_subscript(MoveLikeSquawker())
+        self.nearby = occupant.get_nearby()
+        self.update()
+
+    def update(self):
+        self.nearby = self.get_occupant().get_nearby_plants()
+        minimum = -1
+        if len(self.nearby) > 0:
+            for i in range(0, len(self.nearby)):
+                if i == 0:
+                    minimum = i
+                elif self.nearby[i][3] < self.nearby[minimum][3]:
+                    minimum = i
+        else:
+            self.update_subscript()
+            return
+        ms = self.get_max_speed() + self.get_occupant().get_burst()
+        xv = self.nearby[minimum][1]
+        yv = self.nearby[minimum][2]
+        m = self.nearby[minimum][3]
+        xv = (xv/m) * ms * -1
+        yv = (yv/m) * ms * -1
+        self.set_x_velocity(xv)
+        self.set_y_velocity(yv)

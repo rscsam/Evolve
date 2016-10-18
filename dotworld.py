@@ -83,10 +83,12 @@ class World:
     def update_visions(dot, dots):
         nearby = []
         for c in dots:
-            distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
-                             + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
-            if distance <= (dot.get_vision_radius() + c.get_vision_radius()):
-                nearby.append(c)
+            if c is not dot:
+                dx = dot.get_centerx() - c.get_centerx()
+                dy = dot.get_centery() - c.get_centery()
+                distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
+                if distance <= (dot.get_vision_radius() + c.get_vision_radius()):
+                    nearby.append((c.get_occupant(), dx, dy, distance))
         dot.get_occupant().set_nearby(nearby)
 
 

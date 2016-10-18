@@ -10,6 +10,7 @@ class Occupant:
     __speed = 0
     __y_velocity = 0
     __x_velocity = 0
+    __burst = 0
     __color = "#FFFFFF"
     __alive = True
     __energy = 400
@@ -23,6 +24,7 @@ class Occupant:
         self.__color = color
         self.__size = size
         self.__speed = speed
+        self.__nearby.clear()
         self.scripts.clear()
 
     def set_x_velocity(self, x):
@@ -62,6 +64,12 @@ class Occupant:
     def get_speed(self):
         return self.__speed
 
+    def set_burst(self, burst):
+        self.__burst = burst
+
+    def get_burst(self):
+        return self.__burst
+
     def get_energy(self):
         return self.__energy
 
@@ -79,6 +87,18 @@ class Occupant:
 
     def set_vision(self, v):
         self.__vision = v
+
+    def get_nearby(self):
+        return self.__nearby
+
+    def get_nearby_plants(self):
+        nearby = []
+        for i in range(0, len(self.__nearby)):
+            nearby = []
+            for i in range(0, len(self.__nearby)):
+                if isinstance(self.__nearby[i][0], Plant):
+                    nearby.append(self.__nearby[i])
+        return nearby
 
     def set_nearby(self, n):
         self.__nearby = n
@@ -109,8 +129,11 @@ class ConvenientOccupant(Occupant):
     """An occupant designed to do whatever helps with debugging"""
     def __init__(self, color, size, speed):
         Occupant.__init__(self, color, size, speed)
+        self.needs_vision = True
+        self.set_vision(300)
+        self.set_burst(9)
         self.scripts.clear()
-        self.scripts["Main"] = MoveInSquare(500)
+        self.scripts["Main"] = MoveTowardPlants()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
         self.adjust_velocity()
@@ -139,7 +162,7 @@ class ReproducingOccupant(Occupant):
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
-        self.get_current_script().set_random_seed(0.07)
+        self.get_current_script().set_random_seed(0.2)
         self.adjust_velocity()
 
     def get_parent(self):
@@ -147,8 +170,9 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        if random.random() < .32:
+        if random.random() < .33:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
+            color = tools.mix_colors(self.get_color(), color)
             return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
         return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
 
@@ -192,3 +216,13 @@ class Plant(Occupant):
 
     def gety(self):
         return self.__y
+
+
+class Herbivore(Occupant):
+    def __init__(self, color, size, speed):
+        Occupant.__init__(self, color, size, speed)
+        self.scripts.clear()
+        self.scripts["Main"] = MoveTowardPlants()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.adjust_velocity()
