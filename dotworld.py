@@ -17,26 +17,26 @@ class World:
         self.occupants.append(c)
         return c
 
-    def add_occupant(self, x, y, color, size, speed):
-        return self.add(Occupant(color, size, speed), x, y)
+    def add_occupant(self, x, y, color, size, speed, energy):
+        return self.add(Occupant(color, size, speed, energy), x, y)
 
-    def add_convenient(self, x, y, color, size, speed):
-        return self.add(ConvenientOccupant(color, size, speed), x, y)
+    def add_convenient(self, x, y, color, size, speed, energy):
+        return self.add(ConvenientOccupant(color, size, speed, energy), x, y)
 
-    def add_squawker(self, x, y, color, size, speed):
-        return self.add(Squawker(color, size, speed), x, y)
+    def add_squawker(self, x, y, color, size, speed, energy):
+        return self.add(Squawker(color, size, speed, energy), x, y)
 
-    def add_reproducing(self, x, y, color, size, speed, parent):
-        return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
+    def add_reproducing(self, x, y, color, size, speed, energy, parent):
+        return self.add(ReproducingOccupant(color, size, speed, energy, parent), x, y)
 
-    def add_herbivore(self, x, y, color, size, speed, parent):
-        return self.add(Herbivore(color, size, speed, parent), x, y)
+    def add_herbivore(self, x, y, color, size, speed, energy, parent):
+        return self.add(Herbivore(color, size, speed, energy, parent), x, y)
 
-    def add_carnivore(self, x, y, color, size, speed, parent):
-        return self.add(Carnivore(color, size, speed, parent), x, y)
+    def add_carnivore(self, x, y, color, size, speed, energy, parent):
+        return self.add(Carnivore(color, size, speed, energy, parent), x, y)
 
-    def add_plant(self, x, y):
-        return self.add(Plant(x, y), x, y)
+    def add_plant(self, x, y, energy):
+        return self.add(Plant(x, y, energy), x, y)
 
     def add_spawner(self, spawner):
         self.spawners.append(spawner)
@@ -56,11 +56,9 @@ class World:
     def fight(dot1, dot2):
         if dot1.get_occupant().get_power() > dot2.get_occupant().get_power():
             dot1.get_occupant().subtract_energy(dot2.get_occupant().get_strength())
-            dot2.get_occupant().subtract_energy(dot1.get_occupant().get_strength())
             dot1.get_occupant().add_energy(dot2.get_occupant().extract_energy())
             dot2.kill_trigger()
         elif dot1.get_occupant().get_power() < dot2.get_occupant().get_power():
-            dot1.get_occupant().subtract_energy(dot2.get_occupant().get_strength())
             dot2.get_occupant().subtract_energy(dot1.get_occupant().get_strength())
             dot2.get_occupant().add_energy(dot1.get_occupant().extract_energy())
             dot1.kill_trigger()

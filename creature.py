@@ -13,7 +13,8 @@ class Occupant:
     __burst = 0
     __color = "#FFFFFF"
     __alive = True
-    __energy = 1000
+    __base_energy = 1000
+    __energy = __base_energy
     __strength = 0
     __vision = -1
     needs_vision = False
@@ -21,11 +22,12 @@ class Occupant:
     scripts = {"": None}
     __current_script = None
 
-    def __init__(self, color, size, speed):
+    def __init__(self, color, size, speed, energy):
         self.__color = color
         self.__size = size
         self.__speed = speed
         self.__nearby.clear()
+        self.__energy = energy
         self.scripts.clear()
 
     def set_x_velocity(self, x):
@@ -70,6 +72,9 @@ class Occupant:
 
     def get_burst(self):
         return self.__burst
+
+    def get_base_energy(self):
+        return self.__base_energy
 
     def get_energy(self):
         return self.__energy
@@ -147,8 +152,8 @@ class Occupant:
 
 class ConvenientOccupant(Occupant):
     """An occupant designed to do whatever helps with debugging"""
-    def __init__(self, color, size, speed):
-        Occupant.__init__(self, color, size, speed)
+    def __init__(self, color, size, speed, energy):
+        Occupant.__init__(self, color, size, speed, energy)
         self.needs_vision = True
         self.set_vision(300)
         self.set_burst(9)
@@ -161,8 +166,8 @@ class ConvenientOccupant(Occupant):
 
 class Squawker(Occupant):
     """An occupant that moves according to the famous S Q U A W K B O Y S movement algorithm"""
-    def __init__(self, color, size, speed):
-        Occupant.__init__(self, color, size, speed)
+    def __init__(self, color, size, speed, energy):
+        Occupant.__init__(self, color, size, speed, energy)
         self.scripts.clear()
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
@@ -175,8 +180,8 @@ class ReproducingOccupant(Occupant):
     __reproducing = False
     __parent = None
 
-    def __init__(self, color, size, speed, parent):
-        Occupant.__init__(self, color, size, speed)
+    def __init__(self, color, size, speed, energy, parent):
+        Occupant.__init__(self, color, size, speed, energy)
         self.__parent = parent
         self.scripts.clear()
         self.scripts["Main"] = MoveLikeSquawker()
@@ -196,8 +201,8 @@ class ReproducingOccupant(Occupant):
         if random.random() < .33:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
             color = tools.mix_colors(self.get_color(), color)
-            return ReproducingOccupant(color, self.get_size(), self.get_speed(), self)
-        return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self)
+            return ReproducingOccupant(color, self.get_size(), self.get_speed(), self.get_base_energy(), self)
+        return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self.get_base_energy(), self)
 
     def reproducing(self):
         return self.__reproducing
@@ -222,8 +227,8 @@ class Plant(Occupant):
         __growth_rate = 100
     __counter = __growth_rate
 
-    def __init__(self, x, y):
-        Occupant.__init__(self, "#228B22", 10, 0)
+    def __init__(self, x, y, energy):
+        Occupant.__init__(self, "#228B22", 10, 0, energy)
         self.__x = x
         self.__y = y
 
@@ -242,8 +247,8 @@ class Plant(Occupant):
 
 
 class Herbivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, parent)
+    def __init__(self, color, size, speed, parent, energy):
+        ReproducingOccupant.__init__(self, color, size, speed, parent, energy)
         self.needs_vision = True
         self.set_vision(int(random.random()*400))
         self.set_burst(3)
@@ -256,16 +261,16 @@ class Herbivore(ReproducingOccupant):
 
     def reproduce(self):
         self.set_reproducing(False)
+        self.set_energy(self.get_energy()/2)
         if random.random() < .03:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
-            return Herbivore(color, self.get_size(), self.get_speed(), self)
-        return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self)
+            return Herbivore(color, self.get_size(), self.get_speed(), self.get_energy(), self)
+        return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self.get_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
         if self.get_energy() > 1000:
-            if random.random() < 1:
-                self.subtract_energy(350)
+            if random.random() < 0.5:
                 self.set_reproducing(True)
         if self.get_energy() < 0:
             self.die()
@@ -275,13 +280,12 @@ class Herbivore(ReproducingOccupant):
 
 
 class Carnivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, parent)
+    def __init__(self, color, size, speed, energy, parent):
+        ReproducingOccupant.__init__(self, color, size, speed, energy, parent)
         self.needs_vision = True
         self.set_vision(int(random.random()*600))
         self.set_burst(3)
         self.set_strength(100)
-        # self.set_energy(1000)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -290,16 +294,16 @@ class Carnivore(ReproducingOccupant):
 
     def reproduce(self):
         self.set_reproducing(False)
+        self.set_energy(self.get_energy()/2)
         if random.random() < .3:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
-            return Carnivore(color, self.get_size(), self.get_speed(), self)
-        return Carnivore(self.get_color(), self.get_size(), self.get_speed(), self)
+            return Carnivore(color, self.get_size(), self.get_speed(), self.get_energy(), self)
+        return Carnivore(self.get_color(), self.get_size(), self.get_speed(), self.get_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 2000:
-            if random.random() < .007:
-                self.subtract_energy(1200)
+        if self.get_energy() > 3*self.get_base_energy():
+            if random.random() < .001:
                 self.set_reproducing(True)
         if self.get_energy() < 0:
             self.die()

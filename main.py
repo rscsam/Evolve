@@ -78,7 +78,7 @@ class App:
 
     def _add_callback(self):
         """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
-        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#424242", 3, 4))
+        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#424242", 3, 4, 1000))
 
     def _apply_cs_changes(self):
         """Applies to the current selection the attributes typed into the text boxes"""
@@ -91,7 +91,7 @@ class App:
     def _canvas_on_click(self, event):
         """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, '#696969', 3, 4))
+        self.draw_dot(self.world.add_squawker(event.x, event.y, '#696969', 3, 4, 1000))
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -108,8 +108,8 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        self.world.add_herbivore(70, 30, '#DAB420', 5, 3,  None)
-        self.world.add_carnivore(600, 500, '#420DAB', 5, 1, None)
+        self.world.add_herbivore(70, 30, '#DAB420', 5, 3, 1000, None)
+        self.world.add_carnivore(600, 500, '#420DAB', 5, 1, 1000, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
