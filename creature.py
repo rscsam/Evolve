@@ -77,6 +77,11 @@ class Occupant:
     def set_energy(self, e):
         self.__energy = e
 
+    def extract_energy(self):
+        extracted = self.__size * self.__energy / 10
+        self.__energy = 0
+        return extracted
+
     def get_strength(self):
         return self.__strength
 
@@ -244,7 +249,7 @@ class Herbivore(ReproducingOccupant):
 
     def reproduce(self):
         self.set_reproducing(False)
-        if random.random() < .33:
+        if random.random() < .5:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
             return Herbivore(color, self.get_size(), self.get_speed(), self)
         return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self)
