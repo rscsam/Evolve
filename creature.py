@@ -113,6 +113,13 @@ class Occupant:
                 nearby.append(self.__nearby[i])
         return nearby
 
+    def get_nearby_herbivores(self):
+        nearby = []
+        for i in range(0, len(self.__nearby)):
+            if isinstance(self.__nearby[i][0], Herbivore):
+                nearby.append(self.__nearby[i])
+        return nearby
+
     def set_nearby(self, n):
         self.__nearby = n
 
@@ -239,7 +246,7 @@ class Herbivore(ReproducingOccupant):
         ReproducingOccupant.__init__(self, color, size, speed, parent)
         self.needs_vision = True
         self.set_vision(int(random.random()*400))
-        self.set_burst(4)
+        self.set_burst(3)
         self.set_strength(1)
         self.scripts.clear()
         self.scripts["Main"] = MoveTowardPlants()
@@ -249,16 +256,16 @@ class Herbivore(ReproducingOccupant):
 
     def reproduce(self):
         self.set_reproducing(False)
-        if random.random() < .5:
+        if random.random() < .03:
             color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
             return Herbivore(color, self.get_size(), self.get_speed(), self)
         return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 2000:
-            if random.random() < .007:
-                self.subtract_energy(1000)
+        if self.get_energy() > 1000:
+            if random.random() < 1:
+                self.subtract_energy(350)
                 self.set_reproducing(True)
         if self.get_energy() < 0:
             self.die()
@@ -271,11 +278,31 @@ class Carnivore(ReproducingOccupant):
     def __init__(self, color, size, speed, parent):
         ReproducingOccupant.__init__(self, color, size, speed, parent)
         self.needs_vision = True
-        self.set_vision(int(random.random()*400))
-        self.set_burst(4)
-        self.set_strength(5)
+        self.set_vision(int(random.random()*600))
+        self.set_burst(3)
+        self.set_strength(100)
+        # self.set_energy(1000)
         self.scripts.clear()
-        self.scripts["Main"] = MoveTowardPlants()
+        self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
         self.adjust_velocity()
+
+    def reproduce(self):
+        self.set_reproducing(False)
+        if random.random() < .3:
+            color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
+            return Carnivore(color, self.get_size(), self.get_speed(), self)
+        return Carnivore(self.get_color(), self.get_size(), self.get_speed(), self)
+
+    def update(self):
+        """makes the creature change direction occasionally"""
+        if self.get_energy() > 2000:
+            if random.random() < .007:
+                self.subtract_energy(1200)
+                self.set_reproducing(True)
+        if self.get_energy() < 0:
+            self.die()
+        else:
+            self.subtract_energy(1)
+        Occupant.update(self)
