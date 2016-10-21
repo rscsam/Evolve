@@ -13,7 +13,8 @@ class Occupant:
     __burst = 0
     __color = "#FFFFFF"
     __alive = True
-    __energy = 400
+    __energy = 1000
+    __strength = 0
     __vision = -1
     needs_vision = False
     __nearby = []
@@ -76,6 +77,15 @@ class Occupant:
     def set_energy(self, e):
         self.__energy = e
 
+    def get_strength(self):
+        return self.__strength
+
+    def set_strength(self, s):
+        self.__strength = s
+
+    def get_power(self):
+        return self.__strength * self.__energy
+
     def add_energy(self, e):
         self.__energy += e
 
@@ -94,10 +104,8 @@ class Occupant:
     def get_nearby_plants(self):
         nearby = []
         for i in range(0, len(self.__nearby)):
-            nearby = []
-            for i in range(0, len(self.__nearby)):
-                if isinstance(self.__nearby[i][0], Plant):
-                    nearby.append(self.__nearby[i])
+            if isinstance(self.__nearby[i][0], Plant):
+                nearby.append(self.__nearby[i])
         return nearby
 
     def set_nearby(self, n):
@@ -168,6 +176,9 @@ class ReproducingOccupant(Occupant):
     def get_parent(self):
         return self.__parent
 
+    def set_reproducing(self, tf):
+        self.__reproducing = tf
+
     def reproduce(self):
         self.__reproducing = False
         if random.random() < .33:
@@ -218,9 +229,44 @@ class Plant(Occupant):
         return self.__y
 
 
-class Herbivore(Occupant):
-    def __init__(self, color, size, speed):
-        Occupant.__init__(self, color, size, speed)
+class Herbivore(ReproducingOccupant):
+    def __init__(self, color, size, speed, parent):
+        ReproducingOccupant.__init__(self, color, size, speed, parent)
+        self.needs_vision = True
+        self.set_vision(int(random.random()*400))
+        self.set_burst(4)
+        self.set_strength(1)
+        self.scripts.clear()
+        self.scripts["Main"] = MoveTowardPlants()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.adjust_velocity()
+
+    def reproduce(self):
+        self.set_reproducing(False)
+        if random.random() < .33:
+            color = tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color())
+            return Herbivore(color, self.get_size(), self.get_speed(), self)
+        return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self)
+
+    def update(self):
+        """makes the creature change direction occasionally"""
+        if random.random() < .0008:
+            self.set_reproducing(True)
+        if self.get_energy() < 0:
+            self.die()
+        else:
+            self.subtract_energy(1)
+        Occupant.update(self)
+
+
+class Carnivore(ReproducingOccupant):
+    def __init__(self, color, size, speed, parent):
+        ReproducingOccupant.__init__(self, color, size, speed, parent)
+        self.needs_vision = True
+        self.set_vision(int(random.random()*400))
+        self.set_burst(4)
+        self.set_strength(5)
         self.scripts.clear()
         self.scripts["Main"] = MoveTowardPlants()
         self.set_current_script(self.scripts["Main"])

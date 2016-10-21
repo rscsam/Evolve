@@ -29,6 +29,9 @@ class World:
     def add_reproducing(self, x, y, color, size, speed, parent):
         return self.add(ReproducingOccupant(color, size, speed, parent), x, y)
 
+    def add_herbivore(self, x, y, color, size, speed, parent):
+        return self.add(Herbivore(color, size, speed, parent), x, y)
+
     def add_plant(self, x, y):
         return self.add(Plant(x, y), x, y)
 
@@ -46,6 +49,18 @@ class World:
     def set_largest_radius(self, r):
         self.__largest_radius = r
 
+    @staticmethod
+    def fight(dot1, dot2):
+        if dot1.get_occupant().get_power() > dot2.get_occupant().get_power():
+            dot1.get_occupant().add_energy(dot2.get_radius()*70)
+            dot2.kill_trigger()
+        elif dot1.get_occupant().get_power() < dot2.get_occupant().get_power():
+            dot2.get_occupant().add_energy(dot1.get_radius() * 70)
+            dot1.kill_trigger()
+        else:
+            dot1.kill_trigger()
+            dot2.kill_trigger()
+
     def handle_wall_collision(self):
         for dot in self.occupants:
             r = dot.get_radius()
@@ -62,22 +77,17 @@ class World:
                 dot.sety2(self.wheight)
                 dot.get_occupant().hit_lid()
 
-    @staticmethod
-    def handle_collisions(dot, dots):
+    def handle_collisions(self, dot, dots):
         for c in dots:
             distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
-                if not isinstance(c.get_occupant(), ReproducingOccupant):
-                    c.collide_trigger()
-                    dot.collide_trigger()
-                elif c != dot and isinstance(c.get_occupant(), ReproducingOccupant) \
-                        and isinstance(dot.get_occupant(), ReproducingOccupant) \
-                        and c.get_occupant() != dot.get_occupant().get_parent() \
-                        and dot.get_occupant() != c.get_occupant().get_parent() \
+                if c != dot and not isinstance(c.get_occupant(), ReproducingOccupant) \
+                        or (isinstance(dot.get_occupant(), ReproducingOccupant)
+                            and c.get_occupant() != dot.get_occupant().get_parent()
+                            and dot.get_occupant() != c.get_occupant().get_parent()) \
                         and c.get_color() != dot.get_color():
-                    c.collide_trigger()
-                    dot.collide_trigger()
+                    self.fight(c, dot)
 
     @staticmethod
     def update_visions(dot, dots):
@@ -87,7 +97,7 @@ class World:
                 dx = dot.get_centerx() - c.get_centerx()
                 dy = dot.get_centery() - c.get_centery()
                 distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
-                if distance <= (dot.get_vision_radius() + c.get_vision_radius()):
+                if distance <= (dot.get_vision_radius() + c.get_vision_radius()) and distance != 0:
                     nearby.append((c.get_occupant(), dx, dy, distance))
         dot.get_occupant().set_nearby(nearby)
 
