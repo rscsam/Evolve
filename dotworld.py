@@ -52,9 +52,13 @@ class World:
     @staticmethod
     def fight(dot1, dot2):
         if dot1.get_occupant().get_power() > dot2.get_occupant().get_power():
+            dot1.get_occupant().subtract_energy(dot2.get_occupant().get_power()/10)
+            dot2.get_occupant().subtract_energy(dot1.get_occupant().get_power()/10)
             dot1.get_occupant().add_energy(dot2.get_occupant().extract_energy())
             dot2.kill_trigger()
         elif dot1.get_occupant().get_power() < dot2.get_occupant().get_power():
+            dot1.get_occupant().subtract_energy(dot2.get_occupant().get_power()/10)
+            dot2.get_occupant().subtract_energy(dot1.get_occupant().get_power()/10)
             dot2.get_occupant().add_energy(dot1.get_occupant().extract_energy())
             dot1.kill_trigger()
         else:

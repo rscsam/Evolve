@@ -78,7 +78,7 @@ class Occupant:
         self.__energy = e
 
     def extract_energy(self):
-        extracted = self.__size * self.__energy / 10
+        extracted = self.__size * self.__energy / 20
         self.__energy = 0
         return extracted
 
@@ -256,8 +256,10 @@ class Herbivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if random.random() < .0008:
-            self.set_reproducing(True)
+        if self.get_energy() > 2000:
+            if random.random() < .007:
+                self.subtract_energy(1000)
+                self.set_reproducing(True)
         if self.get_energy() < 0:
             self.die()
         else:
