@@ -211,6 +211,10 @@ class MoveTowardPlants(Script):
         m = self.nearby[minimum][3]
         xv = (xv/m) * ms * -1
         yv = (yv/m) * ms * -1
+        if abs(xv) > abs(self.nearby[minimum][1]):
+            xv = self.nearby[minimum][1]
+        if abs(yv) > abs(self.nearby[minimum][2]):
+            yv = self.nearby[minimum][2]
         self.set_x_velocity(xv)
         self.set_y_velocity(yv)
 
