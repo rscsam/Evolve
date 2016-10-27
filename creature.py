@@ -20,25 +20,50 @@ class Occupant:
     __toughness = 1
     __vision = -1
     __mutation_factors = [1, 1, 1, 1, 1, 1, 1]
+    __gencode = []
     needs_vision = False
     __nearby = []
     scripts = {"": None}
     __current_script = None
 
-    def __init__(self, color, size, speed, burst, vision, strength, energy):
-        self.__color = color
-        self.__size = size
-        self.__speed = speed
-        self.__burst = burst
-        self.__vision = vision
+    def __init__(self, g, energy):
+        """GenCode: An array containing each individual gene
+                        G[0] = special identifier
+                        G[1] = vision
+                        G[2] = strength
+                        G[3] = size
+                        G[4] = speed
+                        G[5] = burst
+                        G[6] = color
+                        G[7] = vision mf
+                        G[8] = strength mf
+                        G[9] = size mf
+                        G[10] = speed mf
+                        G[11] = burst mf
+                        G[12] = color mf
+                        G[13] = toughness"""
+        self.__gencode = g
+        self.__color = g[6]
+        self.__size = g[3]
+        self.__speed = g[4]
+        self.__burst = g[5]
+        self.__vision = g[1]
         if self.__vision > 0:
             self.needs_vision = True
-        self.__strength = strength
+        self.__strength = g[2]
+        self.__mutation_factors = [g[7], g[8], g[9], g[10], g[11], g[12]]
+        self.__toughness = g[13]
         self.__nearby.clear()
         self.__energy = energy
         self.scripts.clear()
 
     # Properties and property logic
+    def set_gencode(self, g):
+        self.__gencode = g
+
+    def get_gencode(self):
+        return self.__gencode
+
     def randomize_properties(self, seed):
         self.__vision = int(seed * random.random())
         seed /= 10
@@ -65,33 +90,63 @@ class Occupant:
     # mutation_factors[4] = burst
     # mutation_factors[5] = color
     def mutate_properties(self):
+        changed = False
         if self.__mutation_factors[0] < random.random():
+            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__vision += m
         if self.__mutation_factors[1] < random.random():
+            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__strength += m
         if self.__mutation_factors[2] < random.random():
+            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.set_size(self.__size + m)
         if self.__mutation_factors[3] < random.random():
+            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__speed += m
         if self.__mutation_factors[4] < random.random():
+            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
+            changed = True
             self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
+        if changed:
+            self.set_gencode(self.generate_gencode())
+
+    def generate_gencode(self):
+        """GenCode: An array containing each individual gene
+                        G[0] = special identifier
+                        G[1] = vision
+                        G[2] = strength
+                        G[3] = size
+                        G[4] = speed
+                        G[5] = burst
+                        G[6] = color
+                        G[7] = vision mf
+                        G[8] = strength mf
+                        G[9] = size mf
+                        G[10] = speed mf
+                        G[11] = burst mf
+                        G[12] = color mf
+                        G[13] = toughness"""
+        g = ["a", self.__vision, self.__strength, self.__size, self.__speed, self.__burst, self.__color,
+             self.__mutation_factors[0], self.__mutation_factors[1], self.__mutation_factors[2],
+             self.__mutation_factors[3], self.__mutation_factors[4], self.__mutation_factors[5], self.__toughness]
+        return g
 
     def set_speed(self, speed):
         self.__speed = speed
@@ -171,7 +226,7 @@ class Occupant:
         return self.__strength
 
     def get_power(self):
-        return self.__strength * self.__energy * (self.__size**2)
+        return self.__strength * ((self.__size**2) + self.__energy)
 
     def set_toughness(self, t):
         self.__toughness = t
@@ -245,8 +300,8 @@ class Occupant:
 class ConvenientOccupant(Occupant):
     """An occupant designed to do whatever helps with debugging"""
 
-    def __init__(self, color, size, speed, burst, vision, strength, energy):
-        Occupant.__init__(self, color, size, speed, burst, vision, strength, energy)
+    def __init__(self, g, energy):
+        Occupant.__init__(self, g, energy)
         self.scripts.clear()
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
@@ -257,8 +312,8 @@ class ConvenientOccupant(Occupant):
 class Squawker(Occupant):
     """An occupant that moves according to the famous S Q U A W K B O Y S movement algorithm"""
 
-    def __init__(self, color, size, speed, burst, vision, strength, energy):
-        Occupant.__init__(self, color, size, speed, burst, vision, strength, energy)
+    def __init__(self, g, energy):
+        Occupant.__init__(self, g, energy)
         self.scripts.clear()
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
@@ -271,10 +326,8 @@ class ReproducingOccupant(Occupant):
     __reproducing = False
     __parent = None
 
-    def __init__(self, color, size, speed, burst, vision, strength, energy, parent):
-        Occupant.__init__(self, color, size, speed, burst, vision, strength, energy)
-        mf = [1, 1, 1, 1, 1, 0.67]
-        self.set_mutation_factors(mf)
+    def __init__(self, g, energy, parent):
+        Occupant.__init__(self, g, energy)
         self.mutate_properties()
         self.__parent = parent
         self.scripts.clear()
@@ -291,8 +344,7 @@ class ReproducingOccupant(Occupant):
 
     def reproduce(self):
         self.__reproducing = False
-        return ReproducingOccupant(self.get_color(), self.get_size(), self.get_speed(), self.get_burst(),
-                                   self.get_vision(), self.get_strength(), self.get_base_energy(), self)
+        return ReproducingOccupant(self.get_gencode(), self.get_base_energy(), self)
 
     def reproducing(self):
         return self.__reproducing
@@ -301,10 +353,6 @@ class ReproducingOccupant(Occupant):
         """makes the creature change direction occasionally"""
         if random.random() < .008:
             self.__reproducing = True
-        if self.get_energy() < 0:
-            self.die()
-        else:
-            self.subtract_energy(1)
         Occupant.update(self)
 
 
@@ -318,8 +366,8 @@ class Plant(Occupant):
     __counter = __growth_rate
 
     def __init__(self, x, y, energy):
-        Occupant.__init__(self, "#228B22", 10, 0, 0, -1, 0, energy)
-        self.set_toughness(10)
+        g = ["plant", -1, 0, 10, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 10]
+        Occupant.__init__(self, g, energy)
         self.__x = x
         self.__y = y
 
@@ -338,12 +386,9 @@ class Plant(Occupant):
 
 
 class Herbivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, burst, vision, strength, energy, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, burst, vision, strength, energy, parent)
-        mf = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
-        self.set_mutation_factors(mf)
+    def __init__(self, g, energy, parent):
+        ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_toughness(5)
         self.scripts.clear()
         self.scripts["Main"] = MoveTowardPlants()
         self.set_current_script(self.scripts["Main"])
@@ -353,8 +398,7 @@ class Herbivore(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
         self.set_energy(self.get_energy()/2)
-        return Herbivore(self.get_color(), self.get_size(), self.get_speed(), self.get_burst(),
-                         self.get_vision(), self.get_strength(), self.get_base_energy(), self)
+        return Herbivore(self.get_gencode(), self.get_base_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
@@ -365,12 +409,9 @@ class Herbivore(ReproducingOccupant):
 
 
 class Carnivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, burst, vision, strength, energy, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, burst, vision, strength, energy, parent)
-        mf = [0.9, 0.9, 0.9, 0.9, 0.9, 0.7]
-        self.set_mutation_factors(mf)
+    def __init__(self, g, energy, parent):
+        ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -380,8 +421,7 @@ class Carnivore(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
         self.set_energy(self.get_energy()/2)
-        return Carnivore(self.get_color(), self.get_size(), self.get_speed(), self.get_burst(),
-                         self.get_vision(), self.get_strength(), self.get_base_energy(), self)
+        return Carnivore(self.get_gencode(), self.get_base_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
@@ -392,12 +432,9 @@ class Carnivore(ReproducingOccupant):
 
 
 class PassiveCarnivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, burst, vision, strength, energy, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, burst, vision, strength, energy, parent)
-        mf = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
-        self.set_mutation_factors(mf)
+    def __init__(self, g, energy, parent):
+        ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -408,8 +445,7 @@ class PassiveCarnivore(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
         self.set_energy(self.get_energy()/2)
-        return PassiveCarnivore(self.get_color(), self.get_size(), self.get_speed(), self.get_burst(),
-                                self.get_vision(), self.get_strength(), self.get_base_energy(), self)
+        return PassiveCarnivore(self.get_gencode(), self.get_base_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
@@ -420,12 +456,9 @@ class PassiveCarnivore(ReproducingOccupant):
 
 
 class Omnivore(ReproducingOccupant):
-    def __init__(self, color, size, speed, burst, vision, strength, energy, parent):
-        ReproducingOccupant.__init__(self, color, size, speed, burst, vision, strength, energy, parent)
-        mf = [0.9, 0.9, 0.9, 0.9, 0.9, 0.7]
-        self.set_mutation_factors(mf)
+    def __init__(self, g, energy, parent):
+        ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -437,12 +470,36 @@ class Omnivore(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
         self.set_energy(self.get_energy()/2)
-        return Omnivore(self.get_color(), self.get_size(), self.get_speed(), self.get_burst(),
-                        self.get_vision(), self.get_strength(), self.get_base_energy(), self)
+        return Omnivore(self.get_gencode(), self.get_base_energy(), self)
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 4*self.get_base_energy():
+        if self.get_energy() > 2*self.get_base_energy():
+            if random.random() < .001:
+                self.set_reproducing(True)
+        Occupant.update(self)
+
+
+class VersatileOccupant(ReproducingOccupant):
+    def __init__(self, g, energy, parent):
+        ReproducingOccupant.__init__(self, g, energy, parent)
+        self.mutate_properties()
+        self.scripts.clear()
+        self.scripts["Main"] = HuntHerbivores()
+        self.set_current_script(self.scripts["Main"])
+        self.get_current_script().load(self)
+        self.scripts["Main"].load_subscript(MoveTowardPlants())
+        self.scripts["Main"].subscript.load_subscript(StayStill())
+        self.adjust_velocity()
+
+    def reproduce(self):
+        self.set_reproducing(False)
+        self.set_energy(self.get_energy()/2)
+        return VersatileOccupant(self.get_gencode(), self.get_base_energy(), self)
+
+    def update(self):
+        """makes the creature change direction occasionally"""
+        if self.get_energy() > 2*self.get_base_energy():
             if random.random() < .001:
                 self.set_reproducing(True)
         Occupant.update(self)

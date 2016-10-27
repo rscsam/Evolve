@@ -17,29 +17,29 @@ class World:
         self.occupants.append(c)
         return c
 
-    def add_occupant(self, x, y, color, size, speed, burst, vision, strength, energy):
-        return self.add(Occupant(color, size, speed, burst, vision, strength, energy), x, y)
+    def add_occupant(self, x, y, gencode, energy):
+        return self.add(Occupant(gencode, energy), x, y)
 
-    def add_convenient(self, x, y, color, size, speed, burst, vision, strength, energy):
-        return self.add(ConvenientOccupant(color, size, speed, burst, vision, strength, energy), x, y)
+    def add_convenient(self, x, y, gencode, energy):
+        return self.add(ConvenientOccupant(gencode, energy), x, y)
 
-    def add_squawker(self, x, y, color, size, speed, burst, vision, strength, energy):
-        return self.add(Squawker(color, size, speed, burst, vision, strength, energy), x, y)
+    def add_squawker(self, x, y, gencode, energy):
+        return self.add(Squawker(gencode, energy), x, y)
 
-    def add_reproducing(self, x, y, color, size, speed, burst, vision, strength, energy, parent):
-        return self.add(ReproducingOccupant(color, size, speed, burst, vision, strength, energy, parent), x, y)
+    def add_reproducing(self, x, y, gencode, energy, parent):
+        return self.add(ReproducingOccupant(gencode, energy, parent), x, y)
 
-    def add_herbivore(self, x, y, color, size, speed, burst, vision, strength, energy, parent):
-        return self.add(Herbivore(color, size, speed, burst, vision, strength, energy, parent), x, y)
+    def add_herbivore(self, x, y, gencode, energy, parent):
+        return self.add(Herbivore(gencode, energy, parent), x, y)
 
-    def add_carnivore(self, x, y, color, size, speed, burst, vision, strength, energy, parent):
-        return self.add(Carnivore(color, size, speed, burst, vision, strength, energy, parent), x, y)
+    def add_carnivore(self, x, y, gencode, energy, parent):
+        return self.add(Carnivore(gencode, energy, parent), x, y)
 
-    def add_passive_carnivore(self, x, y, color, size, speed, burst, vision, strength, energy, parent):
-        return self.add(PassiveCarnivore(color, size, speed, burst, vision, strength, energy, parent), x, y)
+    def add_passive_carnivore(self, x, y, gencode, energy, parent):
+        return self.add(PassiveCarnivore(gencode, energy, parent), x, y)
 
-    def add_omnivore(self, x, y, color, size, speed, burst, vision, strength, energy, parent):
-        return self.add(Omnivore(color, size, speed, burst, vision, strength, energy, parent), x, y)
+    def add_omnivore(self, x, y, gencode, energy, parent):
+        return self.add(Omnivore(gencode, energy, parent), x, y)
 
     def add_plant(self, x, y, energy):
         return self.add(Plant(x, y, energy), x, y)
