@@ -280,7 +280,7 @@ class Occupant:
         return self.__strength
 
     def get_power(self):
-        return self.__strength * ((self.__size**2) + self.__energy)
+        return self.__strength * ((self.__size**2) + (self.__energy**0.5))
 
     def set_toughness(self, t):
         self.__toughness = t
