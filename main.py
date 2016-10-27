@@ -6,9 +6,10 @@ import creature
 import tools as tools
 from dotworld import World
 
+
 class App:
     """The primary program that will be run"""
-    running = True
+    running = False
     speed = 10
 
     CANVAS_HEIGHT = 600
@@ -80,7 +81,8 @@ class App:
 
     def _add_callback(self):
         """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
-        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#424242", 3, 4, 1000))
+        self.draw_dot(self.world.add_occupant(int(self.xEntry.get()), int(self.yEntry.get()), "#424242",
+                                              3, 1, 0, -1, 4, 1000))
 
     def _apply_cs_changes(self):
         """Applies to the current selection the attributes typed into the text boxes"""
@@ -93,7 +95,7 @@ class App:
     def _canvas_on_click(self, event):
         """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_convenient(event.x, event.y, '#696969', 3, 4, 10000))
+        self.draw_dot(self.world.add_convenient(event.x, event.y, '#696969', 3, 4, 0, -1, 100, 10000))
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -110,8 +112,8 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        self.world.add_herbivore(300, 30, tools.random_color(), 5, 3, 10000, None)
-        self.world.add_omnivore(600, 500, tools.random_color(), 15, 1, 10000, None)
+        self.world.add_herbivore(300, 30, tools.random_color(), 5, 3, 4, 150, 1, 10000, None)
+        self.world.add_omnivore(600, 500, tools.random_color(), 15, 1, 1, 250, 100, 10000, None)
         # self.world.add_convenient(200, 200, tools.random_color(), 10, 1, 1000000)
 
     def _init_spawners(self):
