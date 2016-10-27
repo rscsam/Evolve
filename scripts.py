@@ -243,3 +243,33 @@ class HuntHerbivores(Script):
         yv = (yv/m) * ms * -1
         self.set_x_velocity(xv)
         self.set_y_velocity(yv)
+
+
+class HuntForMeat(Script):
+
+    def load(self, occupant):
+        Script.load(self, occupant)
+        self.load_subscript(MoveLikeSquawker())
+        self.nearby = occupant.get_nearby()
+        self.update()
+
+    def update(self):
+        self.nearby = self.get_occupant().get_nearby_meat()
+        minimum = -1
+        if len(self.nearby) > 0:
+            for i in range(0, len(self.nearby)):
+                if i == 0:
+                    minimum = i
+                elif self.nearby[i][3] < self.nearby[minimum][3]:
+                    minimum = i
+        else:
+            self.update_subscript()
+            return
+        ms = self.get_max_speed() + self.get_occupant().get_burst()
+        xv = self.nearby[minimum][1]
+        yv = self.nearby[minimum][2]
+        m = self.nearby[minimum][3]
+        xv = (xv/m) * ms * -1
+        yv = (yv/m) * ms * -1
+        self.set_x_velocity(xv)
+        self.set_y_velocity(yv)

@@ -35,6 +35,12 @@ class World:
     def add_carnivore(self, x, y, color, size, speed, energy, parent):
         return self.add(Carnivore(color, size, speed, energy, parent), x, y)
 
+    def add_passive_carnivore(self, x, y, color, size, speed, energy, parent):
+        return self.add(PassiveCarnivore(color, size, speed, energy, parent), x, y)
+
+    def add_omnivore(self, x, y, color, size, speed, energy, parent):
+        return self.add(Omnivore(color, size, speed, energy, parent), x, y)
+
     def add_plant(self, x, y, energy):
         return self.add(Plant(x, y, energy), x, y)
 

@@ -108,12 +108,13 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        self.world.add_herbivore(70, 30, '#DAB420', 5, 3, 1000, None)
-        self.world.add_carnivore(600, 500, '#420DAB', 5, 1, 1000, None)
+        self.world.add_herbivore(300, 30, tools.random_color(), 5, 3, 10000, None)
+        # self.world.add_passive_carnivore(600, 500, tools.random_color(), 15, 1, 2500, None)
+        self.world.add_omnivore(600, 500, tools.random_color(), 15, 1, 2500, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(10, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
 
     def _pause_callback(self):
