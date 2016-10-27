@@ -106,30 +106,35 @@ class Occupant:
                 m = -1
             self.__vision += m
         if self.__mutation_factors[1] < random.random():
+            change += 2
             changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__strength += m
         if self.__mutation_factors[2] < random.random():
+            change += 4
             changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.set_size(self.__size + m)
         if self.__mutation_factors[3] < random.random():
+            change += 8
             changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__speed += m
         if self.__mutation_factors[4] < random.random():
+            change += 16
             changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
+            change += 32
             changed = True
             self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
         if random.random() < 0.99:
