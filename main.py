@@ -9,7 +9,7 @@ from dotworld import World
 
 class App:
     """The primary program that will be run"""
-    running = False
+    running = True
     speed = 10
 
     CANVAS_HEIGHT = 600
@@ -82,7 +82,7 @@ class App:
     def _add_callback(self):
         """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
-                                                ["C", 250, 10, 15, 2, 1, tools.random_color(),
+                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
                                                  .99, .99, .99, .99, .99, .5, 2], 10000))
 
     def _apply_cs_changes(self):
@@ -97,7 +97,7 @@ class App:
         """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
         self.canvas.focus_set()
         self.draw_dot(self.world.add_convenient(event.x, event.y,
-                                                ["C", 250, 10, 15, 2, 1, tools.random_color(),
+                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
                                                  .99, .99, .99, .99, .99, .5, 2], 10000))
 
     def _create_circle(self, x, y, r, **kwargs):
@@ -107,7 +107,7 @@ class App:
     def _draw_dots(self):
         """"draw dots initialized previously"""
         for c in self.world.occupants:
-            ref = self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=c.get_color(), width=0)
+            ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
             c.set_reference(ref)
             self.dot_parrallels[ref] = c
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
@@ -118,9 +118,10 @@ class App:
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_herbivore(300, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
                                            .99, .99, .99, .99, .99, .99, 5], 10000, None)
+        self.world.add_herbivore(1100, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
+                                           .99, .99, .99, .99, .99, .99, 5], 10000, None)
         self.world.add_omnivore(600, 600, ["C", 250, 10, 15, 2, 1, tools.random_color(),
                                            .99, .99, .99, .99, .99, .9, 2], 10000, None)
-        # self.world.add_convenient(200, 200, tools.random_color(), 10, 1, 1000000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
@@ -146,7 +147,7 @@ class App:
 
     def draw_dot(self, c):
         """"Draw dot, which had not been initialized"""
-        ref = self._create_circle(c.getx(), c.gety(), c.get_radius(), fill=c.get_color(), width=0)
+        ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
         c.set_reference(ref)
         self.dot_parrallels[ref] = c
         self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))

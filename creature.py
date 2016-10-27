@@ -20,6 +20,7 @@ class Occupant:
     __toughness = 1
     __vision = -1
     __mutation_factors = [1, 1, 1, 1, 1, 1, 1]
+    __species = ""
     __gencode = []
     needs_vision = False
     __nearby = []
@@ -43,6 +44,7 @@ class Occupant:
                         G[12] = color mf
                         G[13] = toughness"""
         self.__gencode = g
+        self.__species = g[0]
         self.__color = g[6]
         self.__size = g[3]
         self.__speed = g[4]
@@ -64,6 +66,9 @@ class Occupant:
     def get_gencode(self):
         return self.__gencode
 
+    def get_species(self):
+        return self.__species
+
     def randomize_properties(self, seed):
         self.__vision = int(seed * random.random())
         seed /= 10
@@ -82,6 +87,7 @@ class Occupant:
         rand = random.random() * seed
         self.__burst = int(seed - rand)
         self.__color = tools.random_color()
+        self.set_gencode(self.generate_gencode())
 
     # mutation_factors[0] = vision
     # mutation_factors[1] = strength
@@ -91,8 +97,10 @@ class Occupant:
     # mutation_factors[5] = color
     def mutate_properties(self):
         changed = False
+        change = 0
         if self.__mutation_factors[0] < random.random():
             changed = True
+            change += 1
             m = 1
             if random.random() < 0.5:
                 m = -1
@@ -124,6 +132,42 @@ class Occupant:
         if self.__mutation_factors[5] < random.random():
             changed = True
             self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[0] += m
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[1] += m
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[2] += m
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[3] += m
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[4] += m
+        if random.random() < 0.99:
+            changed = True
+            m = 0.01
+            if random.random() < 0.5:
+                m = -0.01
+                self.__mutation_factors[5] += m
         if changed:
             self.set_gencode(self.generate_gencode())
 
@@ -143,7 +187,7 @@ class Occupant:
                         G[11] = burst mf
                         G[12] = color mf
                         G[13] = toughness"""
-        g = ["a", self.__vision, self.__strength, self.__size, self.__speed, self.__burst, self.__color,
+        g = [self.__species, self.__vision, self.__strength, self.__size, self.__speed, self.__burst, self.__color,
              self.__mutation_factors[0], self.__mutation_factors[1], self.__mutation_factors[2],
              self.__mutation_factors[3], self.__mutation_factors[4], self.__mutation_factors[5], self.__toughness]
         return g
@@ -196,6 +240,9 @@ class Occupant:
     def get_size(self):
         return self.__size
 
+    def set_base_energy(self, e):
+        self.__base_energy = e
+
     def get_base_energy(self):
         return self.__base_energy
 
@@ -215,6 +262,8 @@ class Occupant:
 
     def subtract_energy(self, e):
         self.__energy -= e
+        if self.__energy <= 0:
+            self.__energy = 0
 
     def respire(self):
         self.subtract_energy(self.__size * self.__current_speed/3 + self.get_size())
@@ -303,6 +352,7 @@ class ConvenientOccupant(Occupant):
     def __init__(self, g, energy):
         Occupant.__init__(self, g, energy)
         self.scripts.clear()
+        self.randomize_properties(300)
         self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
@@ -402,7 +452,7 @@ class Herbivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 2*self.get_base_energy():
+        if self.get_energy() > (self.get_size()**0.5)*self.get_base_energy():
             if random.random() < 0.5:
                 self.set_reproducing(True)
         Occupant.update(self)
@@ -425,32 +475,8 @@ class Carnivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 4*self.get_base_energy():
+        if self.get_energy() > (self.get_size())*self.get_base_energy():
             if random.random() < .0001:
-                self.set_reproducing(True)
-        Occupant.update(self)
-
-
-class PassiveCarnivore(ReproducingOccupant):
-    def __init__(self, g, energy, parent):
-        ReproducingOccupant.__init__(self, g, energy, parent)
-        self.mutate_properties()
-        self.scripts.clear()
-        self.scripts["Main"] = HuntHerbivores()
-        self.set_current_script(self.scripts["Main"])
-        self.get_current_script().load(self)
-        self.scripts["Main"].load_subscript(StayStill())
-        self.adjust_velocity()
-
-    def reproduce(self):
-        self.set_reproducing(False)
-        self.set_energy(self.get_energy()/2)
-        return PassiveCarnivore(self.get_gencode(), self.get_base_energy(), self)
-
-    def update(self):
-        """makes the creature change direction occasionally"""
-        if self.get_energy() > 4*self.get_base_energy():
-            if random.random() < .001:
                 self.set_reproducing(True)
         Occupant.update(self)
 
@@ -459,6 +485,7 @@ class Omnivore(ReproducingOccupant):
     def __init__(self, g, energy, parent):
         ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
+        self.set_base_energy(30000)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -474,8 +501,8 @@ class Omnivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > 2*self.get_base_energy():
-            if random.random() < .001:
+        if self.get_energy() > (self.get_size())*self.get_base_energy():
+            if random.random() < 0.5:
                 self.set_reproducing(True)
         Occupant.update(self)
 

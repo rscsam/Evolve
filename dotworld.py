@@ -35,9 +35,6 @@ class World:
     def add_carnivore(self, x, y, gencode, energy, parent):
         return self.add(Carnivore(gencode, energy, parent), x, y)
 
-    def add_passive_carnivore(self, x, y, gencode, energy, parent):
-        return self.add(PassiveCarnivore(gencode, energy, parent), x, y)
-
     def add_omnivore(self, x, y, gencode, energy, parent):
         return self.add(Omnivore(gencode, energy, parent), x, y)
 
@@ -93,11 +90,7 @@ class World:
             distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
-                if c != dot and not isinstance(c.get_occupant(), ReproducingOccupant) \
-                        or (isinstance(dot.get_occupant(), ReproducingOccupant)
-                            and c.get_occupant() != dot.get_occupant().get_parent()
-                            and dot.get_occupant() != c.get_occupant().get_parent()) \
-                        and c.get_color() != dot.get_color():
+                if c != dot and not dot.get_occupant().get_species() == c.get_occupant().get_species():
                     self.fight(c, dot)
 
     @staticmethod
