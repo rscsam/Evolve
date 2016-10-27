@@ -17,6 +17,7 @@ class Occupant:
     __base_energy = 10000
     __energy = __base_energy
     __strength = 0
+    __toughness = 1
     __vision = -1
     needs_vision = False
     __nearby = []
@@ -29,37 +30,31 @@ class Occupant:
         self.__speed = speed
         self.__nearby.clear()
         self.__energy = energy
+        self.__base_energy = energy
+        self.__energy += energy/2
         self.scripts.clear()
 
-    def set_x_velocity(self, x):
-        self.__x_velocity = x
-
-    def get_x_velocity(self):
-        return self.__x_velocity
-
-    def set_y_velocity(self, y):
-        self.__y_velocity = y
-
-    def set_color(self, color):
-        self.__color = color
-
-    def get_color(self):
-        return self.__color
-
-    def hit_side(self):
-        self.set_x_velocity(self.get_x_velocity() * -1)
-
-    def hit_lid(self):
-        self.set_y_velocity(self.get_y_velocity() * -1)
-
-    def get_y_velocity(self):
-        return self.__y_velocity
-
-    def set_size(self, size):
-        self.__size = size
-
-    def get_size(self):
-        return self.__size
+    # Properties and property logic
+    def randomize_properties(self, seed):
+        self.__vision = int(seed * random.random())
+        seed /= 10
+        rand = random.random() * seed
+        self.__strength = int(rand)
+        seed = int(seed - rand)
+        rand = random.random() * seed
+        self.__size = int(rand)
+        if self.__size < 1:
+            self.__size = 1
+        seed = int(seed - rand)
+        rand = random.random() * seed
+        self.__speed = int(rand)/3
+        if self.__speed < 1:
+            if random.random() < 0.8:
+                self.__speed = 1
+        seed = int(seed - rand)
+        rand = random.random() * seed
+        self.__burst = int(seed - rand)
+        self.__color = tools.random_color()
 
     def set_speed(self, speed):
         self.__speed = speed
@@ -77,28 +72,49 @@ class Occupant:
     def get_burst(self):
         return self.__burst
 
+    def set_x_velocity(self, x):
+        self.__x_velocity = x
+
+    def get_x_velocity(self):
+        return self.__x_velocity
+
+    def set_y_velocity(self, y):
+        self.__y_velocity = y
+
+    def get_y_velocity(self):
+        return self.__y_velocity
+
+    def hit_side(self):
+        self.set_x_velocity(self.get_x_velocity() * -1)
+
+    def hit_lid(self):
+        self.set_y_velocity(self.get_y_velocity() * -1)
+
+    def set_color(self, color):
+        self.__color = color
+
+    def get_color(self):
+        return self.__color
+
+    def set_size(self, size):
+        self.__size = size
+
+    def get_size(self):
+        return self.__size
+
     def get_base_energy(self):
         return self.__base_energy
-
-    def get_energy(self):
-        return self.__energy
 
     def set_energy(self, e):
         self.__energy = e
 
+    def get_energy(self):
+        return self.__energy
+
     def extract_energy(self):
-        extracted = self.__size * self.__energy / 10
+        extracted = self.__size * self.__energy / (self.get_toughness()+1)
         self.__energy = 0
         return extracted
-
-    def get_strength(self):
-        return self.__strength
-
-    def set_strength(self, s):
-        self.__strength = s
-
-    def get_power(self):
-        return self.__strength * self.__energy
 
     def add_energy(self, e):
         self.__energy += e
@@ -109,11 +125,29 @@ class Occupant:
     def respire(self):
         self.subtract_energy(self.__size * self.__current_speed/3 + self.get_size())
 
-    def get_vision(self):
-        return self.__vision
+    def set_strength(self, s):
+        self.__strength = s
+
+    def get_strength(self):
+        return self.__strength
+
+    def get_power(self):
+        return self.__strength * self.__energy * (self.__size**2)
+
+    def set_toughness(self, t):
+        self.__toughness = t
+
+    def get_toughness(self):
+        return self.__toughness
 
     def set_vision(self, v):
         self.__vision = v
+
+    def get_vision(self):
+        return self.__vision
+
+    def set_nearby(self, n):
+        self.__nearby = n
 
     def get_nearby(self):
         return self.__nearby
@@ -132,33 +166,19 @@ class Occupant:
                 nearby.append(self.__nearby[i])
         return nearby
 
-    def get_nearby_meat(self):
-        nearby = []
-        for i in range(0, len(self.__nearby)):
-            if not isinstance(self.__nearby[i][0], Plant):
-                if self.__nearby[i][0].get_color() is not self.__color\
-                    and (not isinstance(self, ReproducingOccupant)
-                        and not isinstance(self.__nearby[i][0], ReproducingOccupant))\
-                    and isinstance(self, ReproducingOccupant)\
-                    and self.__nearby[i][0].get_parent() != self\
-                        and self.get_parent():
-                        nearby.append(self.get_nearby()[i][0])
-        return nearby
-
-    def set_nearby(self, n):
-        self.__nearby = n
-
+    # Living and dying logic
     def die(self):
         self.__alive = False
 
     def alive(self):
         return self.__alive
 
-    def get_current_script(self):
-        return self.__current_script
-
+    # Script logic
     def set_current_script(self, s):
         self.__current_script = s
+
+    def get_current_script(self):
+        return self.__current_script
 
     def adjust_velocity(self):
         xv = self.get_current_script().get_x_velocity()
@@ -167,10 +187,14 @@ class Occupant:
         self.set_y_velocity(yv)
         self.__current_speed = ((xv**2)+(yv**2))**0.5
 
+    # Main loop
     def update(self):
         """changes the position of the occupant"""
         self.__current_script.update()
         self.adjust_velocity()
+        self.respire()
+        if self.get_energy() < 0:
+            self.die()
 
 
 class ConvenientOccupant(Occupant):
@@ -178,10 +202,9 @@ class ConvenientOccupant(Occupant):
     def __init__(self, color, size, speed, energy):
         Occupant.__init__(self, color, size, speed, energy)
         self.needs_vision = True
-        self.set_vision(300)
-        self.set_burst(9)
+        self.randomize_properties(400)
         self.scripts.clear()
-        self.scripts["Main"] = MoveTowardPlants()
+        self.scripts["Main"] = MoveLikeSquawker()
         self.set_current_script(self.scripts["Main"])
         self.get_current_script().load(self)
         self.adjust_velocity()
@@ -252,6 +275,7 @@ class Plant(Occupant):
 
     def __init__(self, x, y, energy):
         Occupant.__init__(self, "#228B22", 10, 0, energy)
+        self.set_toughness(10)
         self.__x = x
         self.__y = y
 
@@ -276,6 +300,7 @@ class Herbivore(ReproducingOccupant):
         self.set_vision(int(random.random()*400))
         self.set_burst(3)
         self.set_strength(1)
+        self.set_toughness(5)
         self.scripts.clear()
         self.scripts["Main"] = MoveTowardPlants()
         self.set_current_script(self.scripts["Main"])
@@ -292,13 +317,9 @@ class Herbivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > self.get_base_energy():
+        if self.get_energy() > 2*self.get_base_energy():
             if random.random() < 0.5:
                 self.set_reproducing(True)
-        if self.get_energy() < 0:
-            self.die()
-        else:
-            self.respire()
         Occupant.update(self)
 
 
@@ -309,6 +330,7 @@ class Carnivore(ReproducingOccupant):
         self.set_vision(int(random.random()*600))
         self.set_burst(2)
         self.set_strength(1000)
+        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -328,11 +350,8 @@ class Carnivore(ReproducingOccupant):
         if self.get_energy() > 4*self.get_base_energy():
             if random.random() < .0001:
                 self.set_reproducing(True)
-        if self.get_energy() < 0:
-            self.die()
-        else:
-            self.respire()
         Occupant.update(self)
+
 
 class PassiveCarnivore(ReproducingOccupant):
     def __init__(self, color, size, speed, energy, parent):
@@ -341,6 +360,7 @@ class PassiveCarnivore(ReproducingOccupant):
         self.set_vision(int(random.random()*600))
         self.set_burst(2)
         self.set_strength(1000)
+        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -361,10 +381,6 @@ class PassiveCarnivore(ReproducingOccupant):
         if self.get_energy() > 4*self.get_base_energy():
             if random.random() < .001:
                 self.set_reproducing(True)
-        if self.get_energy() < 0:
-            self.die()
-        else:
-            self.respire()
         Occupant.update(self)
 
 
@@ -372,9 +388,11 @@ class Omnivore(ReproducingOccupant):
     def __init__(self, color, size, speed, energy, parent):
         ReproducingOccupant.__init__(self, color, size, speed, energy, parent)
         self.needs_vision = True
-        self.set_vision(int(random.random()*600))
-        self.set_burst(2)
-        self.set_strength(1000)
+        # self.set_vision(int(random.random()*600))
+        # self.set_burst(2)
+        # self.set_strength(100)
+        self.randomize_properties(400)
+        self.set_toughness(2)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
@@ -396,8 +414,4 @@ class Omnivore(ReproducingOccupant):
         if self.get_energy() > 4*self.get_base_energy():
             if random.random() < .001:
                 self.set_reproducing(True)
-        if self.get_energy() < 0:
-            self.die()
-        else:
-            self.respire()
         Occupant.update(self)

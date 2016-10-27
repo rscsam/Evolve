@@ -7,8 +7,8 @@ class World:
     occupants = []
     staticoccupants = []
     spawners = []
-    wheight = 600
-    wwidth = 1200
+    wheight = 0
+    wwidth = 0
     __largest_radius = 0
 
     def add(self, occupant, x, y):

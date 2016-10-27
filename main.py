@@ -14,6 +14,8 @@ class App:
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
     world = World()
+    world.wheight = CANVAS_HEIGHT
+    world.wwidth = CANVAS_WIDTH
 
     dot_parrallels = {None: None}
     spawn_map = {None: None}
@@ -91,7 +93,7 @@ class App:
     def _canvas_on_click(self, event):
         """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_squawker(event.x, event.y, '#696969', 3, 4, 1000))
+        self.draw_dot(self.world.add_convenient(event.x, event.y, '#696969', 3, 4, 10000))
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -109,8 +111,8 @@ class App:
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         self.world.add_herbivore(300, 30, tools.random_color(), 5, 3, 10000, None)
-        # self.world.add_passive_carnivore(600, 500, tools.random_color(), 15, 1, 2500, None)
-        self.world.add_omnivore(600, 500, tools.random_color(), 15, 1, 2500, None)
+        self.world.add_omnivore(600, 500, tools.random_color(), 15, 1, 10000, None)
+        # self.world.add_convenient(200, 200, tools.random_color(), 10, 1, 1000000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
