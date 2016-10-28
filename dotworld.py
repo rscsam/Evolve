@@ -92,8 +92,8 @@ class World:
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and \
                         ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-5]) or
-                        (len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()
-                        == c.get_occupant().get_species()):
+                         (len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()[0]
+                         == c.get_occupant().get_species()[0]):
                     self.fight(c, dot)
 
     @staticmethod
