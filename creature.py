@@ -99,7 +99,6 @@ class Occupant:
         changed = False
         change = 0
         if self.__mutation_factors[0] < random.random():
-            changed = True
             change += 1
             m = 1
             if random.random() < 0.5:
@@ -107,40 +106,35 @@ class Occupant:
             self.__vision += m
         if self.__mutation_factors[1] < random.random():
             change += 2
-            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__strength += m
         if self.__mutation_factors[2] < random.random():
             change += 4
-            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.set_size(self.__size + m)
         if self.__mutation_factors[3] < random.random():
             change += 8
-            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__speed += m
         if self.__mutation_factors[4] < random.random():
             change += 16
-            changed = True
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
             change += 32
-            changed = True
             self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
         if random.random() < 0.99:
-            changed = True
             m = 0.01
             if random.random() < 0.5:
+                changed = True
                 m = -0.01
                 self.__mutation_factors[0] += m
         if random.random() < 0.99:
@@ -156,6 +150,7 @@ class Occupant:
                 m = -0.01
                 self.__mutation_factors[2] += m
         if random.random() < 0.99:
+            changed = True
             changed = True
             m = 0.01
             if random.random() < 0.5:
@@ -173,7 +168,17 @@ class Occupant:
             if random.random() < 0.5:
                 m = -0.01
                 self.__mutation_factors[5] += m
-        if changed:
+        if change != 0:
+            if change == 63:
+                self.__species += "$"
+            elif change <= 10:
+                self.__species += chr(change + 47)
+            elif change <= 36:
+                self.__species += chr(change + 54)
+            else:
+                self.__species += chr(change + 60)
+            self.set_gencode(self.generate_gencode())
+        elif changed:
             self.set_gencode(self.generate_gencode())
 
     def generate_gencode(self):
@@ -271,7 +276,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy(self.__size * self.__current_speed/3 + self.get_size())
+        self.subtract_energy((self.__size**2) * self.__current_speed/3 + self.get_size())
 
     def set_strength(self, s):
         self.__strength = s
