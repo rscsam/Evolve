@@ -91,8 +91,8 @@ class World:
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and \
-                        ((not dot.get_occupant().get_species()[:-2] == c.get_occupant().get_species()[:-2]) or
-                        (len(dot.get_occupant().get_species()) < 3) and not dot.get_occupant().get_species()
+                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-5]) or
+                        (len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()
                         == c.get_occupant().get_species()):
                     self.fight(c, dot)
 

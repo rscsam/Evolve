@@ -276,7 +276,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size**2) * self.__current_speed/3 + self.get_size())
+        self.subtract_energy((self.__size**2) * self.__current_speed/3 + (self.get_size()**2))
 
     def set_strength(self, s):
         self.__strength = s
@@ -426,7 +426,7 @@ class Plant(Occupant):
     __counter = __growth_rate
 
     def __init__(self, x, y, energy):
-        g = ["plant", -1, 0, 10, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 10]
+        g = ["plant", -1, 0, 10, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
         Occupant.__init__(self, g, energy)
         self.__x = x
         self.__y = y
