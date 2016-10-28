@@ -9,7 +9,7 @@ from dotworld import World
 
 class App:
     """The primary program that will be run"""
-    running = True
+    running = False
     speed = 10
 
     CANVAS_HEIGHT = 600
@@ -120,7 +120,7 @@ class App:
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
         self.world.add_herbivore(1100, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
-        #self.world.add_omnivore(600, 600, ["C", 250, 10, 15, 2, 1, tools.random_color(),
+        #self.world.add_omnivore(600, 600, ["C", 250, 10, 15, 1, 0, tools.random_color(),
         #                                   .99, .99, .99, .99, .99, .9, 2], 10000, None)
 
     def _init_spawners(self):
