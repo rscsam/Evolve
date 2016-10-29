@@ -132,41 +132,41 @@ class Occupant:
             change += 32
             self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
         if random.random() < 0.99:
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
                 changed = True
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[0] += m
         if random.random() < 0.99:
             changed = True
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[1] += m
         if random.random() < 0.99:
             changed = True
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[2] += m
         if random.random() < 0.99:
             changed = True
             changed = True
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[3] += m
         if random.random() < 0.99:
             changed = True
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[4] += m
         if random.random() < 0.99:
             changed = True
-            m = 0.01
+            m = 0.0001
             if random.random() < 0.5:
-                m = -0.01
+                m *= -1
                 self.__mutation_factors[5] += m
         if change != 0:
             if change == 63:
@@ -276,7 +276,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size**2) * self.__current_speed/3 + (self.get_size()**2))
+        self.subtract_energy((self.__size**2) * (self.__current_speed/3) + (self.get_size()**2))
 
     def set_strength(self, s):
         self.__strength = s
@@ -292,6 +292,9 @@ class Occupant:
 
     def get_toughness(self):
         return self.__toughness
+
+    def get_intimidation(self):
+        return self.__strength + (self.__size**2)
 
     def set_vision(self, v):
         self.__vision = v
@@ -352,7 +355,7 @@ class Occupant:
         self.__current_script.update()
         self.adjust_velocity()
         self.respire()
-        if self.get_energy() < 0:
+        if self.get_energy() <= 0:
             self.die()
 
 
