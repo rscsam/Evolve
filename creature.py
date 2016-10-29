@@ -495,7 +495,7 @@ class Omnivore(ReproducingOccupant):
     def __init__(self, g, energy, parent):
         ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_base_energy(30000)
+        self.set_base_energy(10000)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])

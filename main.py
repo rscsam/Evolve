@@ -39,7 +39,7 @@ class App:
         self._init_dots()
         self._draw_dots()
         self.canvas.bind("<Button-1>", self._canvas_on_click)
-        self.canvas.pack()
+        self.canvas.pack(fill=BOTH, expand=TRUE)
         self.speed = speed
         self.root.after(speed, self.update)
         self.root.mainloop()
@@ -48,7 +48,7 @@ class App:
         """initializes gui specific logic"""
         self.root = Tk()
         self.root.title = "Evolvarium"
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.canvas = Canvas(self.root, width=self.CANVAS_WIDTH,
                              height=self.CANVAS_HEIGHT, borderwidth=0, highlightthickness=0, bg="black")
@@ -118,7 +118,7 @@ class App:
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_herbivore(300, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
-        self.world.add_herbivore(1100, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
+        self.world.add_herbivore(1100, 30, ["I", 150, 1, 5, 3, 4, tools.random_color(),
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
         self.world.add_omnivore(600, 600, ["C", 250, 10, 15, 1, 0, tools.random_color(),
                                            .99, .99, .99, .99, .99, .9, 2], 10000, None)
@@ -198,6 +198,8 @@ class App:
     def update(self):
         """The main logic loop of the program"""
         if self.running:
+            self.world.wheight = self.canvas.winfo_height()
+            self.world.wwidth = self.canvas.winfo_width()
             for c in self.world.occupants:
                 if c.needs_vision():
                     self.update_visions(c)
