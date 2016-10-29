@@ -120,13 +120,15 @@ class App:
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
         self.world.add_herbivore(1100, 30, ["I", 150, 1, 5, 3, 4, tools.random_color(),
                                            .99, .99, .99, .99, .99, .99, 10], 10000, None)
-        self.world.add_omnivore(600, 600, ["C", 250, 10, 15, 1, 0, tools.random_color(),
+        self.world.add_omnivore(600, 400, ["C", 250, 10, 15, 1, 0, tools.random_color(),
                                            .99, .99, .99, .99, .99, .9, 2], 10000, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH, 0, 0)
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
+        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, self.CANVAS_WIDTH*2/3, 0)
+        self.spawn_map[ps2.get_special_id()] = ps2
 
     def _pause_callback(self):
         """The method called when 'PAUSE' is clicked -- pauses the program"""
