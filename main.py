@@ -125,9 +125,9 @@ class App:
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, 0, 0)
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
-        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/3, self.CANVAS_WIDTH*2/3, 0)
+        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
 
     def _pause_callback(self):

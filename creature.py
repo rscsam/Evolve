@@ -263,7 +263,7 @@ class Occupant:
         return self.__energy
 
     def extract_energy(self):
-        extracted = self.__size * self.__energy / (self.get_toughness()+1)
+        extracted = self.__size * self.__energy / (self.get_toughness())
         self.__energy = 0
         return extracted
 
@@ -463,8 +463,7 @@ class Herbivore(ReproducingOccupant):
     def update(self):
         """makes the creature change direction occasionally"""
         if self.get_energy() > (self.get_size()**0.5)*self.get_base_energy():
-            if random.random() < 0.5:
-                self.set_reproducing(True)
+            self.set_reproducing(True)
         Occupant.update(self)
 
 
@@ -512,8 +511,7 @@ class Omnivore(ReproducingOccupant):
     def update(self):
         """makes the creature change direction occasionally"""
         if self.get_energy() > (self.get_size())*self.get_base_energy():
-            if random.random() < 0.5:
-                self.set_reproducing(True)
+            self.set_reproducing(True)
         Occupant.update(self)
 
 
