@@ -510,7 +510,7 @@ class Omnivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > (self.get_size())*self.get_base_energy():
+        if self.get_energy() > (self.get_size()**0.5)*self.get_base_energy():
             self.set_reproducing(True)
         Occupant.update(self)
 
