@@ -276,7 +276,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size**2) * (self.__current_speed/3) + (self.get_size()**2))
+        self.subtract_energy(self.__size*self.__current_speed/3 + self.get_size())
 
     def set_strength(self, s):
         self.__strength = s
@@ -497,7 +497,7 @@ class Omnivore(ReproducingOccupant):
     def __init__(self, g, energy, parent):
         ReproducingOccupant.__init__(self, g, energy, parent)
         self.mutate_properties()
-        self.set_base_energy(10000)
+        self.set_base_energy(30000)
         self.scripts.clear()
         self.scripts["Main"] = HuntHerbivores()
         self.set_current_script(self.scripts["Main"])
