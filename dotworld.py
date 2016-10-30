@@ -17,26 +17,29 @@ class World:
         self.occupants.append(c)
         return c
 
-    def add_occupant(self, x, y, gencode, energy):
-        return self.add(Occupant(gencode, energy), x, y)
+    def add_occupant(self, x, y, gencode, behaviors, energy):
+        return self.add(Occupant(gencode, behaviors, energy), x, y)
 
-    def add_convenient(self, x, y, gencode, energy):
-        return self.add(ConvenientOccupant(gencode, energy), x, y)
+    def add_convenient(self, x, y, gencode, behaviors, energy):
+        return self.add(ConvenientOccupant(gencode, behaviors, energy), x, y)
 
-    def add_squawker(self, x, y, gencode, energy):
-        return self.add(Squawker(gencode, energy), x, y)
+    def add_squawker(self, x, y, gencode, behaviors, energy):
+        return self.add(Squawker(gencode, behaviors, energy), x, y)
 
-    def add_reproducing(self, x, y, gencode, energy, parent):
-        return self.add(ReproducingOccupant(gencode, energy, parent), x, y)
+    def add_reproducing(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(ReproducingOccupant(gencode, behaviors, energy, parent), x, y)
 
-    def add_herbivore(self, x, y, gencode, energy, parent):
-        return self.add(Herbivore(gencode, energy, parent), x, y)
+    def add_herbivore(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(Herbivore(gencode, behaviors, energy, parent), x, y)
 
-    def add_carnivore(self, x, y, gencode, energy, parent):
-        return self.add(Carnivore(gencode, energy, parent), x, y)
+    def add_carnivore(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(Carnivore(gencode, behaviors, energy, parent), x, y)
 
-    def add_omnivore(self, x, y, gencode, energy, parent):
-        return self.add(Omnivore(gencode, energy, parent), x, y)
+    def add_omnivore(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(Omnivore(gencode, behaviors, energy, parent), x, y)
+
+    def add_versatile(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(VersatileOccupant(gencode, behaviors, energy, parent), x, y)
 
     def add_plant(self, x, y, energy):
         return self.add(Plant(x, y, energy), x, y)
@@ -91,8 +94,8 @@ class World:
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and \
-                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-5]) or
-                         (len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()[0]
+                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-3]) or
+                         (len(dot.get_occupant().get_species()) < 4) and not dot.get_occupant().get_species()[0]
                          == c.get_occupant().get_species()[0]):
                     self.fight(c, dot)
 
@@ -101,11 +104,12 @@ class World:
         nearby = []
         for c in dots:
             if c is not dot:
-                dx = dot.get_centerx() - c.get_centerx()
-                dy = dot.get_centery() - c.get_centery()
-                distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
-                if distance <= (dot.get_vision_radius() + c.get_vision_radius()) and distance != 0:
-                    nearby.append((c.get_occupant(), dx, dy, distance))
+                if (dot.get_radius() / c.get_radius()) <= 10:
+                    dx = dot.get_centerx() - c.get_centerx()
+                    dy = dot.get_centery() - c.get_centery()
+                    distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
+                    if distance <= (dot.get_vision_radius() + c.get_vision_radius()) and distance != 0:
+                        nearby.append((c.get_occupant(), dx, dy, distance))
         dot.get_occupant().set_nearby(nearby)
 
 
@@ -228,10 +232,7 @@ class Dot:
     def reproduce(self):
         if isinstance(self.__occupant, ReproducingOccupant):
             self.__reproducing_trigger = False
-            #return self.__occupant.reproduce()
-            rep = self.__occupant.reproduce()
-            print(rep.get_species())
-            return rep
+            return self.__occupant.reproduce()
 
     def needs_vision(self):
         return self.get_occupant().needs_vision

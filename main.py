@@ -3,6 +3,7 @@
 from tkinter import *
 
 import creature
+import reference
 import tools as tools
 from dotworld import World
 
@@ -83,7 +84,8 @@ class App:
         """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], 10000))
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.def_herbivore_scripts,
+                                                10000))
 
     def _apply_cs_changes(self):
         """Applies to the current selection the attributes typed into the text boxes"""
@@ -98,7 +100,8 @@ class App:
         self.canvas.focus_set()
         self.draw_dot(self.world.add_convenient(event.x, event.y,
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], 10000))
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.def_versatile_scripts,
+                                                1000))
 
     def _create_circle(self, x, y, r, **kwargs):
         """Define a shortcut for creating circles"""
@@ -115,13 +118,25 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_herbivore(300, 30, ["H", 150, 1, 5, 3, 4, tools.random_color(),
-                                           .99, .99, .99, .99, .99, .99, 10], 10000, None)
-        self.world.add_herbivore(1100, 30, ["I", 150, 1, 5, 3, 4, tools.random_color(),
-                                           .99, .99, .99, .99, .99, .99, 10], 10000, None)
-        self.world.add_omnivore(600, 400, ["C", 250, 10, 15, 1, 0, tools.random_color(),
-                                           .99, .99, .99, .99, .99, .9, 2], 10000, None)
+        #g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
+        self.world.add_herbivore(300, 300, ["H", 150, 1, 5, 3, 4, tools.random_color(),
+                                             .99, .99, .99, .99, .99, .99, 20], reference.d_herbivore_scripts(),
+                                 10000, None)
+        self.world.add_herbivore(1100, 300, ["I", 150, 1, 5, 3, 4, tools.random_color(),
+                                             .99, .99, .99, .99, .99, .99, 15], reference.d_herbivore_scripts(),
+                                 10000, None)
+        # self.world.add_omnivore(400, 100, ["C", 250, 25, 15, 1, 2, tools.random_color(),
+        #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
+        #                         10000, None)
+        # self.world.add_omnivore(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
+        #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
+        #                        10000, None)
+        self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
+                                            .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
+                                  30000, None)
+        self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
+                                            .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
+                                 30000, None)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""

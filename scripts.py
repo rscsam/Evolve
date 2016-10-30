@@ -4,15 +4,17 @@ import random
 
 class Script:
     '''reference = (0, 0)'''
-    x_offset = 0
-    y_offset = 0
-    nearby = []
-    __max_speed = 0
-    __x_velocity = 0
-    __y_velocity = 0
-    __occupant = None
-    __random_seed = 1
-    subscript = None
+
+    def __init__(self):
+        self.nearby = []
+        self.x_offset = 0
+        self.y_offset = 0
+        self.__max_speed = 0
+        self.__x_velocity = 0
+        self.__y_velocity = 0
+        self.__occupant = None
+        self.__random_seed = 1
+        self.subscript = None
 
     def get_x_velocity(self):
         return self.__x_velocity
@@ -70,6 +72,7 @@ class Script:
         self.subscript = s
         s.load(self.__occupant)
         self.update_subscript()
+        return s
 
     def stop(self):
         self.x_offset = 0
@@ -189,7 +192,7 @@ class MoveTowardPlants(Script):
 
     def load(self, occupant):
         Script.load(self, occupant)
-        self.load_subscript(MoveLikeSquawker())
+        self.load_subscript(StayStill())
         self.nearby = occupant.get_nearby()
         self.update()
 
@@ -231,6 +234,7 @@ class HuntHerbivores(Script):
         self.nearby = self.get_occupant().get_nearby_herbivores()
         minimum = -1
         if len(self.nearby) > 0:
+            print("norm")
             for i in range(0, len(self.nearby)):
                 if i == 0:
                     minimum = i
