@@ -48,9 +48,12 @@ class App:
     def __init_gui(self):
         """initializes gui specific logic"""
         self.root = Tk()
+        self.full_screen = False
+        self.root.bind("<Tab>", self._toggle_fullscreen)
+        self.root.bind("<Escape>", self._end_fullscreen)
+        self.root.bind("<space>", self._pause)
         self.root.title = "Evolvarium"
         self.root.resizable(True, True)
-
         self.canvas = Canvas(self.root, width=self.CANVAS_WIDTH,
                              height=self.CANVAS_HEIGHT, borderwidth=0, highlightthickness=0, bg="black")
         self.canvas.pack()
@@ -80,11 +83,21 @@ class App:
         Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
 
+    def _toggle_fullscreen(self, event=None):
+        self.full_screen = not self.full_screen  # Just toggling the boolean
+        self.root.attributes("-fullscreen", self.full_screen)
+        return "break"
+
+    def _end_fullscreen(self, event=None):
+        self.full_screen = False
+        self.root.attributes("-fullscreen", False)
+        return "break"
+
     def _add_callback(self):
         """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.def_herbivore_scripts,
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_herbivore_scripts(),
                                                 10000))
 
     def _apply_cs_changes(self):
@@ -100,7 +113,7 @@ class App:
         self.canvas.focus_set()
         self.draw_dot(self.world.add_convenient(event.x, event.y,
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.def_versatile_scripts,
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
                                                 1000))
 
     def _create_circle(self, x, y, r, **kwargs):
@@ -121,10 +134,10 @@ class App:
         #g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_herbivore(300, 300, ["H", 150, 1, 5, 3, 4, tools.random_color(),
                                              .99, .99, .99, .99, .99, .99, 20], reference.d_herbivore_scripts(),
-                                 10000, None)
+                                 10000, None).get_occupant().set_base_energy(10000)
         self.world.add_herbivore(1100, 300, ["I", 150, 1, 5, 3, 4, tools.random_color(),
                                              .99, .99, .99, .99, .99, .99, 15], reference.d_herbivore_scripts(),
-                                 10000, None)
+                                 10000, None).get_occupant().set_base_energy(10000)
         # self.world.add_omnivore(400, 100, ["C", 250, 25, 15, 1, 2, tools.random_color(),
         #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
         #                         10000, None)
@@ -133,10 +146,10 @@ class App:
         #                        10000, None)
         self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
                                             .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                  30000, None)
+                                  30000, None).get_occupant().set_base_energy(30000)
         self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
                                             .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                 30000, None)
+                                 50000, None).get_occupant().set_base_energy(50000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
@@ -144,6 +157,9 @@ class App:
         self.spawn_map[ps1.get_special_id()] = ps1
         ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
+
+    def _pause(self, event=None):
+        self.running = not self.running
 
     def _pause_callback(self):
         """The method called when 'PAUSE' is clicked -- pauses the program"""
@@ -248,7 +264,7 @@ class App:
         if c.ucolor_triggered():
             self.update_color(c)
         if c.reproducing_triggered():
-            self.draw_dot(self.world.add(c.reproduce(), c.getx(), c.gety()))
+            self.draw_dot(self.world.add(c.reproduce(), c.get_centerx(), c.get_centery()))
         if c.kill_triggered():
             self.remove_dot(c)
 
