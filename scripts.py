@@ -234,7 +234,6 @@ class HuntHerbivores(Script):
         self.nearby = self.get_occupant().get_nearby_herbivores()
         minimum = -1
         if len(self.nearby) > 0:
-            print("norm")
             for i in range(0, len(self.nearby)):
                 if i == 0:
                     minimum = i

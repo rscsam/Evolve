@@ -519,7 +519,7 @@ class Omnivore(ReproducingOccupant):
 class VersatileOccupant(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
-        self.subtract_energy(self.get_base_energy()*2)
+        self.set_energy(self.get_base_energy())
         return VersatileOccupant(self.get_gencode(), self.get_behaviors(), self.get_base_energy(), self)
 
     def update(self):
