@@ -18,4 +18,4 @@ def d_omnivore_scripts():
 
 
 def d_versatile_scripts():
-    return[[scripts.MoveLikeSquawker()], [scripts.MoveTowardPlants()], [scripts.StayStill()]]
+    return[[scripts.MoveLikeSquawker()], [scripts.HuntHerbivores()], [scripts.StayStill()]]

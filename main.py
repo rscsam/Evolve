@@ -146,10 +146,10 @@ class App:
         #                        10000, None)
         self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
                                             .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                  30000, None).get_occupant().set_base_energy(30000)
+                                  20000, None).get_occupant().set_base_energy(20000)
         self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
                                             .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                 50000, None).get_occupant().set_base_energy(50000)
+                                 20000, None).get_occupant().set_base_energy(20000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
