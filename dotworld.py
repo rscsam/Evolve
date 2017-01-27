@@ -1,5 +1,6 @@
 """The module that handles the front-end representations of the backend"""
 
+import creature
 from spawner import *
 
 
@@ -95,10 +96,7 @@ class World:
             distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
-                if c != dot and \
-                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-5]) or
-                             ((len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()[0]
-                         == c.get_occupant().get_species()[0])):
+                if c != dot and creature.similarity(dot.get_occupant(), c.get_occupant()) > 0:
                     self.fight(c, dot)
                 # if isinstance(c.get_occupant(), Plant) or isinstance(dot.get_occupant() , Plant):
                 #     self.fight(c, dot)

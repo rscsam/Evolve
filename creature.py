@@ -112,88 +112,64 @@ class Occupant:
         changed = False
         change = 0
         if self.__mutation_factors[0] < random.random():
-            change += 1
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__vision += m
         if self.__mutation_factors[1] < random.random():
-            change += 2
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__strength += m
         if self.__mutation_factors[2] < random.random():
-            change += 4
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.set_size(self.__size + m)
         if self.__mutation_factors[3] < random.random():
-            change += 8
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__speed += m
         if self.__mutation_factors[4] < random.random():
-            change += 16
             m = 1
             if random.random() < 0.5:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
-            change += 32
             self.set_color(tools.mix_color_values(tools.mix_cv_for_value(tools.random_color_value(),
                                                                          self.__color_value), self.__color_value))
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
-                changed = True
                 m *= -1
                 self.__mutation_factors[0] += m
         if random.random() < 0.99:
-            changed = True
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
                 self.__mutation_factors[1] += m
         if random.random() < 0.99:
-            changed = True
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
                 self.__mutation_factors[2] += m
         if random.random() < 0.99:
-            changed = True
-            changed = True
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
                 self.__mutation_factors[3] += m
         if random.random() < 0.99:
-            changed = True
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
                 self.__mutation_factors[4] += m
         if random.random() < 0.99:
-            changed = True
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
                 self.__mutation_factors[5] += m
-        if change != 0:
-            if change == 63:
-                self.__species += "$"
-            elif change <= 10:
-                self.__species += chr(change + 47)
-            elif change <= 36:
-                self.__species += chr(change + 54)
-            else:
-                self.__species += chr(change + 60)
-            self.set_gencode(self.generate_gencode())
-        elif changed:
-            self.set_gencode(self.generate_gencode())
+        self.set_gencode(self.generate_gencode())
 
     def generate_gencode(self):
         """GenCode: An array containing each individual gene
@@ -256,6 +232,9 @@ class Occupant:
     def get_color(self):
         return self.__color
 
+    def get_color_value(self):
+        return self.__color_value
+
     def set_size(self, size):
         if size < 1:
             size = 1
@@ -290,7 +269,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size*1.25) * self.__current_speed + self.get_size()*math.sqrt(self.__size))
+        self.subtract_energy((self.__size*2) * self.__current_speed + self.get_size()*math.sqrt(self.__size))
 
     def set_strength(self, s):
         self.__strength = s
@@ -529,3 +508,18 @@ class VersatileOccupant(ReproducingOccupant):
         if self.get_energy() > (self.get_size() ** 0.75) * self.get_base_energy():
             self.set_reproducing(True)
         Occupant.update(self)
+
+
+def similarity(o1, o2):
+    similar = -5
+    cv1 = o1.get_color_value()
+    cv2 = o2.get_color_value()
+
+    similar += abs((((cv1 << 26) >> 26) & 0x3F) - (((cv2 << 26) >> 26) & 0x3F))
+    similar += abs((((cv1 << 20) >> 26) & 0x3F) - (((cv2 << 20) >> 26) & 0x3F))
+    similar += abs((((cv1 << 14) >> 26) & 0x3F) - (((cv2 << 14) >> 26) & 0x3F))
+    similar += abs(o1.get_size() - o2.get_size())
+    similar += abs(o1.get_speed() - o2.get_speed())
+    similar += abs(o1.get_strength() - o2.get_strength())
+    similar += abs(o1.get_toughness() - o2.get_toughness())
+    return similar
