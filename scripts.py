@@ -124,7 +124,7 @@ class MoveStraightDown(Script):
 class MoveLikeSquawker(Script):
     def load(self, occupant):
         Script.load(self, occupant)
-        self.set_random_seed(.03)
+        self.set_random_seed(.17)
         self._calculate()
 
     def update(self):

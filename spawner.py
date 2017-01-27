@@ -5,19 +5,19 @@ from creature import *
 
 
 class Spawner:
-    __timer = 100
-    __current_time = 0
-    __height = 0
-    __width = 0
-    __x = 0
-    __y = 0
-    spawning = False
-    __spawn_x = 0
-    __spawn_y = 0
-    __special_id = 0
-    __occupants = []
 
     def __init__(self, timer, height, width, x, y):
+        self.__timer = 100
+        self.__current_time = 0
+        self.__height = 0
+        self.__width = 0
+        self.__x = 0
+        self.__y = 0
+        self.spawning = False
+        self.__spawn_x = 0
+        self.__spawn_y = 0
+        self.__special_id = 0
+        self.__occupants = []
         self.__init_special_id()
         self.__timer = timer
         self.__current_time = timer
@@ -27,7 +27,7 @@ class Spawner:
         self.__y = y
 
     def __init_special_id(self):
-        self.__special_id = random.random() * 999999999999
+        self.__special_id = random.random() * 999999999
 
     def update(self):
         self.__current_time -= 1
@@ -135,7 +135,6 @@ class PlantSpawner(Spawner):
 
 
 class SpecialSpawner(Spawner):
-    __model = None
 
     def __init__(self, timer, height, width, x, y, occupant):
         Spawner.__init__(self, timer, height, width, x, y)

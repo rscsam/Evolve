@@ -4,12 +4,14 @@ from spawner import *
 
 
 class World:
-    occupants = []
-    staticoccupants = []
-    spawners = []
-    wheight = 0
-    wwidth = 0
-    __largest_radius = 0
+
+    def __init__(self):
+        self.occupants = []
+        self.staticoccupants = []
+        self.spawners = []
+        self.wheight = 0
+        self.wwidth = 0
+        self.__largest_radius = 0
 
     def add(self, occupant, x, y):
         c = Dot(occupant, x, y)
@@ -94,10 +96,12 @@ class World:
                              + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and \
-                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-3]) or
-                         (len(dot.get_occupant().get_species()) < 4) and not dot.get_occupant().get_species()[0]
-                         == c.get_occupant().get_species()[0]):
+                        ((not dot.get_occupant().get_species()[:-5] == c.get_occupant().get_species()[:-5]) or
+                             ((len(dot.get_occupant().get_species()) < 6) and not dot.get_occupant().get_species()[0]
+                         == c.get_occupant().get_species()[0])):
                     self.fight(c, dot)
+                # if isinstance(c.get_occupant(), Plant) or isinstance(dot.get_occupant() , Plant):
+                #     self.fight(c, dot)
 
     @staticmethod
     def update_visions(dot, dots):
@@ -109,27 +113,28 @@ class World:
                     dy = dot.get_centery() - c.get_centery()
                     distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
                     if distance <= (dot.get_vision_radius() + c.get_vision_radius()) and distance != 0:
-                        nearby.append((c.get_occupant(), dx, dy, distance))
+                       if dot.get_radius()/c.get_radius() <= 5:
+                            nearby.append((c.get_occupant(), dx, dy, distance))
         dot.get_occupant().set_nearby(nearby)
 
 
 class Dot:
-    __occupant = 0
-    __x = 0
-    __y = 0
-    __x2 = 0
-    __y2 = 0
-    __radius = 0
-    __reference = None
-    __collide_trigger = False
-    __kill_trigger = False
-    __highlight_trigger = False
-    __color_trigger = False
-    __reproducing_trigger = False
-    special = -1
     HIGHLIGHT_OFFSET = "#22AAFF"
 
     def __init__(self, occupant, x, y):
+        self.__occupant = 0
+        self.__x = 0
+        self.__y = 0
+        self.__x2 = 0
+        self.__y2 = 0
+        self.__radius = 0
+        self.__reference = None
+        self.__collide_trigger = False
+        self.__kill_trigger = False
+        self.__highlight_trigger = False
+        self.__color_trigger = False
+        self.__reproducing_trigger = False
+        self.special = -1
         self.__occupant = occupant
         self.set_radius(occupant.get_size())
         self.setx(x-self.__radius)

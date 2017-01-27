@@ -288,7 +288,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size**1.25)*self.__current_speed/3 + self.get_size()**1.5)
+        self.subtract_energy((self.__size**1.25)*self.__current_speed + self.get_size()**1.5)
 
     def set_strength(self, s):
         self.__strength = s

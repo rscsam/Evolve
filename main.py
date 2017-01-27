@@ -10,28 +10,28 @@ from dotworld import World
 
 class App:
     """The primary program that will be run"""
-    running = False
-    speed = 10
 
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
-    world = World()
-    world.wheight = CANVAS_HEIGHT
-    world.wwidth = CANVAS_WIDTH
 
-    dot_parrallels = {None: None}
-    spawn_map = {None: None}
-    root = None
-    canvas = None
-    xEntry = None
-    yEntry = None
-    csSpeedEntry = None
-    csSizeEntry = None
-    csColorEntry = None
-    current_selection = None
 
     def __init__(self, speed):
         """initialization logic"""
+        self.world = World()
+        self.world.wheight = self.CANVAS_HEIGHT
+        self.world.wwidth = self.CANVAS_WIDTH
+        self.running = False
+        self.speed = 10
+        self.dot_parrallels = {None: None}
+        self.spawn_map = {None: None}
+        self.root = None
+        self.canvas = None
+        self.xEntry = None
+        self.yEntry = None
+        self.csSpeedEntry = None
+        self.csSizeEntry = None
+        self.csColorEntry = None
+        self.current_selection = None
         self.__init_gui()
         self.set_current_selection(None)
         self.dot_parrallels.clear()
@@ -131,12 +131,9 @@ class App:
 
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
-        #g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_herbivore(300, 50, ["H", 150, 1, 5, 3, 4, tools.random_color(),
+        # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
+        self.world.add_herbivore(300, 300, ["H", 150, 1, 5, 3, 4, tools.random_color(),
                                              .99, .99, .99, .99, .99, .99, 20], reference.d_herbivore_scripts(),
-                                 10000, None).get_occupant().set_base_energy(10000)
-        self.world.add_herbivore(1100, 300, ["I", 150, 1, 5, 3, 4, tools.random_color(),
-                                             .99, .99, .99, .99, .99, .99, 15], reference.d_herbivore_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
         # self.world.add_omnivore(400, 100, ["C", 250, 25, 15, 1, 2, tools.random_color(),
         #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
@@ -144,12 +141,12 @@ class App:
         # self.world.add_omnivore(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
         #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
         #                        10000, None)
-        self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
-                                            .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                  20000, None).get_occupant().set_base_energy(20000)
-        self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
-                                            .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-                                 20000, None).get_occupant().set_base_energy(20000)
+        # self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
+        #                                     .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
+        #                           20000, None).get_occupant().set_base_energy(20000)
+        # self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
+        #                                     .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
+        #                          20000, None).get_occupant().set_base_energy(20000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
