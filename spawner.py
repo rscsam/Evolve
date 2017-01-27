@@ -126,7 +126,7 @@ class PlantSpawner(Spawner):
         shade = 0
         for plant in self.occupants():
             size = 2 * plant.get_size()
-            distance = int(((((x-plant.getx())**2)+((y-plant.gety())**2))**0.5))
+            distance = int(math.sqrt((((x-plant.getx())**2)+((y-plant.gety())**2))))
             if distance != 0:
                 shade += (size/distance)
             else:

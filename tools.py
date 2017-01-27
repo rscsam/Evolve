@@ -8,8 +8,24 @@ def mix_colors(a, b):
     return "#" + str(nrx) + str(ngx) + str(nbx)
 
 
+def mix_color_values(a, b):
+    return "#" + str(format(int((a + b)/2), '02x'))
+
+
+def mix_cv_for_value(a, b):
+    return int((a+b)/2)
+
+
 def random_color():
     nrx = format(int(random.random()*256), '02x')
     ngx = format(int(random.random()*256), '02x')
     nbx = format(int(random.random()*256), '02x')
     return "#" + str(nrx) + str(ngx) + str(nbx)
+
+
+def random_color_value():
+    return random.random() * 16777216  # 2^24
+
+
+def color_pack(c):
+    return int(c[1:], 16)

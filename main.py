@@ -132,8 +132,8 @@ class App:
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_herbivore(300, 300, ["H", 150, 1, 5, 3, 4, tools.random_color(),
-                                             .99, .99, .99, .99, .99, .99, 20], reference.d_herbivore_scripts(),
+        self.world.add_herbivore(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
+                                             .99, .99, .99, .99, .99, .9, 20], reference.d_herbivore_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
         # self.world.add_omnivore(400, 100, ["C", 250, 25, 15, 1, 2, tools.random_color(),
         #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,

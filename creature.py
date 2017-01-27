@@ -39,6 +39,7 @@ class Occupant:
         self.__gencode = g
         self.__species = g[0]
         self.__color = g[6]
+        self.__color_value = int(self.__color[1:], 16)
         self.__size = g[3]
         self.__speed = g[4]
         self.__burst = g[5]
@@ -142,7 +143,8 @@ class Occupant:
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
             change += 32
-            self.set_color(tools.mix_colors(tools.mix_colors(self.get_color(), tools.random_color()), self.get_color()))
+            self.set_color(tools.mix_color_values(tools.mix_cv_for_value(tools.random_color_value(),
+                                                                         self.__color_value), self.__color_value))
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
@@ -288,7 +290,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size**1.25)*self.__current_speed + self.get_size()**1.5)
+        self.subtract_energy((self.__size*1.25) * self.__current_speed + self.get_size()*math.sqrt(self.__size))
 
     def set_strength(self, s):
         self.__strength = s
@@ -297,7 +299,7 @@ class Occupant:
         return self.__strength
 
     def get_power(self):
-        return self.__strength * ((self.__size**2) + (self.__energy**0.5))
+        return self.__strength * ((self.__size*self.__size) + (math.sqrt(self.__energy)))
 
     def set_toughness(self, t):
         self.__toughness = t
@@ -473,7 +475,7 @@ class Herbivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > (self.get_size()**0.5)*self.get_base_energy():
+        if self.get_energy() > (math.sqrt(self.get_size()))*self.get_base_energy():
             self.set_reproducing(True)
         Occupant.update(self)
 
