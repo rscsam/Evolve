@@ -269,7 +269,7 @@ class Occupant:
             self.__energy = 0
 
     def respire(self):
-        self.subtract_energy((self.__size*2) * self.__current_speed + self.get_size()*math.sqrt(self.__size))
+        self.subtract_energy(self.__size * self.__current_speed + self.get_size())
 
     def set_strength(self, s):
         self.__strength = s
@@ -278,7 +278,7 @@ class Occupant:
         return self.__strength
 
     def get_power(self):
-        return self.__strength * ((self.__size*self.__size) + (math.sqrt(self.__energy)))
+        return self.__strength * self.__size*self.__size
 
     def set_toughness(self, t):
         self.__toughness = t
@@ -287,7 +287,7 @@ class Occupant:
         return self.__toughness
 
     def get_intimidation(self):
-        return self.__strength + (self.__size**2)
+        return self.__strength + self.__size
 
     def set_vision(self, v):
         self.__vision = v
@@ -321,6 +321,14 @@ class Occupant:
                 nearby.append(self.__nearby[i])
         return nearby
 
+    def get_nearby_weaker(self, times_weaker):
+        nearby = []
+        for i in range(0, len(self.__nearby)):
+            if (times_weaker * self.__nearby[i][0].get_intimidation() <= self.get_intimidation()
+                    or isinstance(self.__nearby[i][0], Plant)) and similarity(self,self.__nearby[i][0]) > 0:
+                nearby.append(self.__nearby[i])
+        return nearby
+
     # Living and dying logic
     def die(self):
         self.__alive = False
@@ -346,7 +354,7 @@ class Occupant:
         yv = self.get_current_script().get_y_velocity()
         self.set_x_velocity(xv)
         self.set_y_velocity(yv)
-        self.__current_speed = ((xv**2)+(yv**2))**0.5
+        self.__current_speed = math.sqrt((xv*xv)+(yv*yv))
 
     # Main loop
     def update(self):
@@ -492,7 +500,7 @@ class Omnivore(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > (self.get_size()**0.5)*self.get_base_energy():
+        if self.get_energy() > math.sqrt(self.get_size())*self.get_base_energy():
             self.set_reproducing(True)
         Occupant.update(self)
 
@@ -505,19 +513,19 @@ class VersatileOccupant(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > (self.get_size() ** 0.75) * self.get_base_energy():
+        if self.get_energy() > math.sqrt(self.get_size()) * self.get_base_energy():
             self.set_reproducing(True)
         Occupant.update(self)
 
 
 def similarity(o1, o2):
-    similar = -5
+    similar = -3
     cv1 = o1.get_color_value()
     cv2 = o2.get_color_value()
 
-    similar += abs((((cv1 << 26) >> 26) & 0x3F) - (((cv2 << 26) >> 26) & 0x3F))
-    similar += abs((((cv1 << 20) >> 26) & 0x3F) - (((cv2 << 20) >> 26) & 0x3F))
-    similar += abs((((cv1 << 14) >> 26) & 0x3F) - (((cv2 << 14) >> 26) & 0x3F))
+    similar += int(abs((((cv1 << 26) >> 26) & 0x3F) - (((cv2 << 26) >> 26) & 0x3F))/5)
+    similar += int(abs((((cv1 << 20) >> 26) & 0x3F) - (((cv2 << 20) >> 26) & 0x3F))/5)
+    similar += int(abs((((cv1 << 14) >> 26) & 0x3F) - (((cv2 << 14) >> 26) & 0x3F))/5)
     similar += abs(o1.get_size() - o2.get_size())
     similar += abs(o1.get_speed() - o2.get_speed())
     similar += abs(o1.get_strength() - o2.get_strength())

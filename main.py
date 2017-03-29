@@ -14,7 +14,6 @@ class App:
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
 
-
     def __init__(self, speed):
         """initialization logic"""
         self.world = World()
@@ -132,21 +131,12 @@ class App:
     def _init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_herbivore(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
-                                             .99, .99, .99, .99, .99, .9, 20], reference.d_herbivore_scripts(),
+        self.world.add_versatile(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
+                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
-        # self.world.add_omnivore(400, 100, ["C", 250, 25, 15, 1, 2, tools.random_color(),
-        #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
-        #                         10000, None)
-        # self.world.add_omnivore(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
-        #                                    .99, .99, .99, .99, .99, .9, 2], reference.def_omnivore_scripts,
-        #                        10000, None)
-        # self.world.add_versatile(200, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
-        #                                     .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-        #                           20000, None).get_occupant().set_base_energy(20000)
-        # self.world.add_versatile(400, 500, ["D", 250, 25, 15, 1, 2, tools.random_color(),
-        #                                     .99, .99, .99, .99, .99, .9, 2], reference.d_versatile_scripts(),
-        #                          20000, None).get_occupant().set_base_energy(20000)
+        self.world.add_versatile(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
+                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                 10000, None).get_occupant().set_base_energy(10000)
 
     def _init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""

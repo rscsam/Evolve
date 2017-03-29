@@ -106,7 +106,7 @@ class Spawner:
 class PlantSpawner(Spawner):
     def spawn(self):
         self.set_spawning(False)
-        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*20000))
+        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*10000))
         self.add(p)
         return p
 
@@ -126,7 +126,7 @@ class PlantSpawner(Spawner):
         shade = 0
         for plant in self.occupants():
             size = 2 * plant.get_size()
-            distance = int(math.sqrt((((x-plant.getx())**2)+((y-plant.gety())**2))))
+            distance = int(math.sqrt((((x-plant.getx())*(x-plant.getx()))+((y-plant.gety())*(y-plant.gety())))))
             if distance != 0:
                 shade += (size/distance)
             else:

@@ -93,8 +93,8 @@ class World:
 
     def handle_collisions(self, dot, dots):
         for c in dots:
-            distance = int(((((dot.get_centerx() - c.get_centerx()) ** 2)
-                             + ((dot.get_centery() - c.get_centery()) ** 2)) ** 0.5))
+            distance = int((math.sqrt((((dot.get_centerx() - c.get_centerx()) * (dot.get_centerx() - c.get_centerx()))
+                             + ((dot.get_centery() - c.get_centery()) * (dot.get_centery() - c.get_centery()))))))
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and creature.similarity(dot.get_occupant(), c.get_occupant()) > 0:
                     self.fight(c, dot)
@@ -109,7 +109,7 @@ class World:
                 if (dot.get_radius() / c.get_radius()) <= 10:
                     dx = dot.get_centerx() - c.get_centerx()
                     dy = dot.get_centery() - c.get_centery()
-                    distance = int(((dx ** 2) + (dy ** 2)) ** 0.5)
+                    distance = int(math.sqrt(((dx*dx) + (dy*dy))))
                     if distance <= (dot.get_vision_radius() + c.get_vision_radius()) and distance != 0:
                        if dot.get_radius()/c.get_radius() <= 5:
                             nearby.append((c.get_occupant(), dx, dy, distance))
