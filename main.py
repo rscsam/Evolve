@@ -9,7 +9,7 @@ from dotworld import World
 
 
 class App:
-    """The primary program that will be run"""
+    """A run configuration that sets all parameters and initializations for the simulation"""
 
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
@@ -21,8 +21,8 @@ class App:
         self.world.wwidth = self.CANVAS_WIDTH
         self.running = False
         self.speed = 10
-        self.dot_parrallels = {None: None}
-        self.spawn_map = {None: None}
+        self.dot_parrallels = {}
+        self.spawn_map = {}
         self.root = None
         self.canvas = None
         self.xEntry = None
@@ -83,17 +83,19 @@ class App:
         action_bar.pack(side=LEFT)
 
     def _toggle_fullscreen(self, event=None):
+        """switches between fullscreen and not fullscreen"""
         self.full_screen = not self.full_screen  # Just toggling the boolean
         self.root.attributes("-fullscreen", self.full_screen)
         return "break"
 
     def _end_fullscreen(self, event=None):
+        """forces the screen not to be fullscreen"""
         self.full_screen = False
         self.root.attributes("-fullscreen", False)
         return "break"
 
     def _add_callback(self):
-        """The method called when 'ADD' is clicked -- Adds a gray Occupant at the point of the event"""
+        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
                                                  .99, .99, .99, .99, .99, .5, 2], reference.d_herbivore_scripts(),

@@ -137,8 +137,9 @@ class Occupant:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
-            self.set_color(tools.mix_color_values(tools.mix_cv_for_value(tools.random_color_value(),
-                                                                         self.__color_value), self.__color_value))
+            result_color = tools.mix_color_values(tools.random_color_value(),
+                                                 tools.mix_cv_for_value(tools.random_color_value(), self.__color_value))
+            self.set_color(result_color)
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
@@ -440,7 +441,7 @@ class Plant(Occupant):
         if self.__counter < 1 and self.get_size() < 230:
             self.set_size(self.get_size() + 1)
             self.__counter = self.__growth_rate
-            self.__energy = self.get_size()
+            self.set_energy(self.get_energy() + (self.get_base_energy()/10))
         self.__counter -= 1
 
     def getx(self):
