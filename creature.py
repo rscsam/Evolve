@@ -144,32 +144,32 @@ class Occupant:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[0] += m
+            self.__mutation_factors[0] += m
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[1] += m
+            self.__mutation_factors[1] += m
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[2] += m
+            self.__mutation_factors[2] += m
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[3] += m
+            self.__mutation_factors[3] += m
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[4] += m
+            self.__mutation_factors[4] += m
         if random.random() < 0.99:
             m = 0.005
             if random.random() < 0.5:
                 m *= -1
-                self.__mutation_factors[5] += m
+            self.__mutation_factors[5] += m
         self.set_gencode(self.generate_gencode())
 
     def generate_gencode(self):
