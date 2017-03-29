@@ -14,8 +14,8 @@ class App:
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
 
+    """initialization logic"""
     def __init__(self, speed):
-        """initialization logic"""
         self.world = World()
         self.world.wheight = self.CANVAS_HEIGHT
         self.world.wwidth = self.CANVAS_WIDTH
@@ -44,8 +44,8 @@ class App:
         self.root.after(speed, self.update)
         self.root.mainloop()
 
+    """initializes gui specific logic"""
     def __init_gui(self):
-        """initializes gui specific logic"""
         self.root = Tk()
         self.full_screen = False
         self.root.bind("<Tab>", self._toggle_fullscreen)
@@ -82,14 +82,14 @@ class App:
         Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
 
+    """switches between fullscreen and not fullscreen"""
     def _toggle_fullscreen(self, event=None):
-        """switches between fullscreen and not fullscreen"""
         self.full_screen = not self.full_screen  # Just toggling the boolean
         self.root.attributes("-fullscreen", self.full_screen)
         return "break"
 
+    """forces the screen not to be fullscreen"""
     def _end_fullscreen(self, event=None):
-        """forces the screen not to be fullscreen"""
         self.full_screen = False
         self.root.attributes("-fullscreen", False)
         return "break"

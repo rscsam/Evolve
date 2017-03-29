@@ -524,9 +524,9 @@ def similarity(o1, o2):
     cv1 = o1.get_color_value()
     cv2 = o2.get_color_value()
 
-    similar += int(abs((((cv1 << 26) >> 26) & 0x3F) - (((cv2 << 26) >> 26) & 0x3F))/5)
-    similar += int(abs((((cv1 << 20) >> 26) & 0x3F) - (((cv2 << 20) >> 26) & 0x3F))/5)
-    similar += int(abs((((cv1 << 14) >> 26) & 0x3F) - (((cv2 << 14) >> 26) & 0x3F))/5)
+    similar += int(abs((((cv1 << 26) >> 26) & 0x3F) - (((cv2 << 26) >> 26) & 0x3F))/5) #compares red color
+    similar += int(abs((((cv1 << 20) >> 26) & 0x3F) - (((cv2 << 20) >> 26) & 0x3F))/5) #compares green color
+    similar += int(abs((((cv1 << 14) >> 26) & 0x3F) - (((cv2 << 14) >> 26) & 0x3F))/5) #bcompares blue color
     similar += abs(o1.get_size() - o2.get_size())
     similar += abs(o1.get_speed() - o2.get_speed())
     similar += abs(o1.get_strength() - o2.get_strength())
