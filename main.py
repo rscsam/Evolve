@@ -139,6 +139,9 @@ class App:
         self.world.add_versatile(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
+        self.world.add_versatile(900, 100, ["I", 75, 10, 3, 3, 4, tools.random_color(),
+                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                 10000, None).get_occupant().set_base_energy(10000)
 
     """Initializes spawners that will be present at the time the program begins"""
     def _init_spawners(self):
@@ -146,6 +149,8 @@ class App:
         self.spawn_map[ps1.get_special_id()] = ps1
         ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
+        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 8, self.CANVAS_HEIGHT / 8, self.CANVAS_WIDTH*(7/16), self.CANVAS_HEIGHT*(7/16))
+        self.spawn_map[ps3.get_special_id()] = ps3
 
     """Pauses the simulation"""
     def _pause(self, event=None):

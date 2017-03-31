@@ -106,7 +106,7 @@ class Spawner:
 class PlantSpawner(Spawner):
     def spawn(self):
         self.set_spawning(False)
-        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*10000))
+        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*7500))
         self.add(p)
         return p
 

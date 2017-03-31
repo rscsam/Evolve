@@ -166,7 +166,7 @@ class Occupant:
                 m *= -1
             self.__mutation_factors[4] += m
         if random.random() < 0.99:
-            m = 0.005
+            m = 0.008
             if random.random() < 0.5:
                 m *= -1
             self.__mutation_factors[5] += m
@@ -430,7 +430,7 @@ class Plant(Occupant):
     __counter = __growth_rate
 
     def __init__(self, x, y, energy):
-        g = ["plant", -1, 0, 10, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
+        g = ["plant", -1, 0, 5, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
         behaviors = [[StayStill()], [StayStill()], [StayStill()]]
         Occupant.__init__(self, g, behaviors, energy)
         self.set_base_energy(energy*3)
