@@ -137,8 +137,8 @@ class Occupant:
                 m = -1
             self.__burst += m
         if self.__mutation_factors[5] < random.random():
-            result_color = tools.mix_color_values(tools.random_color_value(),
-                                                 tools.mix_cv_for_value(tools.random_color_value(), self.__color_value))
+            result_color = tools.mix_color_values(self.__color_value,
+                                                 tools.random_color_value())
             self.set_color(result_color)
         if random.random() < 0.99:
             m = 0.005

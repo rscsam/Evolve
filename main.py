@@ -109,7 +109,9 @@ class App:
         self.current_selection.set_color(self.csColorEntry.get())
         self.canvas.update()
 
-    """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event"""
+    """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event
+        Args:
+            event: the mouse click"""
     def _canvas_on_click(self, event):
         self.canvas.focus_set()
         self.draw_dot(self.world.add_convenient(event.x, event.y,
@@ -117,7 +119,14 @@ class App:
                                                  .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
                                                 1000))
 
-    """A shortcut for creating circles"""
+    """A shortcut for creating circles
+        Args:
+            x: the x value of the center of the circle
+            y: the y value of the center of the circle
+            r: the radius of the circle
+            kwargs: additional styling
+        Return:
+            an oval widget that represents the circle"""
     def _create_circle(self, x, y, r, **kwargs):
         return self.canvas.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
@@ -149,7 +158,7 @@ class App:
         self.spawn_map[ps1.get_special_id()] = ps1
         ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
-        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 8, self.CANVAS_HEIGHT / 8, self.CANVAS_WIDTH*(7/16), self.CANVAS_HEIGHT*(7/16))
+        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 8, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
         self.spawn_map[ps3.get_special_id()] = ps3
 
     """Pauses the simulation"""
@@ -173,7 +182,9 @@ class App:
         if self.speed > 1:
             self.speed -= 1
 
-    """"Draw dot, which had not been initialized"""
+    """"Draw dot, which had not been initialized
+        Args:
+            c: the dot reference which needs to be drawn"""
     def draw_dot(self, c):
         ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
         c.set_reference(ref)
@@ -181,7 +192,10 @@ class App:
         self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
         self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
-    """""Destroys dot at every layer of abstraction"""
+    """"Destroys dot at every layer of abstraction
+        Args:
+            dot: the dot that needs to be deleted
+        """
     def remove_dot(self, dot):
         if dot is self.current_selection:
             self.set_current_selection(None)
@@ -191,7 +205,10 @@ class App:
         if dot.special != -1:
             self.spawn_map[dot.special].remove(dot.get_occupant())
 
-    """Highlights a dot and makes it the Current Selection (or deselects)"""
+    """Highlights a dot and makes it the Current Selection (or deselects)
+        Args:
+            event: the mouse click that selects the dot
+            ref: the circle reference for the dot"""
     def select_dot(self, event, ref):
         if not self.dot_parrallels[ref].highlight_triggered():
             dot = self.dot_parrallels[ref]
@@ -208,7 +225,9 @@ class App:
             color = self.dot_parrallels[ref].get_color()
             self.canvas.itemconfigure(ref, fill=color)
 
-    """Sets the current selection to @param dot and updates the text boxes"""
+    """Sets the current selection to and updates the text boxes
+        Args:
+            dot: the dot to be set as current selection"""
     def set_current_selection(self, dot):
         self.current_selection = dot
         self.csSpeedEntry.delete(0, END)
@@ -247,11 +266,15 @@ class App:
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
-    """Changes the visible color of the dot to its actual color"""
+    """Changes the visible color of the dot to its actual color
+        Args:
+            dot: the dot whose color needs to be updated"""
     def update_color(self, dot):
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
-    """Handle the various Dot triggers"""
+    """Handle the various Dot triggers
+        Args:
+            c: the dot whose triggers need to be handled"""
     def handle_triggers(self, c):
         if c.collide_triggered():
             if isinstance(c.get_occupant(), creature.Plant):
@@ -263,7 +286,9 @@ class App:
         if c.kill_triggered():
             self.remove_dot(c)
 
-    """Handles collision between dots"""
+    """Handles collision between dots
+        Args:
+            c: the dot which is being checked for collisions"""
     def update_collisions(self, c):
         overlaps = self.canvas.find_overlapping(c.getx(), c.gety(), c.getx2(), c.gety2())
         doverlaps = []
@@ -272,8 +297,10 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
 
+    """Updates each dots vision of nearby dots
+        Args:
+            c: the dot whose vision is being updated"""
     def update_visions(self, c):
-        """Updates each dots vision of nearby dots"""
         cx = c.get_centerx()
         cy = c.get_centery()
         r = c.get_radius()
