@@ -1,4 +1,4 @@
-"""The program that will actually be run"""
+"""This module defines run configurations that can be useed to run the simulation itself"""
 
 from tkinter import *
 
