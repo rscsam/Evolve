@@ -13,7 +13,11 @@ def mix_color_values(a, b):
 
 
 def mix_cv_for_value(a, b):
-    return int((a+b)/2)
+    result = 0
+    result += ((((a << 26) >> 26) & 0x3F) + (((b << 26) >> 26) & 0x3F)) / 2
+    result += ((((a << 20) >> 26) & 0x3F) - (((b << 20) >> 26) & 0x3F)) * 128
+    result += ((((a << 14) >> 26) & 0x3F) - (((b << 14) >> 26) & 0x3F)) * 32768
+    return result
 
 
 def random_color():

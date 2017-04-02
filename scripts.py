@@ -296,41 +296,6 @@ class MoveTowardPlants(Script):
         self.set_y_velocity(yv)
 
 
-class HuntHerbivores(Script):
-    """A script that makes occupants move toward occupants of type Herbivore"""
-
-    def load(self, occupant):
-        """Loads the script with an occupant.  This must always be called before a script can be run
-            Args:
-                occupant: the occupant that is taking over the script"""
-        Script.load(self, occupant)
-        self.load_subscript(MoveLikeSquawker())
-        self.nearby = occupant.get_nearby()
-        self.update()
-
-    def update(self):
-        """Primary logic loop for the script"""
-        self.nearby = self.get_occupant().get_nearby_herbivores()
-        minimum = -1
-        if len(self.nearby) > 0:
-            for i in range(0, len(self.nearby)):
-                if i == 0:
-                    minimum = i
-                elif self.nearby[i][3] < self.nearby[minimum][3]:
-                    minimum = i
-        else:
-            self.update_subscript()
-            return
-        ms = self.get_max_speed() + self.get_occupant().get_burst()
-        xv = self.nearby[minimum][1]
-        yv = self.nearby[minimum][2]
-        m = self.nearby[minimum][3]
-        xv = (xv/m) * ms * -1
-        yv = (yv/m) * ms * -1
-        self.set_x_velocity(xv)
-        self.set_y_velocity(yv)
-
-
 class HuntWeaker(Script):
     """A script that makes the occupant move towards occupants it perceives to be weaker"""
 

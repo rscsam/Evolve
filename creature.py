@@ -315,13 +315,6 @@ class Occupant:
                 nearby.append(self.__nearby[i])
         return nearby
 
-    def get_nearby_herbivores(self):
-        nearby = []
-        for i in range(0, len(self.__nearby)):
-            if isinstance(self.__nearby[i][0], Herbivore):
-                nearby.append(self.__nearby[i])
-        return nearby
-
     def get_nearby_weaker(self, times_weaker):
         nearby = []
         for i in range(0, len(self.__nearby)):
@@ -379,15 +372,6 @@ class ConvenientOccupant(Occupant):
     def __init__(self, g, behaviors, energy):
         Occupant.__init__(self, g, behaviors, energy)
         self.randomize_properties(300)
-        self.adjust_velocity()
-
-
-class Squawker(Occupant):
-    """An occupant that moves according to the famous S Q U A W K B O Y S movement algorithm"""
-
-    def __init__(self, g, behaviors, energy):
-        Occupant.__init__(self, g, behaviors, energy)
-        self.get_current_script().load(self)
         self.adjust_velocity()
 
 
@@ -449,61 +433,6 @@ class Plant(Occupant):
 
     def gety(self):
         return self.__y
-
-
-class Herbivore(ReproducingOccupant):
-    def __init__(self, g, behaviors, energy, parent):
-        ReproducingOccupant.__init__(self, g, behaviors, energy, parent)
-        self.mutate_properties()
-
-    def reproduce(self):
-        self.set_reproducing(False)
-        self.set_energy(self.get_energy() / 2)
-        return Herbivore(self.get_gencode(), self.get_behaviors(), self.get_base_energy(), self)
-
-    def update(self):
-        """makes the creature change direction occasionally"""
-        if self.get_energy() > (math.sqrt(self.get_size()))*self.get_base_energy():
-            self.set_reproducing(True)
-        Occupant.update(self)
-
-
-class Carnivore(ReproducingOccupant):
-    def __init__(self, g, behaviors, energy, parent):
-        ReproducingOccupant.__init__(self, g, behaviors, energy, parent)
-        self.mutate_properties()
-        self.adjust_velocity()
-
-    def reproduce(self):
-        self.set_reproducing(False)
-        self.set_energy(self.get_energy() / 2)
-        return Carnivore(self.get_gencode(), self.get_behaviors(), self.get_base_energy(), self)
-
-    def update(self):
-        """makes the creature change direction occasionally"""
-        if self.get_energy() > (self.get_size())*self.get_base_energy():
-            if random.random() < .0001:
-                self.set_reproducing(True)
-        Occupant.update(self)
-
-
-class Omnivore(ReproducingOccupant):
-    def __init__(self, g, behaviors, energy, parent):
-        ReproducingOccupant.__init__(self, g, behaviors, energy, parent)
-        self.mutate_properties()
-        self.set_base_energy(30000)
-        self.adjust_velocity()
-
-    def reproduce(self):
-        self.set_reproducing(False)
-        self.set_energy(self.get_energy()/2)
-        return Omnivore(self.get_gencode(), self.get_behaviors(), self.get_base_energy(), self)
-
-    def update(self):
-        """makes the creature change direction occasionally"""
-        if self.get_energy() > math.sqrt(self.get_size())*self.get_base_energy():
-            self.set_reproducing(True)
-        Occupant.update(self)
 
 
 class VersatileOccupant(ReproducingOccupant):

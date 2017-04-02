@@ -101,7 +101,7 @@ class App:
         """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_herbivore_scripts(),
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
                                                 10000))
 
     def _apply_cs_changes(self):

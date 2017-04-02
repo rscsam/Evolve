@@ -26,20 +26,8 @@ class World:
     def add_convenient(self, x, y, gencode, behaviors, energy):
         return self.add(ConvenientOccupant(gencode, behaviors, energy), x, y)
 
-    def add_squawker(self, x, y, gencode, behaviors, energy):
-        return self.add(Squawker(gencode, behaviors, energy), x, y)
-
     def add_reproducing(self, x, y, gencode, behaviors, energy, parent):
         return self.add(ReproducingOccupant(gencode, behaviors, energy, parent), x, y)
-
-    def add_herbivore(self, x, y, gencode, behaviors, energy, parent):
-        return self.add(Herbivore(gencode, behaviors, energy, parent), x, y)
-
-    def add_carnivore(self, x, y, gencode, behaviors, energy, parent):
-        return self.add(Carnivore(gencode, behaviors, energy, parent), x, y)
-
-    def add_omnivore(self, x, y, gencode, behaviors, energy, parent):
-        return self.add(Omnivore(gencode, behaviors, energy, parent), x, y)
 
     def add_versatile(self, x, y, gencode, behaviors, energy, parent):
         return self.add(VersatileOccupant(gencode, behaviors, energy, parent), x, y)
