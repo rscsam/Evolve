@@ -14,8 +14,11 @@ class App:
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
 
-    """initialization logic"""
     def __init__(self, speed):
+        """initialization logic
+        
+        Args:
+            speed: the inverse of targeted fps.  FPStarget = (60/speed)"""
         self.world = World()
         self.world.wheight = self.CANVAS_HEIGHT
         self.world.wwidth = self.CANVAS_WIDTH
@@ -44,8 +47,8 @@ class App:
         self.root.after(speed, self.update)
         self.root.mainloop()
 
-    """initializes gui specific logic"""
     def __init_gui(self):
+        """initializes gui specific logic"""
         self.root = Tk()
         self.full_screen = False
         self.root.bind("<Tab>", self._toggle_fullscreen)
@@ -82,56 +85,56 @@ class App:
         Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
         action_bar.pack(side=LEFT)
 
-    """switches between fullscreen and not fullscreen"""
     def _toggle_fullscreen(self, event=None):
+        """switches between fullscreen and not fullscreen"""
         self.full_screen = not self.full_screen  # Just toggling the boolean
         self.root.attributes("-fullscreen", self.full_screen)
         return "break"
 
-    """forces the screen not to be fullscreen"""
     def _end_fullscreen(self, event=None):
+        """forces the screen not to be fullscreen"""
         self.full_screen = False
         self.root.attributes("-fullscreen", False)
         return "break"
 
-    """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
     def _add_callback(self):
+        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
         self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
                                                  .99, .99, .99, .99, .99, .5, 2], reference.d_herbivore_scripts(),
                                                 10000))
 
-    """Applies to the current selection the attributes typed into the text boxes"""
     def _apply_cs_changes(self):
+        """Applies to the current selection the attributes typed into the text boxes"""
         self.current_selection.set_speed(int(self.csSpeedEntry.get()))
         self.current_selection.set_radius(int(self.csSizeEntry.get()))
         self.world.test_largest_radius(int(self.csSizeEntry.get()))
         self.current_selection.set_color(self.csColorEntry.get())
         self.canvas.update()
 
-    """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event
-        Args:
-            event: the mouse click"""
     def _canvas_on_click(self, event):
+        """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event
+            Args:
+                event: the mouse click"""
         self.canvas.focus_set()
         self.draw_dot(self.world.add_convenient(event.x, event.y,
                                                 ["B", 250, 10, 15, 2, 1, tools.random_color(),
                                                  .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
                                                 1000))
 
-    """A shortcut for creating circles
-        Args:
-            x: the x value of the center of the circle
-            y: the y value of the center of the circle
-            r: the radius of the circle
-            kwargs: additional styling
-        Return:
-            an oval widget that represents the circle"""
     def _create_circle(self, x, y, r, **kwargs):
+        """A shortcut for creating circles
+            Args:
+                x: the x value of the center of the circle
+                y: the y value of the center of the circle
+                r: the radius of the circle
+                kwargs: additional styling
+            Return:
+                an oval widget that represents the circle"""
         return self.canvas.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
-    """"draw dots initialized previously"""
     def _draw_dots(self):
+        """"draw dots initialized previously"""
         for c in self.world.occupants:
             ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
             c.set_reference(ref)
@@ -139,8 +142,8 @@ class App:
             self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
             self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
-    """Initializes dots that will be present at the time the program begins"""
     def _init_dots(self):
+        """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_versatile(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
@@ -152,51 +155,54 @@ class App:
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
-    """Initializes spawners that will be present at the time the program begins"""
     def _init_spawners(self):
+        """Initializes spawners that will be present at the time the program begins"""
         ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
         ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
-        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 8, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
+        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
         self.spawn_map[ps3.get_special_id()] = ps3
+        ps4 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4,
+                                           self.CANVAS_WIDTH * (3 / 8), self.CANVAS_HEIGHT * (15 / 16))
+        self.spawn_map[ps4.get_special_id()] = ps4
 
-    """Pauses the simulation"""
     def _pause(self, event=None):
+        """Pauses the simulation"""
         self.running = not self.running
 
-    """The method called when 'PAUSE' is clicked -- pauses the program"""
     def _pause_callback(self):
+        """The method called when 'PAUSE' is clicked -- pauses the program"""
         self.running = not self.running
 
-    """Sets the kill trigger the current selection"""
     def _kill_callback(self):
+        """Sets the kill trigger the current selection"""
         self.current_selection.kill_trigger()
 
-    """The method called when 'SLOW DOWN' is clicked -- Slows down the main loop"""
     def _slowdown_callback(self):
+        """The method called when 'SLOW DOWN' is clicked -- Slows down the main loop"""
         self.speed += 1
 
-    """The method called when 'ADD' is clicked -- Speeds up the main loop"""
     def _speedup_callback(self):
+        """The method called when 'ADD' is clicked -- Speeds up the main loop"""
         if self.speed > 1:
             self.speed -= 1
 
-    """"Draw dot, which had not been initialized
-        Args:
-            c: the dot reference which needs to be drawn"""
     def draw_dot(self, c):
+        """"Draw dot, which had not been initialized
+            Args:
+                c: the dot reference which needs to be drawn"""
         ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
         c.set_reference(ref)
         self.dot_parrallels[ref] = c
         self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
         self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
 
-    """"Destroys dot at every layer of abstraction
-        Args:
-            dot: the dot that needs to be deleted
-        """
     def remove_dot(self, dot):
+        """"Destroys dot at every layer of abstraction
+            Args:
+                dot: the dot that needs to be deleted
+            """
         if dot is self.current_selection:
             self.set_current_selection(None)
         del self.dot_parrallels[dot.get_reference()]
@@ -205,11 +211,11 @@ class App:
         if dot.special != -1:
             self.spawn_map[dot.special].remove(dot.get_occupant())
 
-    """Highlights a dot and makes it the Current Selection (or deselects)
-        Args:
-            event: the mouse click that selects the dot
-            ref: the circle reference for the dot"""
     def select_dot(self, event, ref):
+        """Highlights a dot and makes it the Current Selection (or deselects)
+            Args:
+                event: the mouse click that selects the dot
+                ref: the circle reference for the dot"""
         if not self.dot_parrallels[ref].highlight_triggered():
             dot = self.dot_parrallels[ref]
             if self.current_selection is not None:
@@ -225,10 +231,10 @@ class App:
             color = self.dot_parrallels[ref].get_color()
             self.canvas.itemconfigure(ref, fill=color)
 
-    """Sets the current selection to and updates the text boxes
-        Args:
-            dot: the dot to be set as current selection"""
     def set_current_selection(self, dot):
+        """Sets the current selection to and updates the text boxes
+            Args:
+                dot: the dot to be set as current selection"""
         self.current_selection = dot
         self.csSpeedEntry.delete(0, END)
         self.csSizeEntry.delete(0, END)
@@ -242,8 +248,8 @@ class App:
             self.csSizeEntry.insert(0, str(dot.get_radius()))
             self.csColorEntry.insert(0, dot.get_color())
 
-    """The main logic loop of the program"""
     def update(self):
+        """The main logic loop of the program"""
         if self.running:
             self.world.wheight = self.canvas.winfo_height()
             self.world.wwidth = self.canvas.winfo_width()
@@ -266,16 +272,16 @@ class App:
             self.canvas.update()
         self.root.after(self.speed, self.update)
 
-    """Changes the visible color of the dot to its actual color
-        Args:
-            dot: the dot whose color needs to be updated"""
     def update_color(self, dot):
+        """Changes the visible color of the dot to its actual color
+            Args:
+                dot: the dot whose color needs to be updated"""
         self.canvas.itemconfigure(dot.get_reference(), fill=dot.get_color())
 
-    """Handle the various Dot triggers
-        Args:
-            c: the dot whose triggers need to be handled"""
     def handle_triggers(self, c):
+        """Handle the various Dot triggers
+            Args:
+                c: the dot whose triggers need to be handled"""
         if c.collide_triggered():
             if isinstance(c.get_occupant(), creature.Plant):
                 c.kill_trigger()
@@ -286,10 +292,10 @@ class App:
         if c.kill_triggered():
             self.remove_dot(c)
 
-    """Handles collision between dots
-        Args:
-            c: the dot which is being checked for collisions"""
     def update_collisions(self, c):
+        """Handles collision between dots
+            Args:
+                c: the dot which is being checked for collisions"""
         overlaps = self.canvas.find_overlapping(c.getx(), c.gety(), c.getx2(), c.gety2())
         doverlaps = []
         for o in overlaps:
@@ -297,10 +303,10 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.handle_collisions(c, doverlaps)
 
-    """Updates each dots vision of nearby dots
-        Args:
-            c: the dot whose vision is being updated"""
     def update_visions(self, c):
+        """Updates each dots vision of nearby dots
+            Args:
+                c: the dot whose vision is being updated"""
         cx = c.get_centerx()
         cy = c.get_centery()
         r = c.get_radius()
