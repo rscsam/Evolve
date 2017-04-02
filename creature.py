@@ -366,15 +366,6 @@ class Occupant:
             self.die()
 
 
-class ConvenientOccupant(Occupant):
-    """An occupant designed to do whatever helps with debugging"""
-
-    def __init__(self, g, behaviors, energy):
-        Occupant.__init__(self, g, behaviors, energy)
-        self.randomize_properties(300)
-        self.adjust_velocity()
-
-
 class ReproducingOccupant(Occupant):
     """An occupant capable of reproducing"""
     __reproducing = False
@@ -404,6 +395,15 @@ class ReproducingOccupant(Occupant):
         if random.random() < .008:
             self.__reproducing = True
         Occupant.update(self)
+
+
+class ConvenientOccupant(Occupant):
+    """An occupant designed to do whatever helps with debugging"""
+
+    def __init__(self, g, behaviors, energy):
+        Occupant.__init__(self, g, behaviors, energy)
+        self.randomize_properties(300)
+        self.adjust_velocity()
 
 
 class Plant(Occupant):

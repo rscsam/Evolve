@@ -8,111 +8,72 @@ import tools as tools
 from dotworld import World
 
 
-class App:
+class Simulation:
     """A run configuration that sets all parameters and initializations for the simulation"""
 
     CANVAS_HEIGHT = 600
     CANVAS_WIDTH = 1200
 
-    def __init__(self, speed):
+    def __init__(self, speed, world=World()):
         """initialization logic
-        
-        Args:
-            speed: the inverse of targeted fps.  FPStarget = (60/speed)"""
-        self.world = World()
+            Args:
+                speed: the inverse of targeted fps.  FPStarget = (60/speed)"""
+        self.world = world
         self.world.wheight = self.CANVAS_HEIGHT
         self.world.wwidth = self.CANVAS_WIDTH
         self.running = False
+        self.visible_x = 0
+        self.visible_y = 0
         self.speed = 10
         self.dot_parrallels = {}
         self.spawn_map = {}
-        self.root = None
-        self.canvas = None
-        self.xEntry = None
-        self.yEntry = None
-        self.csSpeedEntry = None
-        self.csSizeEntry = None
-        self.csColorEntry = None
         self.current_selection = None
-        self.__init_gui()
+        self.init_gui()
         self.set_current_selection(None)
         self.dot_parrallels.clear()
-        self.spawn_map.clear()
-        self._init_spawners()
-        self._init_dots()
+        self.init_spawners()
+        self.init_dots()
         self._draw_dots()
-        self.canvas.bind("<Button-1>", self._canvas_on_click)
         self.canvas.pack(fill=BOTH, expand=TRUE)
         self.speed = speed
         self.root.after(speed, self.update)
         self.root.mainloop()
 
-    def __init_gui(self):
+    def init_gui(self):
         """initializes gui specific logic"""
         self.root = Tk()
         self.full_screen = False
-        self.root.bind("<Tab>", self._toggle_fullscreen)
-        self.root.bind("<Escape>", self._end_fullscreen)
-        self.root.bind("<space>", self._pause)
         self.root.title = "Evolvarium"
         self.root.resizable(True, True)
         self.canvas = Canvas(self.root, width=self.CANVAS_WIDTH,
                              height=self.CANVAS_HEIGHT, borderwidth=0, highlightthickness=0, bg="black")
+        self.canvas.bind("<Button-1>", self.canvas_on_click)
         self.canvas.pack()
+        self.init_additional_gui_elements()
+        self.configure_hotkeys()
 
-        action_bar = Frame(self.root, width=self.CANVAS_WIDTH, height=58, borderwidth=0)
-        Button(action_bar, text="Add occupant", command=self._add_callback).pack(fill=NONE, side=LEFT)
-        Label(action_bar, text="X").pack(side=LEFT)
-        self.xEntry = Entry(action_bar, width=5)
-        self.xEntry.pack(side=LEFT)
-        Label(action_bar, text="Y").pack(side=LEFT)
-        self.yEntry = Entry(action_bar, width=5)
-        self.yEntry.pack(side=LEFT)
-        Button(action_bar, text="Pause", command=self._pause_callback).pack(fill=NONE, side=LEFT)
-        Button(action_bar, text="Speed Up", command=self._speedup_callback).pack(fill=NONE, side=LEFT)
-        Button(action_bar, text="Slow Down", command=self._slowdown_callback).pack(fill=NONE, side=LEFT)
-        Label(action_bar, text="Speed: ").pack(side=LEFT)
-        self.csSpeedEntry = Entry(action_bar, width=5)
-        self.csSpeedEntry.pack(side=LEFT)
-        Label(action_bar, text="Size: ").pack(side=LEFT)
-        self.csSizeEntry = Entry(action_bar, width=5)
-        self.csSizeEntry.pack(side=LEFT)
-        Label(action_bar, text="Color: ").pack(side=LEFT)
-        self.csColorEntry = Entry(action_bar, width=7)
-        self.csColorEntry.pack(side=LEFT)
-        Button(action_bar, text="Kill", command=self._kill_callback).pack(fill=NONE, side=LEFT)
-        action_bar.pack(side=LEFT)
-        Button(action_bar, text="Apply", command=self._apply_cs_changes).pack(fill=NONE, side=LEFT)
-        action_bar.pack(side=LEFT)
+    def init_additional_gui_elements(self):
+        """Initialize any additional UI elements you want"""
 
-    def _toggle_fullscreen(self, event=None):
+    def configure_hotkeys(self):
+        """Initialize all baseline hotkeys that apply to the whole simulation"""
+
+    def toggle_fullscreen(self, event=None):
         """switches between fullscreen and not fullscreen"""
         self.full_screen = not self.full_screen  # Just toggling the boolean
         self.root.attributes("-fullscreen", self.full_screen)
         return "break"
 
-    def _end_fullscreen(self, event=None):
+    def end_fullscreen(self, event=None):
         """forces the screen not to be fullscreen"""
         self.full_screen = False
         self.root.attributes("-fullscreen", False)
         return "break"
 
-    def _add_callback(self):
-        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
-        self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
-                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
-                                                10000))
+    def apply_cs_changes(self):
+        """"Applies to the current selection the attributes typed into the text boxes"""
 
-    def _apply_cs_changes(self):
-        """Applies to the current selection the attributes typed into the text boxes"""
-        self.current_selection.set_speed(int(self.csSpeedEntry.get()))
-        self.current_selection.set_radius(int(self.csSizeEntry.get()))
-        self.world.test_largest_radius(int(self.csSizeEntry.get()))
-        self.current_selection.set_color(self.csColorEntry.get())
-        self.canvas.update()
-
-    def _canvas_on_click(self, event):
+    def canvas_on_click(self, event):
         """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event
             Args:
                 event: the mouse click"""
@@ -133,16 +94,24 @@ class App:
                 an oval widget that represents the circle"""
         return self.canvas.create_oval(x-r, y-r, x+r, y+r, **kwargs)
 
+    def scroll_down(self, event=None):
+        self.canvas.yview_scroll(1, what="units")
+
+    def scroll_up(self, event=None):
+        self.canvas.yview_scroll(-1, what="units")
+
+    def scroll_left(self, event=None):
+        self.canvas.xview_scroll(-1, what="units")
+
+    def scroll_right(self, event=None):
+        self.canvas.xview_scroll(1, what="units")
+
     def _draw_dots(self):
         """"draw dots initialized previously"""
         for c in self.world.occupants:
-            ref = self._create_circle(c.get_centerx(), c.get_centery(), c.get_radius(), fill=c.get_color(), width=0)
-            c.set_reference(ref)
-            self.dot_parrallels[ref] = c
-            self.canvas.tag_bind(ref, "<Button-2>", lambda event, arg=ref: self.select_dot(event, arg))
-            self.canvas.tag_bind(ref, "<Button-3>", lambda event, arg=ref: self.select_dot(event, arg))
+            self.draw_dot(c)
 
-    def _init_dots(self):
+    def init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_versatile(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
@@ -155,7 +124,7 @@ class App:
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
-    def _init_spawners(self):
+    def init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
         ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
@@ -167,26 +136,9 @@ class App:
                                            self.CANVAS_WIDTH * (3 / 8), self.CANVAS_HEIGHT * (15 / 16))
         self.spawn_map[ps4.get_special_id()] = ps4
 
-    def _pause(self, event=None):
+    def pause(self, event=None):
         """Pauses the simulation"""
         self.running = not self.running
-
-    def _pause_callback(self):
-        """The method called when 'PAUSE' is clicked -- pauses the program"""
-        self.running = not self.running
-
-    def _kill_callback(self):
-        """Sets the kill trigger the current selection"""
-        self.current_selection.kill_trigger()
-
-    def _slowdown_callback(self):
-        """The method called when 'SLOW DOWN' is clicked -- Slows down the main loop"""
-        self.speed += 1
-
-    def _speedup_callback(self):
-        """The method called when 'ADD' is clicked -- Speeds up the main loop"""
-        if self.speed > 1:
-            self.speed -= 1
 
     def draw_dot(self, c):
         """"Draw dot, which had not been initialized
@@ -236,23 +188,10 @@ class App:
             Args:
                 dot: the dot to be set as current selection"""
         self.current_selection = dot
-        self.csSpeedEntry.delete(0, END)
-        self.csSizeEntry.delete(0, END)
-        self.csColorEntry.delete(0, END)
-        if dot is None:
-            self.csSpeedEntry.insert(0, "NA")
-            self.csSizeEntry.insert(0, "NA")
-            self.csColorEntry.insert(0, "NA")
-        else:
-            self.csSpeedEntry.insert(0, str(dot.get_speed()))
-            self.csSizeEntry.insert(0, str(dot.get_radius()))
-            self.csColorEntry.insert(0, dot.get_color())
 
     def update(self):
         """The main logic loop of the program"""
         if self.running:
-            self.world.wheight = self.canvas.winfo_height()
-            self.world.wwidth = self.canvas.winfo_width()
             for c in self.world.occupants:
                 if c.needs_vision():
                     self.update_visions(c)
@@ -318,4 +257,124 @@ class App:
                 doverlaps.append(self.dot_parrallels[o])
         self.world.update_visions(c, doverlaps)
 
-App(1)
+
+class Simulation2(Simulation):
+    """A run configuration that sets all parameters and initializations for the simulation"""
+
+    CANVAS_HEIGHT = 10000
+    CANVAS_WIDTH = 1000
+
+    def __init__(self, speed):
+        """initialization logic
+            Args:
+                speed: the inverse of targeted fps.  FPStarget = (60/speed)"""
+        Simulation.__init__(self, speed)
+
+    def init_additional_gui_elements(self):
+        action_bar = Frame(self.root, width=self.CANVAS_WIDTH, height=58, borderwidth=0)
+        Button(action_bar, text="Add occupant", command=self._add_callback).pack(fill=NONE, side=LEFT)
+        Label(action_bar, text="X").pack(side=LEFT)
+        self.xEntry = Entry(action_bar, width=5)
+        self.xEntry.pack(side=LEFT)
+        Label(action_bar, text="Y").pack(side=LEFT)
+        self.yEntry = Entry(action_bar, width=5)
+        self.yEntry.pack(side=LEFT)
+        Button(action_bar, text="Pause", command=self._pause_callback).pack(fill=NONE, side=LEFT)
+        Button(action_bar, text="Speed Up", command=self._speedup_callback).pack(fill=NONE, side=LEFT)
+        Button(action_bar, text="Slow Down", command=self._slowdown_callback).pack(fill=NONE, side=LEFT)
+        Label(action_bar, text="Speed: ").pack(side=LEFT)
+        self.csSpeedEntry = Entry(action_bar, width=5)
+        self.csSpeedEntry.pack(side=LEFT)
+        Label(action_bar, text="Size: ").pack(side=LEFT)
+        self.csSizeEntry = Entry(action_bar, width=5)
+        self.csSizeEntry.pack(side=LEFT)
+        Label(action_bar, text="Color: ").pack(side=LEFT)
+        self.csColorEntry = Entry(action_bar, width=7)
+        self.csColorEntry.pack(side=LEFT)
+        Button(action_bar, text="Kill", command=self._kill_callback).pack(fill=NONE, side=LEFT)
+        action_bar.pack(side=LEFT)
+        Button(action_bar, text="Apply", command=self.apply_cs_changes).pack(fill=NONE, side=LEFT)
+        action_bar.pack(side=LEFT)
+
+    def configure_hotkeys(self):
+        """Initialize all baseline hotkeys that apply to the whole simulation"""
+        self.root.bind("<Tab>", self.toggle_fullscreen)
+        self.root.bind("<Escape>", self.end_fullscreen)
+        self.root.bind("<space>", self.pause)
+        self.root.bind("<Up>", self.scroll_up)
+        self.root.bind("<Down>", self.scroll_down)
+        self.root.bind("<Right>", self.scroll_right)
+        self.root.bind("<Left>", self.scroll_left)
+
+    def end_fullscreen(self, event=None):
+        """forces the screen not to be fullscreen"""
+        self.full_screen = False
+        self.root.attributes("-fullscreen", False)
+        return "break"
+
+    def _add_callback(self):
+        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
+        self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
+                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
+                                                10000))
+
+    def apply_cs_changes(self):
+        """"Applies to the current selection the attributes typed into the text boxes"""
+        self.current_selection.set_speed(int(self.csSpeedEntry.get()))
+        self.current_selection.set_radius(int(self.csSizeEntry.get()))
+        self.world.test_largest_radius(int(self.csSizeEntry.get()))
+        self.current_selection.set_color(self.csColorEntry.get())
+        self.canvas.update()
+
+    def canvas_on_click(self, event):
+        """The method called when the canvas is clicked -- Adds a gray Squawker at the point of the event
+            Args:
+                event: the mouse click"""
+        self.canvas.focus_set()
+        self.draw_dot(self.world.add_versatile(event.x, event.y,
+                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
+                                                1000, None))
+
+    def init_dots(self):
+        """Initializes dots that will be present at the time the program begins"""
+        # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
+        self.world.add_versatile(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
+                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                 10000, None).get_occupant().set_base_energy(10000)
+        self.world.add_versatile(900, 100, ["I", 75, 10, 3, 3, 4, tools.random_color(),
+                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                 10000, None).get_occupant().set_base_energy(10000)
+
+    def init_spawners(self):
+        """Initializes spawners that will be present at the time the program begins"""
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, 0, 0)
+        self.spawn_map[ps1.get_special_id()] = ps1
+        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
+        self.spawn_map[ps2.get_special_id()] = ps2
+        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
+        self.spawn_map[ps3.get_special_id()] = ps3
+        ps4 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4,
+                                           self.CANVAS_WIDTH * (3 / 8), self.CANVAS_HEIGHT * (15 / 16))
+        self.spawn_map[ps4.get_special_id()] = ps4
+
+    def _pause_callback(self, event=None):
+        """The method called when 'PAUSE' is clicked -- pauses the program"""
+        self.pause()
+
+    def _kill_callback(self):
+        """Sets the kill trigger the current selection"""
+        self.current_selection.kill_trigger()
+
+    def _slowdown_callback(self):
+        """The method called when 'SLOW DOWN' is clicked -- Slows down the main loop"""
+        self.speed += 1
+
+    def _speedup_callback(self):
+        """The method called when 'ADD' is clicked -- Speeds up the main loop"""
+        if self.speed > 1:
+            self.speed -= 1
+
+
+Simulation2(1)

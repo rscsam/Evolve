@@ -28,7 +28,7 @@ def random_color():
 
 
 def random_color_value():
-    return random.random() * 16777216  # 2^24
+    return random.random() * 16777216  # 2^24 or 256^3
 
 
 def color_pack(c):
