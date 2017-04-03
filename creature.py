@@ -43,6 +43,6 @@ class Creature(ReproducingOccupant):
 
     def update(self):
         """makes the creature change direction occasionally"""
-        if self.get_energy() > math.sqrt(self.get_size()) * self.get_base_energy():
+        if self.get_energy() > math.sqrt(self.get_size()) * self.get_base_energy() * 2:
             self.set_reproducing(True)
         Occupant.update(self)

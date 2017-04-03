@@ -305,7 +305,6 @@ class TestSim(Simulation):
         self.root.bind("<i>", self.print_info)
         self.root.bind("<c>", self.print_current_selection)
 
-
     def print_info(self, event=None):
         num_plants = 0
         for o in self.world.occupants:
