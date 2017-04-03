@@ -5,7 +5,6 @@ from tkinter import *
 import reference
 import tools as tools
 from dotworld import World
-from plant import Plant
 
 
 class Simulation:
@@ -221,9 +220,6 @@ class Simulation:
         """Handle the various Dot triggers
             Args:
                 c: the dot whose triggers need to be handled"""
-        if c.collide_triggered():
-            if isinstance(c.get_occupant(), Plant):
-                c.kill_trigger()
         if c.ucolor_triggered():
             self.update_color(c)
         if c.reproducing_triggered():
@@ -258,7 +254,7 @@ class Simulation:
         self.world.update_visions(c, doverlaps)
 
 
-class Simulation2(Simulation):
+class TestSim(Simulation):
     """A run configuration that sets all parameters and initializations for the simulation"""
 
     CANVAS_HEIGHT = 4000
@@ -402,4 +398,4 @@ class Simulation2(Simulation):
             self.speed -= 1
 
 
-Simulation2(1)
+TestSim(1)

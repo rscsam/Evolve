@@ -1,5 +1,6 @@
 """The module that handles the front-end representations of the backend"""
 
+import occupant
 from spawner import *
 
 

@@ -1,8 +1,10 @@
-import occupant
-from scripts import *
+import random
+
+from occupant import Occupant
+from scripts import StayStill
 
 
-class Plant(occupant.Occupant):
+class Plant(Occupant):
     """An occupant that does not move, but grows in place"""
     __growth_rate = random.normalvariate(2000, 100)
     if __growth_rate < 0:
@@ -12,7 +14,7 @@ class Plant(occupant.Occupant):
     def __init__(self, x, y, energy):
         g = ["plant", -1, 0, 10, 10, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
         behaviors = [[StayStill()], [StayStill()], [StayStill()]]
-        occupant.Occupant.__init__(self, g, behaviors, energy)
+        Occupant.__init__(self, g, behaviors, energy)
         self.set_base_energy(energy*3)
         self.__x = x
         self.__y = y

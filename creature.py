@@ -35,15 +35,6 @@ class ReproducingOccupant(Occupant):
         Occupant.update(self)
 
 
-class ConvenientOccupant(Occupant):
-    """An occupant designed to do whatever helps with debugging"""
-
-    def __init__(self, g, behaviors, energy):
-        Occupant.__init__(self, g, behaviors, energy)
-        self.randomize_properties(300)
-        self.adjust_velocity()
-
-
 class Creature(ReproducingOccupant):
     def reproduce(self):
         self.set_reproducing(False)
