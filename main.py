@@ -2,10 +2,10 @@
 
 from tkinter import *
 
-import creature
 import reference
 import tools as tools
 from dotworld import World
+from plant import Plant
 
 
 class Simulation:
@@ -114,13 +114,13 @@ class Simulation:
     def init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_versatile(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
+        self.world.add_creature(300, 300, ["H", 75, 1, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
-        self.world.add_versatile(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_creature(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
-        self.world.add_versatile(900, 100, ["I", 75, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_creature(900, 100, ["I", 75, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
@@ -222,7 +222,7 @@ class Simulation:
             Args:
                 c: the dot whose triggers need to be handled"""
         if c.collide_triggered():
-            if isinstance(c.get_occupant(), creature.Plant):
+            if isinstance(c.get_occupant(), Plant):
                 c.kill_trigger()
         if c.ucolor_triggered():
             self.update_color(c)
@@ -343,18 +343,18 @@ class Simulation2(Simulation):
     def init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_versatile(1500, 3400, ["G", 150, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_creature(1500, 3400, ["G", 150, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
-        self.world.add_versatile(1500, 100, ["I", 150, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_creature(1500, 100, ["I", 150, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
     def init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/20, 0, 0)
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/5, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
-        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/20, self.CANVAS_WIDTH*3/4, 0)
+        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/5, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
         ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
         self.spawn_map[ps3.get_special_id()] = ps3

@@ -1,6 +1,5 @@
 """The module that handles the front-end representations of the backend"""
 
-import creature
 from spawner import *
 
 
@@ -29,8 +28,8 @@ class World:
     def add_reproducing(self, x, y, gencode, behaviors, energy, parent):
         return self.add(ReproducingOccupant(gencode, behaviors, energy, parent), x, y)
 
-    def add_versatile(self, x, y, gencode, behaviors, energy, parent):
-        return self.add(VersatileOccupant(gencode, behaviors, energy, parent), x, y)
+    def add_creature(self, x, y, gencode, behaviors, energy, parent):
+        return self.add(Creature(gencode, behaviors, energy, parent), x, y)
 
     def add_plant(self, x, y, energy):
         return self.add(Plant(x, y, energy), x, y)
@@ -86,7 +85,7 @@ class World:
             distance = int((math.sqrt((((dot.get_centerx() - c.get_centerx()) * (dot.get_centerx() - c.get_centerx()))
                              + ((dot.get_centery() - c.get_centery()) * (dot.get_centery() - c.get_centery()))))))
             if distance <= (dot.get_radius() + c.get_radius()):
-                if c != dot and creature.similarity(dot.get_occupant(), c.get_occupant()) > 0:
+                if c != dot and occupant.similarity(dot.get_occupant(), c.get_occupant()) > 0:
                     self.fight(c, dot)
                 # if isinstance(c.get_occupant(), Plant) or isinstance(dot.get_occupant() , Plant):
                 #     self.fight(c, dot)

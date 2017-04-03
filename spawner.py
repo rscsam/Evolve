@@ -1,7 +1,7 @@
 """This module defines a series of spawners capable of spawning occupants into their world"""
 
 from creature import *
-
+from plant import *
 
 class Spawner:
     """A superclass that defines a spawner capable of keeping track of its own occupants
@@ -106,7 +106,7 @@ class Spawner:
     def remove(self, occupant):
         """Removes an occupant from its list of occupants to keep track of
             Args:
-                o: the occupant to remove from the list of occupants"""
+                occupant: the occupant to remove from the list of occupants"""
         if occupant in self.__occupants:
             self.__occupants.remove(occupant)
 
@@ -129,9 +129,9 @@ class Spawner:
         return self.__spawn_x
 
     def spawny(self):
-        """Sets the y-location of the next spawn
-            Args:
-                y: the next y-location for the spawn"""
+        """Getter for y-location of the next spawn
+            Return:
+                the y-value of the next spawn"""
         return self.__spawn_y
 
     def set_spawny(self, y):
