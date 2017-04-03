@@ -182,7 +182,7 @@ class PlantSpawner(Spawner):
             Return:
                 a plant to be spawned in the world"""
         self.set_spawning(False)
-        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*7500))
+        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*10000))
         self.add(p)
         return p
 

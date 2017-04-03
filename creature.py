@@ -72,6 +72,16 @@ class Occupant:
             curr = curr.load_subscript(copy.deepcopy(behaviors[2][i]))
         self.__current_script = self.__scripts["Main"]
 
+    def to_string(self):
+        result = "Size: " + str(self.__size)
+        result += "\nSpecies: " + self.__species
+        result += "\nColor: " + str(self.__color)
+        result += "\nSpeed: " + str(self.__speed)
+        result += "\nBurst: " + str(self.__burst)
+        result += "\nVision: " + str(self.__vision)
+        result += "\nToughness: " + str(self.__toughness)
+        return result
+
     # Properties and property logic
     def set_gencode(self, g):
         self.__gencode = g
@@ -414,7 +424,7 @@ class Plant(Occupant):
     __counter = __growth_rate
 
     def __init__(self, x, y, energy):
-        g = ["plant", -1, 0, 5, 0, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
+        g = ["plant", -1, 0, 10, 10, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
         behaviors = [[StayStill()], [StayStill()], [StayStill()]]
         Occupant.__init__(self, g, behaviors, energy)
         self.set_base_energy(energy*3)

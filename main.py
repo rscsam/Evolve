@@ -261,8 +261,8 @@ class Simulation:
 class Simulation2(Simulation):
     """A run configuration that sets all parameters and initializations for the simulation"""
 
-    CANVAS_HEIGHT = 10000
-    CANVAS_WIDTH = 1000
+    CANVAS_HEIGHT = 4000
+    CANVAS_WIDTH = 1800
 
     def __init__(self, speed):
         """initialization logic
@@ -305,19 +305,25 @@ class Simulation2(Simulation):
         self.root.bind("<Down>", self.scroll_down)
         self.root.bind("<Right>", self.scroll_right)
         self.root.bind("<Left>", self.scroll_left)
+        self.root.bind("<i>", self.print_info)
+        self.root.bind("<c>", self.print_current_selection)
+
+
+    def print_info(self, event=None):
+        num_plants = 0
+        for o in self.world.occupants:
+            if o.special != -1:
+                num_plants += 1
+        print("****************************")
+        print("Total Number of Occupants: ", len(self.world.occupants))
+        print("Total Number of Plants: ", num_plants)
+        print("****************************")
 
     def end_fullscreen(self, event=None):
         """forces the screen not to be fullscreen"""
         self.full_screen = False
         self.root.attributes("-fullscreen", False)
         return "break"
-
-    def _add_callback(self):
-        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
-        self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
-                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
-                                                10000))
 
     def apply_cs_changes(self):
         """"Applies to the current selection the attributes typed into the text boxes"""
@@ -332,32 +338,51 @@ class Simulation2(Simulation):
             Args:
                 event: the mouse click"""
         self.canvas.focus_set()
-        self.draw_dot(self.world.add_versatile(event.x, event.y,
-                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
-                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
-                                                1000, None))
+        self.draw_dot(self.world.add_plant(self.canvas.canvasx(event.x), self.canvas.canvasy(event.y), 5000))
 
     def init_dots(self):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
-        self.world.add_versatile(900, 300, ["G", 75, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_versatile(1500, 3400, ["G", 150, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
-        self.world.add_versatile(900, 100, ["I", 75, 10, 3, 3, 4, tools.random_color(),
+        self.world.add_versatile(1500, 100, ["I", 150, 10, 3, 3, 4, tools.random_color(),
                                             .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
     def init_spawners(self):
         """Initializes spawners that will be present at the time the program begins"""
-        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, 0, 0)
+        ps1 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/20, 0, 0)
         self.spawn_map[ps1.get_special_id()] = ps1
-        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/4, self.CANVAS_WIDTH*3/4, 0)
+        ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/20, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
         ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
         self.spawn_map[ps3.get_special_id()] = ps3
         ps4 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4,
                                            self.CANVAS_WIDTH * (3 / 8), self.CANVAS_HEIGHT * (15 / 16))
         self.spawn_map[ps4.get_special_id()] = ps4
+
+    def set_current_selection(self, dot):
+        """Sets the current selection to and updates the text boxes
+            Args:
+                dot: the dot to be set as current selection"""
+        self.current_selection = dot
+        if dot is not None:
+            self.print_current_selection()
+
+    def print_current_selection(self, event=None):
+        if self.current_selection is not None:
+            print("----------------------------")
+            print(self.current_selection.get_occupant())
+            print(self.current_selection.to_string())
+            print("----------------------------")
+
+    def _add_callback(self):
+        """The method called when 'ADD' is clicked -- Adds a convenient at the point of the event"""
+        self.draw_dot(self.world.add_convenient(int(self.xEntry.get()), self.yEntry.get(),
+                                                ["B", 250, 10, 15, 2, 1, tools.random_color(),
+                                                 .99, .99, .99, .99, .99, .5, 2], reference.d_versatile_scripts(),
+                                                10000))
 
     def _pause_callback(self, event=None):
         """The method called when 'PAUSE' is clicked -- pauses the program"""

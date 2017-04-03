@@ -129,6 +129,11 @@ class Dot:
         self.sety(y-self.__radius)
         self.__color = occupant.get_color()
 
+    def to_string(self):
+        result = "(" + str(self.get_centerx()) + ", " + str(self.get_centery()) + ")\n"
+        result += str(self.get_occupant().to_string())
+        return result
+
     def setx(self, x):
         self.__x = x
         self.__x2 = x + (2 * self.__radius)
