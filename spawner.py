@@ -26,6 +26,7 @@ class Spawner:
         self.__spawn_y = 0
         self.__special_id = 0
         self.__occupants = []
+        self.__position_rlt = {}
         self.__init_special_id()
         self.__timer = timer
         self.__current_time = timer
@@ -98,10 +99,11 @@ class Spawner:
         return self.__width
 
     def add(self, o):
-        """Adds an occupant to its list of occupants to keep track of
+        """Adds an occupant to its list of occupants to keep track of as well as the rlt
             Args:
-                o: the occupant to add to its list of occupants"""
-        self.__occupants.append(o)
+                o: A triple (occupant to add, occupant x, occupant y)"""
+        self.__occupants.append(o[0])
+        self.__position_rlt[o[0]] = (o[1], o[2])
 
     def remove(self, occupant):
         """Removes an occupant from its list of occupants to keep track of
@@ -115,6 +117,22 @@ class Spawner:
             Return:
                 the list of occupants the spawner is tracking"""
         return self.__occupants
+
+    def find_occupant_x(self, o):
+        """Uses the rlt to find the x-position of a tracked occupant
+            Args:
+                o: the occupant whose x-location is needed
+            Return:
+                the x-position of the occupant requested"""
+        return self.__position_rlt[o][0]
+
+    def find_occupant_y(self, o):
+        """Uses the rlt to find the y-position of a tracked occupant
+            Args:
+                o: the occupant whose y-location is needed
+            Return:
+                the y-position of the occupant requested"""
+        return self.__position_rlt[o][1]
 
     def set_spawnx(self, x):
         """Sets the x-location of the next spawn
@@ -182,8 +200,8 @@ class PlantSpawner(Spawner):
             Return:
                 a plant to be spawned in the world"""
         self.set_spawning(False)
-        p = Plant(self.get_spawn_x(), self.get_spawn_y(), (random.random()*10000))
-        self.add(p)
+        p = Plant(random.random()*10000)
+        self.add((p, self.get_spawn_x(), self.get_spawn_y()))
         return p
 
     def update(self):
@@ -209,7 +227,9 @@ class PlantSpawner(Spawner):
         shade = 0
         for plant in self.occupants():
             size = 2 * plant.get_size()
-            distance = int(math.sqrt((((x-plant.getx())*(x-plant.getx()))+((y-plant.gety())*(y-plant.gety())))))
+            px = self.find_occupant_x(plant)
+            py = self.find_occupant_y(plant)
+            distance = int(math.sqrt((((x-px)*(x-px))+((y-py)*(y-py)))))
             if distance != 0:
                 shade += (size/distance)
             else:

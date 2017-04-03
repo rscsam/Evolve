@@ -1,6 +1,7 @@
 """The module that handles the front-end representations of the backend"""
 
 import occupant
+from occupant import ConvenientOccupant
 from spawner import *
 
 
@@ -8,7 +9,6 @@ class World:
 
     def __init__(self):
         self.occupants = []
-        self.staticoccupants = []
         self.spawners = []
         self.wheight = 0
         self.wwidth = 0

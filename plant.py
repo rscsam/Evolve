@@ -11,13 +11,11 @@ class Plant(Occupant):
         __growth_rate = 100
     __counter = __growth_rate
 
-    def __init__(self, x, y, energy):
+    def __init__(self, energy):
         g = ["plant", -1, 0, 10, 10, 0, '#228B22', 1, 1, 1, 1, 1, 1, 5]
         behaviors = [[StayStill()], [StayStill()], [StayStill()]]
         Occupant.__init__(self, g, behaviors, energy)
-        self.set_base_energy(energy*3)
-        self.__x = x
-        self.__y = y
+        self.set_base_energy(energy)
 
     def update(self):
         if self.__counter < 1 and self.get_size() < 230:
@@ -28,9 +26,3 @@ class Plant(Occupant):
 
     def get_intimidation(self):
         return 0
-
-    def getx(self):
-        return self.__x
-
-    def gety(self):
-        return self.__y
