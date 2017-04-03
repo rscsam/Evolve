@@ -195,7 +195,8 @@ class Simulation:
                 if c.needs_vision():
                     self.update_visions(c)
                 c.update()
-                self.update_collisions(c)
+                if not c.kill_triggered():
+                    self.update_collisions(c)
             self.world.handle_wall_collision()
             for c in self.world.occupants:
                 if not c.kill_triggered():

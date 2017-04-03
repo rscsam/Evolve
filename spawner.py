@@ -234,14 +234,14 @@ class PlantSpawner(Spawner):
                 y: the new y-value of the potential plant"""
         shade = 0
         for plant in self.occupants():
-            size = 2 * plant.get_size()
+            size = plant.get_size()
             px = self.find_occupant_x(plant)
             py = self.find_occupant_y(plant)
             distance = int(math.sqrt((((x-px)*(x-px))+((y-py)*(y-py)))))
             if distance != 0:
                 shade += (size/distance)
             else:
-                shade = 2
+                return 2
             if shade > target:
                 return shade
         return shade
