@@ -35,6 +35,8 @@ class Spawner:
         self.__x = x
         self.__y = y
 
+        self.special_request = -1
+
     def __init_special_id(self):
         """Initializes a special id used to keep track of occupants by the world"""
         self.__special_id = random.random() * 999999999
@@ -191,6 +193,11 @@ class Spawner:
                 the special id for this spawner"""
         return self.__special_id
 
+    def process_special_request(self, data):
+        """If a special request number is initialized, process it
+            Args:
+                data: any data that will be passed in as part of the request"""
+
 
 class PlantSpawner(Spawner):
     """A spawner that only spawns plants"""
@@ -212,14 +219,15 @@ class PlantSpawner(Spawner):
         if self.get_current_time() <= 0:
             spawnx = ((random.random() * (self.get_width())) + self.getx())
             spawny = ((random.random() * (self.get_height())) + self.gety())
-            shade = self._calculate_shade(spawnx, spawny)
-            if random.random() > shade:
+            rand = random.random()
+            shade = self._calculate_shade(spawnx, spawny, rand)
+            if rand > shade:
                 self.set_spawnx(spawnx)
                 self.set_spawny(spawny)
                 self.set_spawning(True)
             self.set_current_time(self.timer())
 
-    def _calculate_shade(self, x, y):
+    def _calculate_shade(self, x, y, target):
         """Calculates the shade for a new potential plant
             Args:
                 x: the new x-value of the potential plant
@@ -234,6 +242,8 @@ class PlantSpawner(Spawner):
                 shade += (size/distance)
             else:
                 shade = 2
+            if shade > target:
+                return shade
         return shade
 
 

@@ -352,7 +352,8 @@ class TestSim(Simulation):
         self.spawn_map[ps1.get_special_id()] = ps1
         ps2 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT, self.CANVAS_WIDTH/5, self.CANVAS_WIDTH*3/4, 0)
         self.spawn_map[ps2.get_special_id()] = ps2
-        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8), self.CANVAS_HEIGHT*(7/16))
+        ps3 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4, self.CANVAS_WIDTH*(3/8),
+                                           self.CANVAS_HEIGHT*(7/16))
         self.spawn_map[ps3.get_special_id()] = ps3
         ps4 = self.world.add_plant_spawner(4, self.CANVAS_HEIGHT / 20, self.CANVAS_WIDTH / 4,
                                            self.CANVAS_WIDTH * (3 / 8), self.CANVAS_HEIGHT * (15 / 16))

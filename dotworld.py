@@ -9,6 +9,7 @@ class World:
 
     def __init__(self):
         self.occupants = []
+        self.plants = []
         self.spawners = []
         self.wheight = 0
         self.wwidth = 0
@@ -18,6 +19,8 @@ class World:
         c = Dot(occupant, x, y)
         self.test_largest_radius(c.get_radius())
         self.occupants.append(c)
+        if isinstance(occupant, Plant):
+            self.plants.append(occupant)
         return c
 
     def add_occupant(self, x, y, gencode, behaviors, energy):
@@ -33,7 +36,7 @@ class World:
         return self.add(Creature(gencode, behaviors, energy, parent), x, y)
 
     def add_plant(self, x, y, energy):
-        return self.add(Plant(x, y, energy), x, y)
+        return self.add(Plant(energy), x, y)
 
     def add_spawner(self, spawner):
         self.spawners.append(spawner)
@@ -88,8 +91,6 @@ class World:
             if distance <= (dot.get_radius() + c.get_radius()):
                 if c != dot and occupant.similarity(dot.get_occupant(), c.get_occupant()) > 0:
                     self.fight(c, dot)
-                # if isinstance(c.get_occupant(), Plant) or isinstance(dot.get_occupant() , Plant):
-                #     self.fight(c, dot)
 
     @staticmethod
     def update_visions(dot, dots):
