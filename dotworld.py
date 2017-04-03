@@ -1,6 +1,7 @@
 """The module that handles the front-end representations of the backend"""
 
 import occupant
+import plant
 from occupant import ConvenientOccupant
 from spawner import *
 
@@ -19,8 +20,8 @@ class World:
         c = Dot(occupant, x, y)
         self.test_largest_radius(c.get_radius())
         self.occupants.append(c)
-        if isinstance(occupant, Plant):
-            self.plants.append(occupant)
+        if isinstance(occupant, plant.Plant):
+            self.plants.append(c)
         return c
 
     def add_occupant(self, x, y, gencode, behaviors, energy):
@@ -235,6 +236,9 @@ class Dot:
 
     def needs_vision(self):
         return self.get_occupant().needs_vision
+
+    def is_plant(self):
+        return isinstance(self.__occupant, plant.Plant)
 
     def update(self):
         self.__occupant.update()

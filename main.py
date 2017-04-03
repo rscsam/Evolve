@@ -159,6 +159,8 @@ class Simulation:
         del self.dot_parrallels[dot.get_reference()]
         self.canvas.delete(dot.get_reference())
         self.world.occupants.remove(dot)
+        if dot.is_plant():
+            self.world.plants.remove(dot)
         if dot.special != -1:
             self.spawn_map[dot.special].remove(dot.get_occupant())
 
