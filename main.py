@@ -313,7 +313,7 @@ class TestSim(Simulation):
                 num_plants += 1
         print("****************************")
         print("Total Number of Occupants: ", len(self.world.occupants))
-        print("Total Number of Plants: ", num_plants)
+        print("Total Number of Plants: ", len(self.world.plants))
         print("****************************")
 
     def end_fullscreen(self, event=None):
