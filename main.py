@@ -260,7 +260,7 @@ class Simulation:
 class TestSim(Simulation):
     """A run configuration that sets all parameters and initializations for the simulation"""
 
-    CANVAS_HEIGHT = 4000
+    CANVAS_HEIGHT = 2000
     CANVAS_WIDTH = 1800
 
     def __init__(self, speed):
@@ -342,10 +342,10 @@ class TestSim(Simulation):
         """Initializes dots that will be present at the time the program begins"""
         # g = ["Species", vis, str, size, spe, bur, col, vmf, strmf, szmf, spmf, bmf, colmf, toughness]
         self.world.add_creature(1500, 3400, ["G", 150, 10, 3, 3, 4, tools.random_color(),
-                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                            .6, .6, .6, .6, .6, .6, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
         self.world.add_creature(1500, 100, ["I", 150, 10, 3, 3, 4, tools.random_color(),
-                                            .95, .95, .95, .95, .95, .95, 20], reference.d_versatile_scripts(),
+                                            .9, .9, .9, .9, .9, .9, 20], reference.d_versatile_scripts(),
                                  10000, None).get_occupant().set_base_energy(10000)
 
     def init_spawners(self):

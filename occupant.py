@@ -77,6 +77,7 @@ class Occupant:
         result += "\nColor: " + str(self.__color)
         result += "\nSpeed: " + str(self.__speed)
         result += "\nBurst: " + str(self.__burst)
+        result += "\nStrength: " + str(self.__strength)
         result += "\nVision: " + str(self.__vision)
         result += "\nToughness: " + str(self.__toughness)
         return result
@@ -297,7 +298,7 @@ class Occupant:
         return self.__toughness
 
     def get_intimidation(self):
-        return self.__strength + self.__size
+        return self.__strength + (self.__size * 2)
 
     def set_vision(self, v):
         self.__vision = v

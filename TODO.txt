@@ -1,0 +1,9 @@
+1. Add orientation to Occupant
+2. Refactor movement logic to specify
+        - target orientation
+        - target percent movement speed
+        - actual orientation
+        - actual movement speed
+3. Create physics constraints that manage how occupants move toward target velocity
+        - use linear and angular acceleration
+4. Implement "Arrive" feature to stop overshooting under new system
